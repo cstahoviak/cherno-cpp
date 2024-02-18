@@ -1,3 +1,10 @@
+/* 
+ * This file contains a large chunk of code related to the first 1-34 videos
+ * of the Cherno's C++ series.
+ * 
+ * TODO: It might be nice to split some of these off into their own apps at
+ * some point. 
+ */
 #include <iostream>
 #include <memory>
 
