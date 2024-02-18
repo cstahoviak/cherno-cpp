@@ -16,16 +16,19 @@ class Entity
     // order provided by the initializer list.
     Entity(int x, int y) : x_{x}, y_{y} {};
 
+    // NOTE: DON'T use this constructor! It's inefficient!
     Entity(int x, int y, Logger::LogLevel log_level) : x_{x}, y_{y} {
-      // Creating the Logger this will will effectively "throw away" the Logger
-      // that was created...
+      // Creating the Logger this way will effectively "throw away" the Logger
+      // that was created when the Enity object is instantiated.
       logger_ = Logger(log_level);
     }
 
     // This constructor uses a member initializer list to prevent duplication in
-    // creating the Entity's Logger.
-    // Entity(int x, int y, Logger::LogLevel log_level) : 
-    //   x_{x}, y_{y}, logger_{log_level} {};
+    // creating the Entity's Logger. This is the CORRECT way to use member
+    // initializer lists and is the most memory/time efficient.
+    Entity(Logger::LogLevel log_level) : logger_{log_level} {};
+
+    // Destructor
     ~Entity() { std::cout << "Entity Destroyed!" << std::endl; };
 
     virtual std::string get_name() { return "Entity"; }

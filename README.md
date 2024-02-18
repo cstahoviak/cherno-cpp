@@ -117,7 +117,8 @@ __Video #34 The `Mutable` Keyword in C++__
 
 __Video #35 Member Initializer Lists in C++__
 - A way to initialize class member function via the contstructor.
-
+- Member initializer lists are the most memory/time efficient way to construct
+an object of a class that consists of non-primitive type members, i.e. members of other class types. For an example of this, see the `member_init.cpp` app that demonstrates how the Entity's Logger is effectively created twice (and thrown away once) when member initialization is used improperly.
 
 33. Const
 34. Mutable

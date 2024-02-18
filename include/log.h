@@ -9,10 +9,11 @@ void log(const char*);
 class Logger 
 {
   public:
-    // Would like to convert this to an ENUM eventually
+    // TODO: Convert this to an ENUM eventually
     // const int log_level_error = 0;
     // const int log_level_warning = 1;
     // const int log_level_info = 2;
+
     enum LogLevel
     {
       ERROR = 0,
@@ -21,14 +22,18 @@ class Logger
     };
 
     // Define a constructor
-    Logger() {std::cout << "Created Logger." << std::endl;};
+    Logger() {std::cout << "Created default Logger." << std::endl;};
     Logger(LogLevel log_level) : log_level_{log_level}
       {
-        std::cout << "Created Logger." << std::endl;
+        std::cout << "Created Logger with Log Level: " << log_level_ 
+          << std::endl;
       };
 
     // Define a destructor
-    ~Logger() {std::cout << "Destroyed Logger!" << std::endl;}
+    ~Logger() {
+      std::cout << "Destroyed Logger with Log Level: " << log_level_ 
+        << std::endl;
+    }
 
     void set_level(LogLevel log_level);
 
@@ -38,7 +43,7 @@ class Logger
     void info(const char* message);
 
   private:
-  // static methods (and also variables?) cannot access non-static variables
+    // static methods (and also variables?) cannot access non-static variables
     // static LogLevel log_level_{log_level_info};
     LogLevel log_level_{ERROR};
 };
