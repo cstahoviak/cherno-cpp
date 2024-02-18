@@ -100,6 +100,25 @@ __Video #29 Visibility in C++__
 __Video #30 Arrays in C++__
 - 
 
+__Video #33 `Const` in C++__
+- NOTE: This is where I picked up after the interview. I'm taking my time getting through the content now.
+- A "promise" that something will not be changed (not actually strictly enforced).
+- `const int* ptr`: value at pointer location cannot be changed, i.e. cannot do `*ptr = 100;`, but the pointer can be re-assigned to a new address.
+- `int* const ptr`: The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.
+- `const int* const ptr`: The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.
+- `void MyClass::func() const`: Guarantees that this function will not modify any member variables of `MyClass`, i.e. this function is "read-only".
+- Rule of thumb: Mark any methods that are intended to be read-only as `const`, e.g. `void MyClass::func() const`.
+- The `mutable` keyword allows `const` methods to modify member variables.
+
+__Video #34 The `Mutable` Keyword in C++__
+- Two (very different) use cases: with `const` and with lambdas.
+- The `mutable` keyword allows `const` methods to modify member variables.
+- lambda (quick definition): a throw-away function that you can assign to a variable.
+
+__Video #35 Member Initializer Lists in C++__
+- A way to initialize class member function via the contstructor.
+
+
 33. Const
 34. Mutable
 37. Creating/Instantiating Objects
@@ -121,3 +140,17 @@ __Video #30 Arrays in C++__
 62. Threads
 79. std::async
 
+__Video #43: Smart Pointers in C++__
+- `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
+- `new` allocates memory on the heap and `delete` us used to free it
+- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should never use the `new` and `delete` keywords.
+- Smart pointers are effectively wrappers around raw pointers
+- A `std::unique_ptr` cannot be copied.
+- A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
+- A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
+
+__Video #44: Coping and Copy Constructors__
+- 
+
+__Video #51: Templates in C++__
+- 
