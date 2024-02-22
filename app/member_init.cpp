@@ -1,7 +1,5 @@
 /*
  * Member Initializer Lists:
- * - 
- * - 
  */
 
 #include <iostream>
@@ -11,12 +9,15 @@
 #include "log.h"
 
 int main() {
-  // Member Initializer lists
+  // Member Initializer Lists
 
   // Create an Entity via the default contructor
   std::cout << "1. Create Entity with Logger via the default constructor." 
     << std::endl;
-  Entity e1 = Entity();
+  Entity e1;
+  // The line above is equivalent to the line below because we have defined a
+  // default constructor for the Entity class.
+  // Entity e1 = Entity();
 
   // Create an Entity via the constructor that uses member initialization for
   // x and y, but not the the logger. Creating the Entity in this way will

@@ -79,7 +79,9 @@ std::ostream& operator<<(std::ostream& stream, const Entity& e);
 class Player : public Entity
 {
   public:
-    Player(const std::string& name) : name_(name) {};
+    Player(const std::string& name) : name_(name) {
+      std::cout << "Player named '" << name_ << "' created!" << std::endl;
+    };
     std::string get_name() override { return this->name_; };
 
   private:

@@ -76,6 +76,8 @@ __Video #25: Destructors in C++__
    - Any manually-allocated memory on the heap needs to be manually cleaned up in the destructor or you will create memory leaks.
 
 __Video #26: Inheritance in C++__
+- A note on Constructors: Every constructor in the inheritance hierarchy gets called in the order of base-class -> derived-class.
+- Destructors get called in the _reverse_ order!
 - Polymorphism: Achieved either via function overloading or operator overloading, e.g. you can use the `+` operator to add two ints, two floats or even concatenate two strings.
 
 __Video #27: Virtual Functions in C++__
@@ -97,29 +99,10 @@ __Video #29 Visibility in C++__
 - `protected`: these member variables and function can (and should) only be accessed by the class itself and any sub-class.
 - `public`: these member variables and function can (and should) only be accessed by any other class of function.
 
-__Video #30 Arrays in C++__
-- 
+__Video #30: Arrays in C++__
+- ...
 
-__Video #33 `Const` in C++__
-- NOTE: This is where I picked up after the interview. I'm taking my time getting through the content now.
-- A "promise" that something will not be changed (not actually strictly enforced).
-- `const int* ptr`: value at pointer location cannot be changed, i.e. cannot do `*ptr = 100;`, but the pointer can be re-assigned to a new address.
-- `int* const ptr`: The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.
-- `const int* const ptr`: The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.
-- `void MyClass::func() const`: Guarantees that this function will not modify any member variables of `MyClass`, i.e. this function is "read-only".
-- Rule of thumb: Mark any methods that are intended to be read-only as `const`, e.g. `void MyClass::func() const`.
-- The `mutable` keyword allows `const` methods to modify member variables.
-
-__Video #34 The `Mutable` Keyword in C++__
-- Two (very different) use cases: with `const` and with lambdas.
-- The `mutable` keyword allows `const` methods to modify member variables.
-- lambda (quick definition): a throw-away function that you can assign to a variable.
-
-__Video #35 Member Initializer Lists in C++__
-- A way to initialize class member function via the contstructor.
-- Member initializer lists are the most memory/time efficient way to construct
-an object of a class that consists of non-primitive type members, i.e. members of other class types. For an example of this, see the `member_init.cpp` app that demonstrates how the Entity's Logger is effectively created twice (and thrown away once) when member initialization is used improperly.
-
+TODO:
 33. Const
 34. Mutable
 37. Creating/Instantiating Objects
@@ -140,6 +123,59 @@ an object of a class that consists of non-primitive type members, i.e. members o
 61. Namespaces
 62. Threads
 79. std::async
+
+__Video #33: `Const` in C++__
+- NOTE: This is where I picked up after the interview. I'm taking my time getting through the content now.
+- A "promise" that something will not be changed (not actually strictly enforced).
+- `const int* ptr`: value at pointer location cannot be changed, i.e. cannot do `*ptr = 100;`, but the pointer can be re-assigned to a new address.
+- `int* const ptr`: The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.
+- `const int* const ptr`: The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.
+- `void MyClass::func() const`: Guarantees that this function will not modify any member variables of `MyClass`, i.e. this function is "read-only".
+- Rule of thumb: Mark any methods that are intended to be read-only as `const`, e.g. `void MyClass::func() const`.
+- The `mutable` keyword allows `const` methods to modify member variables.
+
+__Video #34: The `Mutable` Keyword in C++__
+- Two (very different) use cases: with `const` and with lambdas.
+- The `mutable` keyword allows `const` methods to modify member variables.
+- lambda (quick definition): a throw-away function that you can assign to a variable.
+
+__Video #35: Member Initializer Lists in C++__
+- A way to initialize class member function via the contstructor.
+- Member initializer lists are the most memory/time efficient way to construct
+an object of a class that consists of non-primitive type members, i.e. members of other class types. For an example of this, see the `member_init.cpp` app that demonstrates how the Entity's Logger is effectively created twice (and thrown away once) when member initialization is used improperly.
+
+__Video #36: Ternary Operators in C++__
+- Effectively syntatic sugar for an if statement.
+- `<var> = <conditional> ? <value if true> : <value if false>`
+- e.g. `std::string rank = (level >= MASTER_LVL) ? "Master" : "Novice"`
+- Using a ternary operator to do something like this is actually _faster_ because of something called _Return Value Optimization_.
+- In the example below, an empty string object called `rank` is created and then overriden with either "Master" or "Novice" once the conditional is evaluated. Using the ternary operator prevents `rank` from being created as an empty string object before being re-assigned.
+```
+std::string rank;
+if (level >= MASTER_LVL)
+   rank = "Master";
+else
+   rank = "Novice";
+```
+- Worth noting that ternary operators can be nested, but this can quickly become confusing to read and isn't recommended.
+
+__Video #37: How to Create/Instantiate Objects in C++__
+- All objects that are created must occupy some memory.
+- Memory is divided into two main areas: the __stack__ and the __heap__.
+- __Stack__ objects have a pre-determined lifespan that is defined by the _scope_ that they are created in. Once that variable/object goes _out of scope_ , then the local _stack frame_ gets destroyed, i.e. that memory is freed.
+- So, when should you create an object on the Stack? Whenever possible! Creating an object on the stack is typically the fastest and most "resourced managed" way to create an object in C++.
+- The Stack is much smaller than the heap. The size of the Stack is platform-dependent, but is typically 1-2MB.
+- __Heap__ objects don't behave in the same way.
+- The `new` keyword creates an object on the Heap and returns a pointer to that object, e.g. `Entity* e = new Entity()`. This object does __not__ have a pre-determined lifespan and must be deleted manually using `delete`.
+- Stack vs. Heap overview:
+   - Performance: Heap allocation takes longer than Stack allocation.
+   - Memory Allocation: Heap allocation requires _manual_ freeing of that memory - freeing memory isn't nicely managed the same way that it is for objects on the Stack. This can lead to _memory leaks_.
+- So when should you create an object on the Heap?
+  1. Is your object really, really big? (larger than the size of the Stack)
+  2. Do you want to manaually control the lifespan of your object?
+- If no to both 1. and 2. then create your object on the Stack!
+- _Smart Pointers_ (which we'll get into later) provide a means to allocate an object on the Heap but with the memory-mangement advantages that come with Stack allocation.
+
 
 __Video #43: Smart Pointers in C++__
 - `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
