@@ -14,7 +14,7 @@ class Entity
     // Use member initializer list. NOTE that member variables will be
     // initialized in the order that they are declared in the class, NOT the
     // order provided by the initializer list.
-    Entity(int x, int y) : x_{x}, y_{y} {};
+    Entity(int x, int y) : x_(x), y_(y) {};
 
     // NOTE: DON'T use this constructor! It's inefficient!
     Entity(int x, int y, Logger::LogLevel log_level) : x_{x}, y_{y} {
@@ -61,7 +61,7 @@ class Entity
     const int* const x_ptr = &x_;
     // One way to get around the fact that a member method marked const being
     // unable to modify member variables is to mark those variables as
-    // "mutable" - this may be desirable in the case of debug info
+    // "mutable" - this may be desirable in the case of debug info.
     mutable bool debug_flag_ = false;
 
     // Give the Entity a Logger to demonstrate the efficiency of member
@@ -82,10 +82,17 @@ class Player : public Entity
     Player(const std::string& name) : name_(name) {
       std::cout << "Player named '" << name_ << "' created!" << std::endl;
     };
+    Player(const int age) : age_(age) {};
+
+    // Define an "explicit" constructor that disallows implicit conversion
+    explicit Player(const std::string& name, const int age) 
+      : name_(name), age_(age) {};
+
     std::string get_name() override { return this->name_; };
 
   private:
-    std::string name_;
+    std::string name_{""};
+    int age_{-1};
 };
 
 void show_name(Entity* entity);

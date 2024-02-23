@@ -1,6 +1,13 @@
 # cherno-cpp
 A repository for working through the Cherno's C++ YouTube series.
 
+Why write in C++? Because we care about things like:
+- Memory
+- Performace
+- Hardware Optimization
+
+If you don't care about these things, don't choose C++!
+
 __Video #1: Welcome to C++ (What we'll be learning)__
 - How C++ actually works
 - Memory and pointers
@@ -176,6 +183,27 @@ __Video #37: How to Create/Instantiate Objects in C++__
 - If no to both 1. and 2. then create your object on the Stack!
 - _Smart Pointers_ (which we'll get into later) provide a means to allocate an object on the Heap but with the memory-mangement advantages that come with Stack allocation.
 
+__Video #38: The `new` Keyword in C++__
+- `new` finds a block of memory (via the _free list_) that is large enough to accommodate our needs, and returns a pointer to thart block of memory.
+- `new` does two things:
+   - Allocates the memory required to store the object.
+   - Calls the constructor for that object.
+- `new` is actually an operator, in the same sense that the `+`, `==` or `<<` (stream insertion) are operators. That means that `new` can be _overloaded_.
+- So what does `new` do under the hood? It calls `malloc()`. The following two lines are _almost_ equivalent aside from the fact the `new` calls the `Entity` constructor, whereas the second line purely allocates memory and returns a pointer to that memory. This is just for instructional purposes, you don't want to be doing anything that looks like the second line.
+```
+Entity* e1 = new Entity;
+Entity* e2 = (Entity*)malloc(sizeof(Entity));
+```
+- `new` and `delete` are an inseparable pair. __All__ newly allocated memory must eventually be deleted. This is handled in an automated way by _smart pointers_.
+   - `new` and `delete` for standard objects.
+   - `new[]` and `delete[]` for arrays.
+
+__Video #39: Implicit Conversion and the `explicit` Keyword in C++__
+- Implicit Conversion allows C++ to convert between one type and another, so long as only a "single step" conversion exists between those two types.
+- `explicit` __disables__ implicit conversion.
+- Probably won't find myself using this very often, but good to know it exists and what it does.
+
+__Video #40: Operators and Operator Overloading in C++__
 
 __Video #43: Smart Pointers in C++__
 - `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`

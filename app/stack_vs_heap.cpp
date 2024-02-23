@@ -1,14 +1,14 @@
 /*
- * How to Create/Instantiate Objects in C++: Stack vs. Heap
+ * Video #37: How to Create/Instantiate Objects in C++ (Stack vs. Heap)
  */
 
 #include <iostream>
 #include <memory>
 
 #include "entity.h"
-#include "log.h"
 
-int main() {
+int main() 
+{
   // Create an object on the Stack
   Player p1("Default");
 
@@ -20,7 +20,7 @@ int main() {
     // Create a player on the Heap with the 'new' keyword
     Player* player = new Player("Carlito");
 
-    // Assign the player pointer (e_ptr) to the newly created Player on the Heap
+    // Assign the player pointer (p_ptr) to the newly created Player on the Heap
     p_ptr = player;
     std::cout << p_ptr->get_name() << std::endl;
   }
