@@ -71,7 +71,7 @@ class Entity
 
 // Cannot extend the << operator as a member-function of a class - it has to be
 // a seperate function. The implementation of this function MUST be in
-// entity.cpp otherwise I'll get an"multiple definition of operator<<" error
+// entity.cpp otherwise I'll get a "multiple definition of operator<<" error
 // because the implementation gets included in multiple translation units.
 std::ostream& operator<<(std::ostream& stream, const Entity& e);
 

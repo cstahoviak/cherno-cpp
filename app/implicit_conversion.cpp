@@ -3,7 +3,6 @@
  */
 
 #include <iostream>
-#include <memory>
 
 #include "entity.h"
 

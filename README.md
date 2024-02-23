@@ -204,6 +204,15 @@ __Video #39: Implicit Conversion and the `explicit` Keyword in C++__
 - Probably won't find myself using this very often, but good to know it exists and what it does.
 
 __Video #40: Operators and Operator Overloading in C++__
+- Operators: `=`, `==`, `<<` (stream insertion), `&`, `&&`, etc.
+- `new`, `delete` and `()` are also operators.
+- "Operators _are_ functions!"
+
+__Video #41: `this` keyword in C++__
+- `this` is a pointer to the current object instance that the member-method belongs to.
+- Deferencing (getting the value or object stored at the pointer location) the `this` pointer looks like `this->x_` which is equivalent to `(*this).x_`.
+- Can be used to pass the current object (or a pointer to the current object) to another function, e.g. `func(*this)` or `func(this)`.
+- Don't ever `delete this`.
 
 __Video #43: Smart Pointers in C++__
 - `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
