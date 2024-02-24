@@ -7,3 +7,7 @@
 std::ostream& operator<<(std::ostream& stream, const Vec2& vec) {
   return stream << "Vec2(x=" << vec.x << ", y=" << vec.y << ")";
 }
+
+std::ostream& operator<<(std::ostream& stream, const String& string) {
+  return stream << string.buffer_;
+}

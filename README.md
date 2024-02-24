@@ -214,7 +214,7 @@ __Video #41: `this` keyword in C++__
 - Can be used to pass the current object (or a pointer to the current object) to another function, e.g. `func(*this)` or `func(this)`.
 - Don't ever `delete this`.
 
-__Video #42: Object lifetime in C++ (Stack/Scope Lifetimes) in C++__
+__Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++__
 - Will be taking a look at the lifetime of stack-based variables.
 - Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
 - What is meant by _scope_? Basically anything declared within `{}`.
@@ -241,8 +241,16 @@ __Video #43: Smart Pointers in C++__
 - A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
 - A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
 
-__Video #44: Coping and Copy Constructors__
+__Video #44: Copying and Copy Constructors in C++__
+- Copying is expensive and should be avoided if unnecessary.
+- The _Copy Constructor_ is supplied by default by C++ and is implemented as a
+_shallow copy_. This will create problems for any objects that have heap-allocated member pointers because the pointer itself will be copied. This results in pointer stored by the copied object pointing to the same memory address as the original object. When that memory is freed by the original object, attempting to free that same memory by the copied object will cause hard-to-diagnose errors.
+- In order to implement a _deep copy_ of an object, we must rewrtite the Copy Constructor ourselves: `<Type>(const <Type>& other){}`
+- __Best Practice__: Prefer passing objects by const reference (`const <type>&`) to prevent unecessary copying.
+
+__Video #45: The Arrow Operator in C++__
 - 
+
 
 __Video #51: Templates in C++__
 - 
