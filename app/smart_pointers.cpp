@@ -1,6 +1,7 @@
 /*
  * Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes)
  * Video #43: Smart Pointers in C++
+ * Video #45: The Arrow Operator in C++
  */
 #include <iostream>
 #include <memory>
@@ -14,7 +15,16 @@ int main() {
   std::cout << "Scoped Entities:" << std::endl;
   {
     std::cout << "Entering local scope and creating ScopedPtr." << std::endl;
-    ScopedPtr e = new Entity();
+    
+    // Create a const ScopedPtr (const objects can only call const member
+    // methods of the class)
+    const ScopedPtr e = new Entity(1.0, 10.0);
+    
+    // (Video #45) Because we've overloaded the -> operator, we can access the
+    // public members of Entity via the Scoped Pointer.
+    std::cout << "Entity(x=" << e->get_x() << ", y=" << e->get_y() << ")" 
+      << std::endl;
+
     std::cout << "Exiting local scope." << std::endl;
   }
 

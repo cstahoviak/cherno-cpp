@@ -9,6 +9,11 @@ struct Vec2
 
   Vec2(float x, float y) : x(x), y(y) {};
 
+  // Write a simple Copy Constructor to keep track of when copying happens
+  Vec2(const Vec2& other) : x(other.x), y(other.y) {
+    std::cout << "Vec2 Copy Constructor invoked." << std::endl;
+  }
+
   // If we don't use operator overloading, we would need to define a method that
   // allows us to add two Vec2s together. Reminder that marking the method as
   // "const" ensures that this method will not modify the member variables of

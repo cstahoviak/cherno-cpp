@@ -249,8 +249,45 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
 - __Best Practice__: Prefer passing objects by const reference (`const <type>&`) to prevent unecessary copying.
 
 __Video #45: The Arrow Operator in C++__
-- 
+- The arrow operator `->` is used to _dereference_ a pointer.
+- The following lines are equivalent (the () are required in the first line because of operator precedence, i.e. dereferencing must take place before accessing the member method):
+```
+(*ptr).member_method();
+ptr->member_method();
+```
+- Because the `->` is an operator, it can be overloaded. This can useful if we choose to write our own scoped pointer class, e.g. `ScopedPtr`.
+- Bonus functionality: The arrow operator can be used to determine the offset in memory of a particular member variable, e.g:
+```
+struct Vec3
+{
+   // Floats are 4 bytes in length
+   float x, y, z;
+}
 
+int main() {
+   // Starting at zero (nullptr) give me the offset of the member y
+   int offset = (int)&((Vec3*)nullptr)->y;
+   <!-- int offset = (int)&((Vec3*)0)->y; -->
+   std::cout << offset << std::endl;
+}
 
-__Video #51: Templates in C++__
+Terminal Output:
+4
+```
+
+__Video #46: Dynamic Arrays in C++ (std::vector)__
+- Time to get accustomed with the standard template library (STL)!
+- `std::vector` is actually a dynamic array (list) - _dynamic_ in the sense that it can be resized, e.g. extended, appended to, etc.
+- When you exceed the allocated size of a particular `std::vector` instance, it creates a new array in memory, copies the contents of the original vector into the new vector and deletes the original vector. In practice, this re-allocation can occur quite often and can result in performance losses.
+- Dynamic arrays store their memory contiguously (in line, not fragmented in memory). This is optimal for any operation that requires iterating over the vector.
+- When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of cpying largely solves this issue, but not entirely because there is still come copying involved.
+- __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
+- __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
+__Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
+
+__Video #47: Optimizing the use of std::vector in C++__
+- We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
+- We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
+
+__Video #53: Templates in C++__
 - 

@@ -41,7 +41,7 @@ class Entity
     // accessed by a const Entity reference (const Entity&) as in the
     // operator<< overload that we've defined.
     int get_x() const {
-      // A const memeber method CAN modify mutable member vars
+      // A const member method CAN modify mutable member vars.
       debug_flag_ = true;
       return x_; };
     int get_y() const { return y_; };
@@ -52,7 +52,7 @@ class Entity
     // int get_y() {return y_; };
 
     // A function that cannot modify any member variables that returns a non-
-    // modifiable pointer to a non-modifiable integer - C++ is kind of whack
+    // modifiable pointer to a non-modifiable integer.. C++ is kind of whack.
     const int* const get_x_ptr() const { return x_ptr; };
 
   private:
@@ -109,6 +109,14 @@ class ScopedPtr
   // We're effectively writing our own unique_ptr for the Entity class.
   public:
     ScopedPtr(Entity* ptr) : ptr_(ptr) {};
+
+    // Overload the -> operator to allow us to access public members of Entity
+    // via a ScoperPtr instance (see smart_pointer.cpp)
+    Entity* operator->() { return ptr_; }
+    // Provide a const version of the -> operator if a ScopedPtr is created as
+    // const (see smart_pointers.cpp)
+    const Entity* operator->() const {return ptr_; }
+
     ~ScopedPtr() { delete ptr_; }
 
   private:
