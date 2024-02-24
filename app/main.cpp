@@ -69,20 +69,6 @@ int main()
   std::cout << arr[0] << std::endl;
   std::cout << arr << std::endl;
 
-  // SMART POINTERS
-  // Create a shared pointer in thre scope of main
-  std::shared_ptr<Entity> shared_entity = std::make_shared<Entity>();
-  {
-    // create a local scope and create a unique ptr within that scope. Once this
-    // scope is exited, this pointer will be deleted.
-    std::unique_ptr<Entity> entity_ptr = std::make_unique<Entity>();
-
-    // create a shared ptr within the local scope and assign it to the
-    // shared_entity ptr. Unlike the unique_ptr, the shared_entity ptr will not/
-    // be deleted until after main exits.
-    std::shared_ptr<Entity> e1 = shared_entity;
-  }
-
   // CONST
   // Create a const pointer to an integer on the heap whereby the value pointed to cannot be modified
   const int* const_ptr = new int;

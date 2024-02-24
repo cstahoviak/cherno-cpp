@@ -69,11 +69,15 @@ class Entity
     Logger logger_;
 };
 
+
 // Cannot extend the << operator as a member-function of a class - it has to be
 // a seperate function. The implementation of this function MUST be in
 // entity.cpp otherwise I'll get a "multiple definition of operator<<" error
 // because the implementation gets included in multiple translation units.
 std::ostream& operator<<(std::ostream& stream, const Entity& e);
+
+
+void show_name(Entity* entity);
 
 
 class Player : public Entity
@@ -88,6 +92,10 @@ class Player : public Entity
     explicit Player(const std::string& name, const int age) 
       : name_(name), age_(age) {};
 
+    ~Player() {
+      std::cout << "Destroyed Player '" << name_ << "'." << std::endl;
+    };
+
     std::string get_name() override { return this->name_; };
 
   private:
@@ -95,4 +103,14 @@ class Player : public Entity
     int age_{-1};
 };
 
-void show_name(Entity* entity);
+
+class ScopedPtr
+{
+  // We're effectively writing our own unique_ptr for the Entity class.
+  public:
+    ScopedPtr(Entity* ptr) : ptr_(ptr) {};
+    ~ScopedPtr() { delete ptr_; }
+
+  private:
+    Entity* ptr_;
+};

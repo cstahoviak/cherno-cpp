@@ -214,12 +214,30 @@ __Video #41: `this` keyword in C++__
 - Can be used to pass the current object (or a pointer to the current object) to another function, e.g. `func(*this)` or `func(this)`.
 - Don't ever `delete this`.
 
+__Video #42: Object lifetime in C++ (Stack/Scope Lifetimes) in C++__
+- Will be taking a look at the lifetime of stack-based variables.
+- Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
+- What is meant by _scope_? Basically anything declared within `{}`.
+- All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
+- __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
+```
+int* create_array(const int size) {
+   // This creates an array on the stack (which is scope-based)
+   int array[size];
+   return array;
+}
+```
+- How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
+- A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
+- Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
+
 __Video #43: Smart Pointers in C++__
 - `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
-- `new` allocates memory on the heap and `delete` us used to free it
+- `new` allocates memory on the heap and `delete` us used to free it.
 - Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should never use the `new` and `delete` keywords.
-- Smart pointers are effectively wrappers around raw pointers
-- A `std::unique_ptr` cannot be copied.
+- Smart pointers are effectively wrappers around raw pointers.
+- When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
+- A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
 - A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
 - A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
 
