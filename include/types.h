@@ -107,3 +107,17 @@ class String
 };
 
 std::ostream& operator<<(std::ostream& stream, const String& string);
+
+
+// Rather than use 'typename', we use int because we expect N to be an int.
+template<typename T, int N>
+class Array
+// An example of a templated array class that uses multiple template arguments.
+// Not actually all thart different from how std::array works.
+{
+  public:
+    int size() {return N; }
+
+  private:
+    T array_[N];
+};

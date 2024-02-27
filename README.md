@@ -68,7 +68,8 @@ __Video #21: `Static` in C++__
    - This prevents any other translation unit (cpp file) from findind that `static` variable in the linking process via the `extern` keyword.
 - __Context 2__: `static` keyword when used inside a class or struct.
    - A `static` member variable of a class/struct is the same across all instances of that class/struct, i.e. there will be only __one instance__ of the `static` member variable.
-   - `static` method of a class do not have access to the object itself, i.e. cannot access the `this` keyword.
+   - A `static` method of a class does not have access to the object itself,
+   i.e. cannot access the `this` keyword.
    - static methods (and also variables?) cannot access non-static variables because static methods do not actually have a "class instance".
 
 __Video #23: Enums in C++__
@@ -284,10 +285,164 @@ __Video #46: Dynamic Arrays in C++ (std::vector)__
 - __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
 - __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
 __Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
+- `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
 
 __Video #47: Optimizing the use of std::vector in C++__
 - We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
 - We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
 
+__Video #48: Local Static in C++__
+- Can declare a variable as `static` in a local scope - this is different from the other two use cases of static that we've seen already.
+- Declaring a variable as `static` within a local scope (e.g. within a function) restricts access to that variable to that local scope, but extends its lifetime to the lifetime of the program.
+```
+void f() {
+   static int i = 0;
+   i++;
+   std::cout << "i: << i << std::endl;
+}
+
+int main() {
+   f();
+   f();
+   f();
+}
+
+Terminal Output:
+i: 1
+i: 2
+i: 3
+```
+- Often use of local `static` variables are discouraged.
+- One possible use case is for _Singleton_ classses, i.e. a class that should only have one instance in existance.
+
+__Video #49: Using Libraries in C++__
+- The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
+- This video: Learning to link against binaries
+- TODO: Didn't finish this video
+
+__Video #50: Using Dynamic Libraries in C++__
+- TODO:
+
+__Video #51: Making and Working with Libraries in C++__
+- TODO:
+
+__Video #52: How to deal with Multiple Return Values in C++__
+- How to deal with _tuples_ and _pairs_.
+- In C++, a function can return only _one_ value.
+- __Option 1:__ One way to get around this is to have your function return `void` and instead pass in references to the objects you want to assign and set them via reference instead of actually returning anything.
+```
+void f(std::string& out_str1, strd::string& out_str2) {
+   out_str1 = "one";
+   out_str2 = "two";
+}
+
+int main() {
+   std::string a, b;
+   f(a, b)
+}
+```
+- __Option 1b:__ As an alternative to passing by reference, we can pass a pointer, and this allows us the addional option of passing `nullptr` when we don't actually want to set that value.
+```
+void f(std::string* out_str1, strd::string* out_str2) {
+   if (out_str1) { out_str1 = "one"; }
+   if (out_str2) { out_str2 = "two"; }
+}
+
+int main() {
+   std::string a, b;
+   f(nullptr, &b)
+}
+```
+- __Option 2:__ We can return a heap-allocated `std::array`. Not really great option. Cherno isn't a fan of this method, or of using `std::array`.
+```
+#include <array>
+
+std::array<std::string, 2> f() {
+   return std::array<std::string, 2>("one", "two");
+}
+
+int main() {
+   std::string* result_array = f();
+}
+```
+___Option 3:__ Using _Tuples_ and _Pairs_.
+- Ugly because accessing members of a tuple can only be done via `std::get<index>(tuple_var)` or `tuple_var.first` and we may want to be more explicit that this and actually name the members of the tuple for the sake of code readabilty.
+```
+#include <tuple>
+
+std::tuple<std::string, std::string> f() {
+   return std::make_pair("one", "two")
+}
+
+int main() {
+   std::tuple<std::string, std::string> result = f();
+   // Now get the first (index zero) string from the tuple (2 options)
+   std::string first = std::get<0>(result);
+   std::string first = result.first;
+}
+```
+- __Option 4:__ (Cherno's favoite) create a struct (a _named tuple_ in Python) that excplicitly contains the items that we want to return.
+```
+struct FileInfo {
+   std::string directory;
+   std::string filename;
+   std::string extension;
+}
+
+FileInfo f() {
+   // Take advatage of "implicit conversion to create the FileInfo object
+   return {"local_dir", "my_file", "txt"};
+}
+
+int main() {
+   FileInfo file_info = f();
+   filename = file_info.filename;
+}
+```
+
 __Video #53: Templates in C++__
+- A template allows us to get the compiler to write code for us based on a set of rules.
+- In `template<typename T>` the keywords `typename` and `class` can _almost_ be used interchangeably. But `typename` is preferred.
+- At compile-time, a templated function only gets created (and linked) for the particular types that it's actually called within the source code.
+- If a templated function is _never_ called in your code, the the compiler never actually creates any versions of the function, and it's possible to have errors in a templated function that can go undetected.
+- The STL (Standard _Template_ Library) is a collection of standarized templated classes.
+- __Best Practices:__ When to use templates:
+   - Logging systems, buffers than need to contain various types.
+- __Best Practices:__ When not to use templates:
+   - 
+
+__Video #54: Stack vs. Heap Memory in C++__
+- The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
+- Each program/process has its _own_ Stack and Heap.
+- Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
+- Stack vs. Heap allocation:
+```
+// Allocate an int and an int array on the stack
+int value = 10;
+int array[10];
+
+// Allocate an int and an int array on the heap
+int* heap_value = new int;
+*heap_value = 10;
+int* heap_arr = new int[10];
+
+// Must manually free heap-allocated memory
+delete heap_value;
+delete[] heap_arr;
+```
+- __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
+- _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
+- Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
+- Heap memory `==` _dynamic_ memory.
+- __Takeaway:__
+   - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
+   - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
+
+__Video #55: Macros in C++__
+- Macros allow us to use the _pre-processor_ to automate, "macro-ize", some aspects of our code.
+- All `#` statements are known as _preprocessor directives_. The Preprocessor step comes before compilation.
+- Templates v. Macros:
+   - Templates get "evaluated" at compile-time.
+   - Macros are evaluated in the preprocessor step and strictly consist of "pure text replacement" which comes before compilation.
+- Cherno doesn't like overusing macros.
 - 

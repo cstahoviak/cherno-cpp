@@ -3,6 +3,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(Cherno)
 
+# Create a macro-defined option with a default value of OFF
+# TODO: This isn't working. Want to be able to set it via the command line
+#   using 'cmake -DCS_DEBUG ..'
+# TODO: Make this option Debug/Release mode dependent
+add_compile_definitions(CS_DEBUG=0)
+
 # TODO: Move away from using GLOB
 file(GLOB LIB_SOURCES src/*.cpp)
 file(GLOB LIB_HEADERS include/*.h)
