@@ -68,8 +68,7 @@ __Video #21: `Static` in C++__
    - This prevents any other translation unit (cpp file) from findind that `static` variable in the linking process via the `extern` keyword.
 - __Context 2__: `static` keyword when used inside a class or struct.
    - A `static` member variable of a class/struct is the same across all instances of that class/struct, i.e. there will be only __one instance__ of the `static` member variable.
-   - A `static` method of a class does not have access to the object itself,
-   i.e. cannot access the `this` keyword.
+   - A `static` method of a class does not have access to the object itself, i.e. cannot access the `this` keyword.
    - static methods (and also variables?) cannot access non-static variables because static methods do not actually have a "class instance".
 
 __Video #23: Enums in C++__
@@ -445,4 +444,87 @@ __Video #55: Macros in C++__
    - Templates get "evaluated" at compile-time.
    - Macros are evaluated in the preprocessor step and strictly consist of "pure text replacement" which comes before compilation.
 - Cherno doesn't like overusing macros.
+- __TODO:__ Finish adding a command line CMake variable to enable/disable macros in my code.
+
+__Video #56: The `auto` Keyword in C++__
+- `auto` allows C++ to become a psuedo _weakly-typed_ language.
+- When to use `auto`?
+   - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
+   - For iterators in for loops:
+```
+std::vector<std::string> strings;
+
+// This is ugly and long
+for (std::vector<strd::string>::iterator it; strings.begin(), it != strings.end(), it++) {
+   // do something
+}
+
+// This is much cleaner and easier to read
+for (auto it; strings.begin(), it != strings.end(), it++) {
+   // do something
+}
+```
+- If you need a reference, use `auto&`.
+
+__Video #57: Static Arrays (`std::array`) in C++__
+- Static arrays have a pre-defined size and their size __cannot__ be changed.
+- Very similair to C-style arrays: `int arr[10];` can be rewritten as a static array like `std::array<int, 10> arr;`.
+- __Question:__ How do we take a `std::array` as a function argument if we don't know the size?
+```
+// Template that doesn't assume type or size
+template<typename T, size_t s>
+void f(std::array<T, s> arr) {
+   for (const auto& item : arr) {
+      // do stuff
+   }
+}
+
+// Template that assumes the type (and int array), but not the size
+template<size_t s>
+void f(std::array<int, s> arr) {
+   for (const int& item : arr) {
+      // do stuff
+   }
+}
+```
+- `std::array` allocates its memory on the stack, whereas `std::vector` allocates on the heap.
+- __Best Practice:__ Prefer `std::array` to _old_ C-style arrays.
+   - `std::array` supports STL features like `size()` and iterators (`begin()` and `end()`).
+   - Can apply STL algos like `std::sort` to `std::array`.
+   - No additional performance cost associated with `std::array` since the `size` is stored as a template argument.
+
+__Video #58: Function Pointers in C++__
+- This video will focus on C-style _raw_ function pointers.
+- Function pointers allow us to assign a function to a variable. Allows us to apply _logic_ to functions and pass functions as arguments to other functions.
+- Since functions are effectively just a set of instructions stored somewhere within our binary (executable), the start of those instructions will have a memory address. Thus, we can create a function pointer like:
+- __Lambdas__ are functions that are _anonymous_ functions that are declared inline that can be useful when you don't want to define a separate function.
+
+__Video #59: Lambdas in C++__
+- Anywhere that you use or require a function pointer in C++, you _can_ use a lambda instead. But when is it good idea to do so?
+- Declaring a lambda can look like:
+```
+auto lambda = [ captures ]( params ) { body };
+auto lambda = [ captures ] { body };
+```
+- _Captures:_ 
+   - `[a, &b]` captures `a` by copy and `b` by reference.
+   - `[this]` captures the current object (`*this`) by reference.
+   - `[&]` captures all _automatic_ variables used in the body of the lamda by reference and the current object by reference if it exists.
+   -  `[=]` captures all _automatic_ variables used in the body of the lamda by copy and the current object by reference if it exists.
+   - `[]` captures nothing.
+
+__Video #61: Namespaces in C++__
+- Standard `C` does not support namespaces and so often times in C and C++ compatible libraries, like OpenGL, you'll see function names that have prepended the library name, e.g. `gl_get_vertex()`
+- Namespaces exist to avoid naming conflicts. That's really it.
+- `::` is the _scope resolution_ operator.
+- Classes are themselves namespaces.
+- You can create an alias for a namespace that may be too long to use efficiently, e.g. `using rlln = ReallyLongLibraryName;`
+- Namespaces can be nested, e.g. `outer_ns::inner_ns::func()`
+- Can do `namespace ns_name::name` since C++17.
+- __Best Practice:__
+   - Avoid `using namespace std;` at all costs!
+   - If you _must_ `using namespace` try to confine it to as small a scope as possible. Only as a last resort, use it at the top-level of a file.
+   - NEVER `using namespace` in a header file! This is an easy way to create naming conflicts.
+
+__Video #62: Threads in C++__
 - 
