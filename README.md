@@ -47,12 +47,12 @@ __Video #15: Control Flow in C++__
 
 __Video #16: Pointers in C++__
 - "Possibly the most important episode in the series!"
-- raw pointers, not discussing "smart pointers" today.
+- raw pointers, not discussing _smart pointers_ today.
 - A pointer is an integer that represents a memory address.
 - Being "invalid" is a perfectly acceptable state for a pointer.
 - `0`, `NULL` and `nullptr` mean the same thing when it comes to pointers.
 
-__Video #16: References in C++__
+__Video #17: References in C++__
 - References are really just an extension of pointers
 - References are "pointers in disguise".
 - References must "reference" existing variables, whereas pointers can be created as new variables.
@@ -522,9 +522,97 @@ __Video #61: Namespaces in C++__
 - Namespaces can be nested, e.g. `outer_ns::inner_ns::func()`
 - Can do `namespace ns_name::name` since C++17.
 - __Best Practice:__
-   - Avoid `using namespace std;` at all costs!
+   - Avoid `using namespace std` at all costs!
    - If you _must_ `using namespace` try to confine it to as small a scope as possible. Only as a last resort, use it at the top-level of a file.
    - NEVER `using namespace` in a header file! This is an easy way to create naming conflicts.
 
 __Video #62: Threads in C++__
-- 
+- Parallelization!
+- Use `std::thread` to start some process, e.g. call a function, in a new thread.
+- Use `std::thread::join` to wait for a worker thread to complete before resuming execution of the current thread, i.e. the thread that the worker thread was kicked off from.
+- See `app/threading.cpp` for an example.
+
+__Video #63: Timing in C++__
+- Since C++11, we have `std::chrono` to help us with timing, i.e. understanding how much time has elapsed between various lines of code.
+- See `app/threading.cpp` to see how the `Timer` struct is used as a scope-based (lifetime based) timer to function profiling.
+- The topic of _benchmarking_ will come later and will be more in depth. Will discuss _instrumentation_, i.e. modifying source code to contain profiling tooling.
+
+__Video #64: Multidimensional Array (2D Arrays) in C++__
+- n-dimensional arrays. When to use them. When _not_ to use them!
+- An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
+- Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
+- Deleting a multidimensional array isn't trivial either. Say we declare the following 5x10 2D array then attempt to delete it:
+```
+int** arr_2d = new int*[5];
+for (int i = 0; i < 5; i++) {
+    arr_2d[i] = new int[10];
+  }
+delete[] arr_2d;
+```
+That will only delete the array of pointers pointing to each of the 50 arrays of integers. The integers themselves will not be deleted and become a memory leak. What we have to do to delete a 2D array without leaking memory is:
+```
+for (int i = 0, i < 5; i++) {
+   delete[] arr_2d[i];
+}
+delete[] arr_2d;
+```
+- In the example above, there is __no guarantee__ that each of the 5 blocks of 10 integers will be contiguous in memory. Which can make our array slower to iterate over than an array that had all 5 blocks of 10 integers allocated contiguously in memory.
+- __Best Practice:__ Because of this issue, it may not be a good idea to use 2D arrays for things like images or textures where we want access to each pixel to be fast. So instead, prefer to store an image as a 1D array and be smart about how you iterate over it.
+
+__Video #65: Sorting in C++__
+- `std::sort` is C++'s built-in sorting algorithm.
+- See `app/sorting.cpp` for an example using `std::sort`.
+
+__Video #66: Type Punning in C++__
+- Even though C++ is a _strongly-typed_ language, _type punning_ is just a fancy way of getting around the type system of C++. 
+- Something that C++ is really good at is raw memory operations (memory maipulation), and we can take advantage of that to do some kind of ridiculous operations. See `app/type_punning.cpp` for an example.
+- This can get us into trouble most of the time, but it can also be incredibly powerful. For example, type punning is used in Quake's notoriously fast inverse square root function - it converts a float into a long in order to use bit manipulation.
+
+__Video #67: Unions in C++__
+- A Union is a bit like a class or struct type, but it can only occupy the memory of one member at a time. In other words, ... (these are kind of confusing).
+- "Put differently, A union of multiple members places each member at the same starting address. This greatly saves on memory used, but the downside is that you can only use one member at a time because they all start at the same address. As you can imagine these were enormously helpful in the 90's when memory was limited. They still have use cases today, but you have to be careful because it can feel like you're' working with separate unique variables when in reality you're working with different variables all occupying the same starting address. Unions can tend to trip you up if you're not careful leading to really wacky bugs but they can be a powerful tool if used seldomly and correctly."
+- Useful for when:
+   - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
+
+__Video #68: Virtual Destructors in C++__
+- Virtual destructors are useful when dealing with _polymorphism_.
+- Remember the order of operations when it comes to instantiating and destroying an instance of a derived class - what we'll notice for the derived
+class is that the Base constructor is called first, followed by the Derived
+constructor. When the Derived instance is destroyed, the reverse order occurs.
+- In order to _guarantee_ that the Base destructor is called, we can make the Base destructor as `virtual` (see `app/virtual_destructors.cpp` for an example).
+- __Best Practice:__ When creating an class that we intend to be extended, i.e. derived from or sub-classed, we __need to__ declare its destructor as `virtual`. Otherwise, we cannot _safely_ extend that class in any case where we want to treat the derived class as if it were an instance of the base class, e.g. when passing a derived object to a function that may delete the derived instance via a base class pointer.
+__Best Practice:__ [When should we __not__ use a `virtual` destructor?](https://stackoverflow.com/questions/300986/when-should-you-not-use-virtual-destructors)
+   1. When we have no intention on deriving from the class.
+   2. The class will never be instantiated on the heap.
+   3. No intention to delete an derived instance via a base-class pointer. (But how can know that the codebase won't be extended in some way in the future in such a way that would delete a derived instance via a base class pointer?)
+__Guideline #4:__ (Herb Sutter) "A base class destructor should be either `public` and `virtual`, or `protected` and nonvirtual."
+
+__Video #69: Casting in in C++__
+- C-style vs. C++ style casting. C style casts are simple and look something like:
+```
+double a = 5.25;
+double b = (int)a + 5.3    // b = 10.3
+```
+- C++ style casts are different and include `static_cast`, `reinterpret_cast` (i.e. type punning), `dynamic_cast` and `const_cast`. C++ style casts don't actually do anything that C-style casts can't achieve, but they are more or less syntactical sugar on tope of C-style casting.
+- `static_cast` helps to avoid removing constness that can be easily done through C-style casting.
+- Say we have multiple derived classes from a single base class, and we're using a base class pointer to deal with the derived objects. A `dynamic_cast` can help us determine which derived type we're actually working with:
+```
+class Base { ... }
+class Derived : public Base { ... }
+class AnotherDerived : public Base { ... }
+
+int main() {
+   Derived* derived = new Derived()
+   Base* obj = derived;
+   // 'another' will evaluate to NULL because obj is not a AnotherDerived instance
+   Derived* another = dynamic_cast<AnotherDerived>(obj); 
+}
+```
+
+__TODO: Video #70: Conditional and Action Breakpoints in C++__
+
+__Video #71: Safety in Modern C++ and How to Teach It__
+- _Safe_ programming aims to prevent things like crashes, memory leaks (forgetting to free heap-allocated memory) and access violations. This video will focus on pointers and heap allocation.
+- Why do we care? Because we want to write real-time, performance-critical production C++ code.
+- With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
+- Note: `shared_ptr` is __not__ thread safe. (I wonder why?)

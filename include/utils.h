@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include <chrono>
 #include <iostream>
 
 // Define a Macro - a TERRIBLE use of the preprocessor because WAIT will confuse
@@ -23,3 +24,22 @@
 // This is effectively a wrapper around std::cout
 template<typename T>
 void print(T value) { std::cout << value << std::endl; }
+
+struct Timer {
+  // Timer is a scope-based timer utility that will capture the total time that
+  // this struct is in scope.
+  
+  std::chrono::high_resolution_clock::time_point start;
+  std::chrono::high_resolution_clock::time_point end;
+  std::chrono::duration<float> duration;
+
+  Timer() { start = std::chrono::high_resolution_clock::now(); }
+  ~Timer() {
+    end = std::chrono::high_resolution_clock::now(); 
+    duration = end - start;
+
+    float ms = duration.count() * 1000.0f;
+    std::cout << "Timer took " << ms << "ms." << std::endl;
+  }
+
+};
