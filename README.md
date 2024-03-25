@@ -65,7 +65,7 @@ __Video #19: Classes vs. Structs in C++__
 __Video #21: `Static` in C++__
 - __Context 1__: `static` keyword when used outside of a class or struct.
    - `static` effectively allows you to mark a variable as "private" for a specfic translation unit (cpp file).
-   - This prevents any other translation unit (cpp file) from findind that `static` variable in the linking process via the `extern` keyword.
+   - This prevents any other translation unit (cpp file) from finding that `static` variable in the linking process via the `extern` keyword.
 - __Context 2__: `static` keyword when used inside a class or struct.
    - A `static` member variable of a class/struct is the same across all instances of that class/struct, i.e. there will be only __one instance__ of the `static` member variable.
    - A `static` method of a class does not have access to the object itself, i.e. cannot access the `this` keyword.
@@ -616,3 +616,190 @@ __Video #71: Safety in Modern C++ and How to Teach It__
 - Why do we care? Because we want to write real-time, performance-critical production C++ code.
 - With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
 - Note: `shared_ptr` is __not__ thread safe. (I wonder why?)
+
+__TODO: Video #72: Precompiled Headers in C++__
+
+__Video #73: Dynamic Casting in C++__
+- Dynamic casting is a C++ style cast that as somewhat of a "safety net" which ensures that the casting we're doing is "valid".
+- `dynamic cast` can only be used when Runtime Type Information (RTTI) is enabled.
+- If RTTI is enabled, dynamic casting happens at runtime, not at compile time which means it comes with some performance cost.
+- Other _managed_ langagues, like Python, have function like `isinstance()` to achieve the same behavior.
+- See example in README from __Video #69__ for how the failure of a `dynamic_cast` can be useful.
+
+__Video #74: Benchmarking in C++__
+- Performance differences between `std::make_shared` vs. `std::shared_ptr<type> (new type)` vs. `std::make_unique`.
+- Important to perform this benchmarking in Release mode and __not__ Debug.
+- Note that we expect `std::make_shared` to be faster than `std::shared_ptr` because `std::make_shared` performs one heap-allocation, whereas calling the `std::shared_ptr` constructor performs two. But as per the results of `app/benchmarking.cpp`, this isn't always true.
+
+__TODO: Video #75: Structured Bindings in C++__
+
+__Video #76: How to Deal with Optional Data in C++__
+- New to C++17 is `std::optional`.
+- `std::optional<T>` __cannot__ be used with references. However,`boost::optional<T>` can handle references. This is very helpful if you want to check for existence of a bigger type in a map like `boost::optional<const Element&> GetElementAtPos(int x, int y)`. With `std::optional` you cannot do that and would have to return a pointer. The reason why it's unavailable in `std` is a bigger topic itself and you can read more online.
+- `value_or(default_value)` is also designed with backwards compatibility in mind. If new code parts want to use `std::optional<T>`, but need pass `T` to an old method (where a magic value represents "not set") you can pass `value_or(magic_value)` to it to still be compatible with this old code part.
+- `boost::optional` brings this concept even further and provides a constructor `boost::optional<T>(bool isSet, T value)` that can be used to filter out magic values on construction. So if an old method returns `T`(with either a value or a magic value "not set") you can initiate your variable like `boon  b.st::optional<T>(result != magic_value, result)`. This constructor is sadly not available in `std::optional` though.
+
+__Video #77: Multiple Types of Data in a Single Variable in C++__
+- New to C++17 is `std::variant`. Similar `std::optional` in the sense that is allows us to not worry so much about the underlying data type, and be more concerned with if that data is actually available or not.
+- Allows us to create a variable that can be one of multiple types, e.g. we can declare a value that will either be a string or an int:
+```
+#include <variant>
+
+std::variant<std::string, int> data;
+```
+- We can use `std::variant::index` to determine which type the data _actually_ is. In the example above `data.index()=0` means that `data` is a `std::string` and `data.index()=1` meands that `data` is an `int`.
+- Alternatively, we can use `std::variant::get_if` to return a pointer to our data that will be `NULL` if the data is not the type we requested.
+```
+auto value = std::get_if<std::string>(&data);
+```
+- Are variants just "type-safe unions"? Short answer: not exactly. The `sizeof()` a union will be equal to the size of its largest type, whereas the size of a variant will be the combined size of all of its types, e.g. `sizeof(std::variant<std::string, int>) == sizeof(std::string) + sizeof(int)`.
+- __Best Practice:__ Prefer variants to unions because they are _type safe_.
+- Could use `std::variant` as an alternative to `std::optional` when we want to be more specific about what may have gone wrong when evaluating a function. See `app/optional.cpp` for an example of using `std::variant` to possibly return an error code enum type.
+
+__Video #78: How to Store ANY Data in C++__
+- New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
+- Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
+__Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
+__Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
+
+__Video #79: How to Make C++ Run Faster with `std::async`__
+- How can we take advantage of parallel processing, i.e. use multiple CPU cores?
+- MSVS supports an interesting visualization called "Parallel Stacks".2
+- The following is an example snippet from Cherno's game engine that will asynchronously load a list of textures in parallel.
+```
+#include <future>
+#include <string>
+
+static std::mutex s_meshes_mutex;
+
+// Note that filepath is passed by copy because there's a possibility that the
+// 'mesh_filepaths' variables from 'EditiorLayer::LoadMeshes()' may have gone
+// out of scope while this function is still being called asynchonously.
+static void load_mesh(std::vector<Ref<Mesh>>* meshes, std::string filepath) {
+   auto mesh = Mesh::load(filepath)
+
+   // Q: Can we actually 'push_back' onto a vector concurrently? No, this is
+   // where "mutuex" and "locks" come into play in order to "lock" our resource
+   // (the vector) while one thread accesses/modifies it to prevent another
+   // thread from doing the same.
+   
+   std::Lock_guard<std::mutex> lock(s_meshes_mutex);
+   meshes->push_back(mesh);
+
+   // Note that std::Lock_gaurd is scope-based and will "release" the lock on
+   // the s_meshes_mutex once the lock goes out of scope (the end of this 
+   // function).
+}
+
+class EditorLayer : Layer
+{
+   public:
+      enum class PropertyFlag
+      {
+         None = 0,
+         ColorProperty = 1
+      };
+
+      EditorLayer();
+      virtual ~EditorLayer();
+      ...
+
+   private:
+      std::vector<std::future<void>> m_futures;
+}
+
+void EditiorLayer::LoadMeshes() {
+   std::ifstream stream("data/models.txt);
+   std::string line;
+   std::vector<std::string> mesh_filepaths;
+   while (std::getline(Stream line)) {
+      mesh_filepaths.push_back(line);
+   }
+
+   // Load each mesh in serial
+   for (const auto& filename : mesh_filepaths) {
+      m_meshes.push_back(Mesh::load(file));
+   }
+
+   // Load each mesh in parallel
+   for (const auto& filename : mesh_filepaths) {
+      // std::async actually returns a std::future object, and we need to store
+      // that "future" object. Why? ...
+      m_futures.push_back(
+         std::async(std::launch::async, load_mesh, &m_meshes, file));
+   }
+}
+```
+
+__TODO: Video #80: How to Make Your Strings Faster in C++__
+
+__Video #82: Singletons in C++__
+- A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
+- Examples of types of singleton classes:
+   - A random number generator: Typically, we instantiate a random number generator once with a seed and then use that single instance (and seed) to generate sequences of random numbers.
+   - A renderer:
+- Singleton classes really just behave like a namespace, i.e. a single class is just a set of "global" variables and static functions that may (or may not) act upon those global variables.
+- Worth noting one important functional difference between a namespace and a singleton class. In a namespace, all of the data is initialized (loaded into memory when the program first starts). This might be undesirable sometimes when we don't want all the data initialized until we actually need it. In contrast, singleton instances are only loaded during the first call to the `Get()` method.
+- See tamasdemjen4242's comment for even more detail on the functional difference between singleton classses and namespaces, including thread-safe vs. non-thread-safe behavior.
+- See `app/singleton.cpp` for an example.
+
+__TODO: Video #83: Small String Optimizations in C++__
+
+__TODO: Video #84: Track Memory Allocations the Easy Way in C++__
+
+__Video #85: l-values and r-values in C++__
+- (and also l-value and r-values references).
+- Often (but not always) an l-value is on the left of the `=` sign and an r-value is on the right of the `=` sign. For example, in `int i = 10`, `i` is an l-value and `10` is an r-value.
+- An l-value has a location in memory, and an r-value is simply a _temporary value_ that has no memory allocated to it. An r-value can be a literal, like `10` or it can be the return value of a function. In all cases, we cannot assign another r-value to an r-value.
+- You cannot create an l-value reference, e.g. `int&` from an r-value. You can only create an l-value reference from an existing l-value.
+- A special rule (related to `const`): You can create a `const` l-value reference from an r-value, e.g. `const int& val = 10;`. This allows us to pass either an l-value or an r-value to a function like:
+```
+void set_value(const int& value) {
+   // do something with value
+}
+
+int main() {
+   // Create an l-value (i)
+   int i = 10;
+   
+   // Call set_value with an l-value
+   set_value(i);
+
+   // Call set_value with an r-value (only possible because set_value takes a
+   // const l-value reference)
+   set_value(10);
+}
+```
+- Let's look at one more example where `first` and `last` are l-values, but `first + last` is an r-value because it is a temporary object that gets created and then assigned to the l-value `full`.
+```
+void print_name(const std::string& name) {
+   std::cout << name << std::endl;
+}
+
+std::string first = "Yan";
+std::string last = "Chernikov";
+
+// Assign the r-value "first + last" to the l-value "full".
+std::string full = first + last;
+print_name(full);
+
+// Only works if print_name accepts a const l-value reference.
+print_name(first + last);
+```
+- Note that a function that accepts both l-values and r-values MUST be written to accept a `const` l-value reference. This is why you'll see a lot of const references being used in C++.
+- Do we have a way to write a function that only accepts temporary objects (r-values)? Yes! We need to use something called an _r-value reference_. We can modify the code above such that `print_name` accepts an r-value reference.
+```
+void print_name(std::string&& name) {
+   std::cout << name << std::endl;
+}
+
+// The line below will throw the error "An rvalue reference cannot be bound to
+// an lvalue."
+print_name(full);
+```
+- Being able to distinguish an r-value from an l-value is important in the context of _move semantics_ and optimization. If we know that we are dealing with a temporary object (an r-value reference), then we don't have to worry about things like making sure we keep it alive, etc.
+
+__TODO: Video #86: Continuous Integration in C++__
+
+__Video #87: Static Analysis in C++__
