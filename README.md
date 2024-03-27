@@ -836,3 +836,23 @@ __Video #90: `std::move` and the Move Assigment Operator in C++__
 - The _move assignment operator_ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
    - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the _Rule of Fifths_. More on this later.
 - `std::move` is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
+
+__Video #91: ARRAY - Making Data Structures in C++__
+- Finally time to take what we've learned and write out own _data structures_, e.g. arrays, lists, sets, maps, trees, etc. The STL implements most of these dats structures for us, but we can learn a lot by trying to implement our own (and maybe even make them fast/ more efficient than the STL data structures).
+- In this video, we'll be implementing our own version of `std::array` - a fixed-size, stack-allocated array data structure in C++.
+- Recall some differences between `std::array` and `std::vector`:
+   - `std::vector` always allocates on the heap and can be dynamically resized, whereas a fixed-size `std::array` allocates its memory on the stack.
+   - `std::vector` can be dynamically allocated, i.e. its size does not have to be determined at compile time, but a `std::array` must define its size at compile-time:
+   ```
+   // This is just fine
+   size_t size = get_size();
+   int* heap_arr = new int[size];
+
+   // This throws an error: "Expression must have a constant value."
+   int array[size];
+
+   // However, we can use the size of an array to set another array's size
+   std::array arr1<int, 10>;
+   std::array arr1<float, arr1.size()>;
+   ```
+- See `include/array.h` and `app/custom_array.cpp` for implementation and use of our custon `Array` class.
