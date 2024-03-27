@@ -50,8 +50,12 @@ std::ostream& operator<<(std::ostream& stream, const Vec2& vec);
 
 class String
 {
-  // A bare-bones (non-modern) C++ string class.
+  // A bare-bones (non-modern) C++ string class. Note that this String class
+  // does not include or account for a null-termination character.
   public:
+    // Provide a default constructor.
+    String() = default;
+
     String(const char* string) {
       // Determine the size of the string
       size_ = std::strlen(string);
@@ -65,6 +69,9 @@ class String
 
       // Manually ensure that the buffer ends in a null termination character
       buffer_[size_] = 0;
+
+      std::cout << "String (" << &buffer_ << ") '" << string << 
+        "' Constructed." << std::endl;
     }
 
     // The Copy Constructor that C++ supplies by default performes a shallow
@@ -88,13 +95,62 @@ class String
         std::memcpy(buffer_, other.buffer_, size_);
     }
 
+    // (Video #89) Write a Move Constructor for the String class that accepts an
+    // r-value reference. Move constructors cannot throw exceptions? Why?
+    String(String&& other) noexcept : size_(other.size_) {
+      std::cout << "String Move Constructor invoked." << std::endl;
+      // Reassign the data buffer pointer from the "other" String to this
+      // String. NOTE that this reassignment does NOT perform a heap allocation
+      // via new.
+      buffer_ = other.buffer_;
+
+      std::cout << "\t(" << &other.buffer_ << ") -> (" << &buffer_ << ")" << 
+        std::endl;
+
+      // (Video #90) We need to deal with the "other" String instance that we
+      // are effectively taking control of. By doing the following, "other"
+      // becomes a "hollow" object.
+      other.size_ = 0;
+      other.buffer_ = nullptr;
+    }
+
+    // The Move Assignment Operator. 
+    String& operator=(String&& other) noexcept {
+      std::cout << "Move Assignment Operator invoked." << std::endl;
+
+      // Check to see that we aren't trying to move an object into itself.
+      if (this != &other) {
+        // First, we delete the current buffer so that we can allocate a new
+        // buffer to store the data from "other"'s buffer.
+        delete[] buffer_;
+
+        // Then, we steal the data from the other object.
+        size_ = other.size_;
+        buffer_ = other.buffer_;
+
+        // Same as the move constructor, we need to "hollow out" the other object
+        // being "moved-from".
+        other.size_ = 0;
+        other.buffer_ = nullptr;
+      }
+      return *this;
+    }
+
     ~String() {
+      if (buffer_) {
+        std::cout << "String (" << &buffer_ << ") '" << buffer_ << 
+          "' Destroyed." << std::endl;
+      }
+      else {
+        std::cout << "'Hollow' String object Destroyed." << std::endl;
+      }
       // The buffer was allcoated with new, therefore it must be deleted.
       delete[] buffer_;
     }
 
     // Declare the stream insertion operator overload as a 'friend' of this
-    // class to allow the overloaded method to access private members of String.
+    // class to allow the overloaded method to access private members (e.g.
+    // String::buffer_) of String.
     friend std::ostream& operator<<(std::ostream& stream, const String& string);
 
     // Overload the index operator to allow us to access elements of the string

@@ -1,8 +1,9 @@
 #pragma once
 
-#include <string>
-
 #include "log.h"
+#include "types.h"
+
+#include <string>
 
 class Entity
   // Entity will now be treated as an "interface class" by consisting
@@ -91,6 +92,8 @@ class Player : public Entity
     // Define an "explicit" constructor that disallows implicit conversion
     explicit Player(const std::string& name, const int age) 
       : name_(name), age_(age) {};
+
+    // TODO: Update entity::Player to support construction from a String.
 
     ~Player() {
       std::cout << "Destroyed Player '" << name_ << "'." << std::endl;

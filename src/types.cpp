@@ -9,5 +9,9 @@ std::ostream& operator<<(std::ostream& stream, const Vec2& vec) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const String& string) {
-  return stream << string.buffer_;
+  if (string.buffer_) {
+    return stream << string.buffer_;
+  }
+
+  return stream << "NULL";
 }

@@ -1,5 +1,5 @@
 # cherno-cpp
-A repository for working through the Cherno's C++ YouTube series.
+A repository for working through [the Cherno's C++ YouTube series](https://www.youtube.com/playlist?list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb).
 
 Why write in C++? Because we care about things like:
 - Memory
@@ -8,29 +8,29 @@ Why write in C++? Because we care about things like:
 
 If you don't care about these things, don't choose C++!
 
-__Video #1: Welcome to C++ (What we'll be learning)__
-- How C++ actually works
-- Memory and pointers
-- Memory "arenas", custom allocators, smart pointers, move semantics
-- Templates: "If you know how to use templates well they're extremely powerful and will make your life a lot easier."
-- Data structures (and how to make them faster than the standard STL data structures)
+__Video #1: Welcome to C++ (What We'll be learning)__
+- How C++ actually works.
+- Memory and pointers.
+- Memory "arenas", custom allocators, smart pointers, move semantics.
+- Templates: "If you know how to use templates well they're extremely powerful and will make your life a lot easier." - Cherno
+- Data structures (and how to make them faster than the standard STL data structures).
 - Low-level optimization via "compiler-intrinsics" and assembly.
 
 __Video #5: How C++ Works__
 - What we want to know: How to we go from source code (.cpp files) to an executable binary?
-- Preprocessor statements (# statements, e.g. #include) happen before compilation.
+- Preprocessor statements (# statements, e.g. `#include`) happen before compilation.
    - `#include` statements pre-pend the contents of another file into your file.
-- Every C++ application needs an "entry point", typically this is `main()`
-- operators are just functions! Think of operators as functions.
+- Every C++ application needs an "entry point", typically this is `main()`.
+- Operators are just functions! Think of operators as functions.
 - Header files do not get compiled. The contents of included files get compiled as part of the cpp files that they're included in.
-- The Compiler creates an "object file" (.obj) for every cpp file.
-- The "Linker" "glues" the object files into an executable.
-   - A linker error can happen when a symbol (e.g. function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
+- The Compiler creates an _object file_ (.obj) for every cpp file.
+- The _linker_ "glues" the object files into an executable.
+   - A linker error can happen when a symbol (e.g. a function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
    - This error is referred to as an "unresolved external symbol."
 
 __Video #9: Functions in C++__
 - Functions prevent code duplication.
-- Each time a function is called in C++, the compiler generates a "call instructions"*. A call instruction creates a "stack frame" for thart function, meaning we have to push the function parameters and return address onto the "stack". Additionally, we have to jump to a different part of our binary to execute a function, and then return to where it was called from. All of this is "expensive".
+- Each time a function is called in C++, the compiler generates a "call instructions"*. A call instruction creates a _stack frame_ for that function, meaning we have to push the function parameters and return address onto the _stack_. Additionally, we have to jump to a different part of our binary to execute a function, and then return to where it was called from. All of this is "expensive".
 - *: this only happens if the compiler chooses not to "inline" your function.
 
 __Video #10: Header Files__
@@ -794,8 +794,7 @@ void print_name(std::string&& name) {
    std::cout << name << std::endl;
 }
 
-// The line below will throw the error "An rvalue reference cannot be bound to
-// an lvalue."
+// The line below will throw the error "An rvalue reference cannot be bound to an lvalue."
 print_name(full);
 ```
 - Being able to distinguish an r-value from an l-value is important in the context of _move semantics_ and optimization. If we know that we are dealing with a temporary object (an r-value reference), then we don't have to worry about things like making sure we keep it alive, etc.
@@ -803,3 +802,37 @@ print_name(full);
 __TODO: Video #86: Continuous Integration in C++__
 
 __Video #87: Static Analysis in C++__
+- How do we write _better_ code, i.e. code that produces fewer bugs.
+- How do we use a _static analyzer_ to improve our code?
+- __TODO:__ Finish this video.
+
+__Video #88: Argument Evaluation Order in C++__
+- Consider the following simple example. What do we think will be printed? It turns out that in C++, this toy scenario results in _undefined behavior_, i.e. the behavior will be different from compiler to compiler.
+```
+void print_sum(int a, int b) {
+   std::cout << a << " +  b << " = " << a + b << std::endl;
+}
+
+int main() {
+   int val = 0;
+   // Any of the following will produce "undefined behavior".
+   print_sum(val++, val++);
+   print_sum(++val, ++val);
+}
+```
+- Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
+- In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
+
+__Video #89: Move Semantics in C++__
+- C++11 introduced _r-value references_ which are necessary for implementing _move semantics_.
+- Consider the case where we need to create an object and then pass it to some function that will take ownership of that object. Prior to C++11, this would require us to create a "throw away" object in the current stack frame and then copy that object to the fuction that's receiving it. This creates unnecessary copying and modern C++ should allow us to avoid unnecessary copies.
+- So how do we _move_ an object rather than copying it?
+   - We must implement a _move constructor_ for the class that we wish to support moving.
+   - We need to use `std::move` to invoke that class's move constructor.
+   - See `app/move_semantics.cpp` and the `String` class in `typed.h` for an implementation of a _move constroctor_ and use of `std::move`.
+
+__Video #90: `std::move` and the Move Assigment Operator in C++__
+- The _move constructor_, `Type(Type&& other)` is invoked when constructing a new object and passing it as an r-value reference.
+- The _move assignment operator_ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
+   - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the _Rule of Fifths_. More on this later.
+- `std::move` is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.

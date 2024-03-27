@@ -4,6 +4,8 @@
 // #ifndef _LOG_H
 // #define _LOG_H
 
+#include <iostream>
+
 void log(const char*);
 
 class Logger 
