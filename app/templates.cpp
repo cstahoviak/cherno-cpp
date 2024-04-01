@@ -17,7 +17,7 @@ int main() {
   print<double>(10.0);
 
   // Create an instance of our templated array clamakess;
-  Array<int, 10> array;
+  SimpleArray<int, 10> array;
   std::cout << "Array size: " << array.size() << std::endl;
 
   // Use the WAIT template (aliased to std::cin.get())

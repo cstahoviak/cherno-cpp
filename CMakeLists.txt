@@ -4,10 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(Cherno)
 
 # Create a macro-defined option with a default value of OFF
-# TODO: This isn't working. Want to be able to set it via the command line
-#   using 'cmake -DCS_DEBUG ..'
-# TODO: Make this option Debug/Release mode dependent
-add_compile_definitions(CS_DEBUG=0)
+option(DEBUG_INFO "Turn on Debug Info" OFF)
 
 # TODO: Move away from using GLOB
 file(GLOB LIB_SOURCES src/*.cpp)
@@ -29,4 +26,8 @@ foreach( testsourcefile ${APP_SOURCES} )
     add_executable( ${testname} ${testsourcefile} )
     # Make sure YourLib is linked to each app
     target_link_libraries( ${testname} ChernoLib )
+    # Add debug info for each target
+    if( DEBUG_INFO )
+        target_compile_definitions(${testname} PRIVATE DEBUG_INFO)
+    endif()
 endforeach( testsourcefile ${APP_SOURCES} )
