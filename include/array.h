@@ -23,8 +23,8 @@ class Array
 
     // What's missing from index operator above?
     // 1) First, this returns by value, and this may not always be what we want.
-    //  For example, this implementation doesn't allow for doing something simple
-    //  like "array[idx] = val;"
+    //  For example, this implementation doesn't allow for doing something
+    // simple like "array[idx] = val;"
     // 2) What if want to declare our array as const? I.e. making it read-only?
     // 3) We use 'int' as the type for 'index', but this would allow 'index' to
     //  be negative, and int could possibly different sizes on different
@@ -39,6 +39,8 @@ class Array
     const T& operator[](size_t index) const { return data_[index]; }
 
     // TODO: Add an iterator such that we can support range-based for loops.
+
+    // TODO: Implement 'fill' and 'swap' utility functions.
 
   private:
     T data_[S];

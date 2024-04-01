@@ -43,10 +43,105 @@ struct Vec2
 };
 
 // Cannot extend the << operator as a member-function of a class - it has to be
-// a seperate function. The implementation of this function MUST be in
-// types.cpp otherwise I'll get a "multiple definition of operator<<" error
-// because the implementation gets included in multiple translation units.
+// a seperate function (unless it's declared as a 'friend' of the class, see 
+// Vec3). The implementation of this function MUST be in types.cpp otherwise 
+// I'll get a "multiple definition of operator<<" error because the
+// implementation gets included in multiple translation units.
 std::ostream& operator<<(std::ostream& stream, const Vec2& vec);
+
+struct Vec3
+{
+  /* Writing a vector-3 class to support development of our custom Vector 
+   * container class.
+   *
+   * TODO: If want to prevent the Vec3 class from accidently being copied, i.e. 
+   * we want to enforce that it is always moved, we can delete the copy
+   * constructor and copy assignment operator:
+   * 
+   * Vec3(const Vec3& other) = delete;
+   * Vec3& operator=(const Vec3& other) = delete;
+   */
+
+  float x{0.0f};
+  float y{0.0f};
+  float z{0.0f};
+
+  // A default constructor
+  Vec3() { _init_memory_block(); }
+
+  // Additional contructors
+  Vec3(float scalar) : x(scalar), y(scalar), z(scalar) {
+    _init_memory_block();
+  }
+  Vec3(float x, float y, float z): x(x), y(y), z(z) {
+    _init_memory_block();
+  }
+
+  // Create a Copy Constructor so that we know when a Vec3 object is copied
+  Vec3(const Vec3& other) : x(other.x), y(other.y), z(other.z) {
+    // std::cout << "Copy Constructor\t" << *this << std::endl;
+    std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
+      << std::endl;
+      mem_block_ = other.mem_block_;
+  }
+
+  // Move Constructor
+  Vec3(Vec3&& other) : x(other.x), y(other.y), z(other.z) {
+    // std::cout << "Move Constructor\t" << *this << std::endl;
+    std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
+      << std::endl;
+      mem_block_ = other.mem_block_;
+      other.mem_block_ = nullptr;
+  }
+
+  // Copy Assignment Operator
+  Vec3& operator=(const Vec3& other) {
+    // std::cout << "Copy Assignment\t" << *this << std::endl;
+    std::cout << "Vec3 Copy Assignment:\t" << other << " -> " << *this
+      << std::endl;
+    x = other.x;
+    y = other.y;
+    z = other.z;
+    mem_block_ = other.mem_block_;
+    return *this;
+  }
+
+  // Move Assignment Operator
+  Vec3& operator=(Vec3&& other) {
+    // std::cout << "Move Assignment\t" << *this << std::endl;
+    std::cout << "Vec3 Move Assignment:\t" << other << " -> " << *this
+      << std::endl;
+
+    x = other.x;
+    y = other.y;
+    z = other.z;
+
+    mem_block_ = other.mem_block_;
+    other.mem_block_ = nullptr;
+
+    return *this;
+  }
+
+  ~Vec3() {
+    std::cout << "Destroyed\t\t" << *this << std::endl;
+    // Free the heap-allocated memory in the destructor
+    delete[] mem_block_;
+  }
+
+  // Declare the stream insertion operator overload as a 'friend' of this
+  // class as a means of preventing duplication of the 'operator<<' overload in
+  // a single header file
+  friend std::ostream& operator<<(std::ostream& stream, const Vec3& vec);
+
+  // Add a heap-allocated member to demonstrate how we need to take care when
+  // removing items from a container, e.g. removing a Vec3 element from our
+  // custon Vector container.
+  private:
+    int* mem_block_;
+    size_t block_size_{10};
+    
+    void _init_memory_block() { mem_block_ = new int[block_size_]; }
+};
 
 class String
 {
@@ -128,8 +223,8 @@ class String
         size_ = other.size_;
         buffer_ = other.buffer_;
 
-        // Same as the move constructor, we need to "hollow out" the other object
-        // being "moved-from".
+        // Same as the move constructor, we need to "hollow out" the other
+        // object being "moved from".
         other.size_ = 0;
         other.buffer_ = nullptr;
       }
@@ -167,7 +262,7 @@ std::ostream& operator<<(std::ostream& stream, const String& string);
 
 // Rather than use 'typename', we use int because we expect N to be an int.
 template<typename T, int N>
-class Array
+class SimpleArray
 // An example of a templated array class that uses multiple template arguments.
 // Not actually all thart different from how std::array works.
 {

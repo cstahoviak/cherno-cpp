@@ -43,8 +43,8 @@ int main() {
   // Use our custom array class with strings
   std::cout << "\nString Array:" << std::endl;
   Array<std::string, 2> str_arr;
-  str_arr[0] = "Carl";
-  str_arr[1] = "Stahoviak";
+  str_arr[0] = "Cherno";
+  str_arr[1] = "C++";
   // Cannot write a range-based for loop (yet!)
   // for (std::string& str : str_arr) {
   //   std::cout << str << std::endl;
