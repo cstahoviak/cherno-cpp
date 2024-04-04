@@ -8,8 +8,27 @@ Why write in C++? Because we care about things like:
 
 If you don't care about these things, don't choose C++!
 
+This tutorial series will cover the following topics:
+- [Introduction - How C++ Works](#introduction---how-c-works)
+- [C++ Fundamentals](#c-fundamentals)
+- [Memory Management in C++](#memory-management-in-c)
+- [C++ Advanced Topics]()
+- [Workflow and Debugging](#todo-workflow--debugging)
+- [Writing Our Own Data Structures](#writing-our-own-data-structures)
+
 ## TODO: Workflow & Debugging
 Add a section that groups together videos about workflow and debugging.
+
+### Video #49: Using Libraries in C++
+- The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
+- This video: Learning to link against binaries
+- TODO: Didn't finish this video.
+
+### Video #50: Using Dynamic Libraries in C++
+- TODO:
+
+### Video #51: Making and Working with Libraries in C++
+- TODO:
 
 ## Introduction - How C++ Works
 
@@ -123,7 +142,7 @@ Add a section that groups together videos about workflow and debugging.
 - `public`: these member variables and function can (and should) only be accessed by any other class of function.
 
 ### Video #30: Arrays in C++
-- ...
+- TODO
 
 ### Video #33: `Const` in C++
 - NOTE: This is where I picked up after the interview. I'm taking my time getting through the content now.
@@ -208,33 +227,6 @@ Entity* e2 = (Entity*)malloc(sizeof(Entity));
 - Can be used to pass the current object (or a pointer to the current object) to another function, e.g. `func(*this)` or `func(this)`.
 - Don't ever `delete this`.
 
-### Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++
-- Will be taking a look at the lifetime of stack-based variables.
-- Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
-- What is meant by _scope_? Basically anything declared within `{}`.
-- All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
-- __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
-```
-int* create_array(const int size) {
-   // This creates an array on the stack (which is scope-based)
-   int array[size];
-   return array;
-}
-```
-- How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
-- A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
-- Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
-
-### Video #43: Smart Pointers in C++
-- `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
-- `new` allocates memory on the heap and `delete` us used to free it.
-- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should _never_ use the `new` and `delete` keywords.
-- Smart pointers are effectively wrappers around raw pointers.
-- When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
-- A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
-- A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
-- A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
-
 ### Video #44: Copying and Copy Constructors in C++
 - Copying is expensive and should be avoided if unnecessary.
 - The _Copy Constructor_ is supplied by default by C++ and is implemented as a
@@ -269,21 +261,6 @@ Terminal Output:
 4
 ```
 
-### Video #46: Dynamic Arrays in C++ (std::vector)
-- Time to get accustomed with the standard template library (STL)!
-- `std::vector` is actually a dynamic array (list) - _dynamic_ in the sense that it can be resized, e.g. extended, appended to, etc.
-- When you exceed the allocated size of a particular `std::vector` instance, it creates a new array in memory, copies the contents of the original vector into the new vector and deletes the original vector. In practice, this re-allocation can occur quite often and can result in performance losses.
-- Dynamic arrays store their memory contiguously (in line, not fragmented in memory). This is optimal for any operation that requires iterating over the vector.
-- When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of cpying largely solves this issue, but not entirely because there is still come copying involved.
-- __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
-- __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
-__Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
-- `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
-
-### Video #47: Optimizing the use of std::vector in C++
-- We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
-- We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
-
 ### Video #48: Local Static in C++
 - Can declare a variable as `static` in a local scope - this is different from the other two use cases of static that we've seen already.
 - Declaring a variable as `static` within a local scope (e.g. within a function) restricts access to that variable to that local scope, but extends its lifetime to the lifetime of the program.
@@ -308,16 +285,100 @@ i: 3
 - Often use of local `static` variables are discouraged.
 - One possible use case is for _Singleton_ classses, i.e. a class that should only have one instance in existance.
 
-### Video #49: Using Libraries in C++
-- The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
-- This video: Learning to link against binaries
-- TODO: Didn't finish this video
+### Video #56: The `auto` Keyword in C++
+- `auto` allows C++ to become a psuedo _weakly-typed_ language.
+- When to use `auto`?
+   - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
+   - For iterators in for loops:
+```
+std::vector<std::string> strings;
 
-### Video #50: Using Dynamic Libraries in C++
-- TODO:
+// This is ugly and long
+for (std::vector<strd::string>::iterator it; strings.begin(), it != strings.end(), it++) {
+   // do something
+}
 
-### Video #51: Making and Working with Libraries in C++
-- TODO:
+// This is much cleaner and easier to read
+for (auto it; strings.begin(), it != strings.end(), it++) {
+   // do something
+}
+```
+- If you need a reference, use `auto&`.
+
+## Memory Management in C++
+
+### Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++
+- Will be taking a look at the lifetime of stack-based variables.
+- Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
+- What is meant by _scope_? Basically anything declared within `{}`.
+- All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
+- __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
+```
+int* create_array(const int size) {
+   // This creates an array on the stack (which is scope-based)
+   int array[size];
+   return array;
+}
+```
+- How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
+- A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
+- Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
+
+### Video #43: Smart Pointers in C++
+- `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
+- `new` allocates memory on the heap and `delete` us used to free it.
+- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should _never_ use the `new` and `delete` keywords.
+- Smart pointers are effectively wrappers around raw pointers.
+- When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
+- A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
+- A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
+- A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
+
+### Video #54: Stack vs. Heap Memory in C++
+- The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
+- Each program/process has its _own_ Stack and Heap.
+- Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
+- Stack vs. Heap allocation:
+```
+// Allocate an int and an int array on the stack
+int value = 10;
+int array[10];
+
+// Allocate an int and an int array on the heap
+int* heap_value = new int;
+*heap_value = 10;
+int* heap_arr = new int[10];
+
+// Must manually free heap-allocated memory
+delete heap_value;
+delete[] heap_arr;
+```
+- __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
+- _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
+- Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
+- Heap memory `==` _dynamic_ memory.
+- __Takeaway:__
+   - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
+   - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
+
+## Data Structures in C++
+
+### Video #46: Dynamic Arrays in C++ (std::vector)
+- Time to get accustomed with the standard template library (STL)!
+- `std::vector` is actually a dynamic array (list) - _dynamic_ in the sense that it can be resized, e.g. extended, appended to, etc.
+- When you exceed the allocated size of a particular `std::vector` instance, it creates a new array in memory, copies the contents of the original vector into the new vector and deletes the original vector. In practice, this re-allocation can occur quite often and can result in performance losses.
+- Dynamic arrays store their memory contiguously (in line, not fragmented in memory). This is optimal for any operation that requires iterating over the vector.
+- When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of cpying largely solves this issue, but not entirely because there is still come copying involved.
+- __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
+- __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
+__Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
+- `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
+
+### Video #47: Optimizing the use of std::vector in C++
+- We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
+- We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
+
+## C++ Advanced Topics
 
 ### Video #52: How to deal with Multiple Return Values in C++
 - How to deal with _tuples_ and _pairs_.
@@ -404,33 +465,6 @@ int main() {
 - __Best Practices:__ When not to use templates:
    - ...
 
-### Video #54: Stack vs. Heap Memory in C++
-- The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
-- Each program/process has its _own_ Stack and Heap.
-- Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
-- Stack vs. Heap allocation:
-```
-// Allocate an int and an int array on the stack
-int value = 10;
-int array[10];
-
-// Allocate an int and an int array on the heap
-int* heap_value = new int;
-*heap_value = 10;
-int* heap_arr = new int[10];
-
-// Must manually free heap-allocated memory
-delete heap_value;
-delete[] heap_arr;
-```
-- __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
-- _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
-- Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
-- Heap memory `==` _dynamic_ memory.
-- __Takeaway:__
-   - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
-   - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
-
 ### Video #55: Macros in C++
 - Macros allow us to use the _pre-processor_ to automate, "macro-ize", some aspects of our code.
 - All `#` statements are known as _preprocessor directives_. The Preprocessor step comes before compilation.
@@ -439,26 +473,6 @@ delete[] heap_arr;
    - Macros are evaluated in the preprocessor step and strictly consist of "pure text replacement" which comes before compilation.
 - Cherno doesn't like overusing macros.
 - ###__ Finish adding a command line CMake variable to enable/disable macros in my code.
-
-### Video #56: The `auto` Keyword in C++
-- `auto` allows C++ to become a psuedo _weakly-typed_ language.
-- When to use `auto`?
-   - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
-   - For iterators in for loops:
-```
-std::vector<std::string> strings;
-
-// This is ugly and long
-for (std::vector<strd::string>::iterator it; strings.begin(), it != strings.end(), it++) {
-   // do something
-}
-
-// This is much cleaner and easier to read
-for (auto it; strings.begin(), it != strings.end(), it++) {
-   // do something
-}
-```
-- If you need a reference, use `auto&`.
 
 ### Video #57: Static Arrays (`std::array`) in C++
 - Static arrays have a pre-defined size and their size __cannot__ be changed.
