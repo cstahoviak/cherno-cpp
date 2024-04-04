@@ -4,16 +4,106 @@
 #include <cstddef>
 #include <iostream>
 
+template<typename Vector>
+class VectorIterator
+{
+  // Video #94: Implementing an iterator for our custom Vector class.
+  public:
+  // Follow the STL naming convention and use "ValueType".
+    using ValueType = typename Vector::ValueType;
+    using PointerType = ValueType*;
+    using ReferenceType = ValueType&;
+
+  public:
+    VectorIterator(PointerType ptr) : ptr_(ptr) {}
+
+    // Define the "pre-fix" increment operator. The pointer is already of the
+    // correct type, so this increment will increment the correct number of
+    // bytes based on the type that our VEctor container stores.
+    VectorIterator& operator++() {
+      ptr_++;
+      return *this;
+    }
+
+    // Define the "post-fix" increment operator. This will return a copy of the
+    // VectorIterator object because we don't want to modify the current object
+    // in-place.
+    // TODO: A little confuised still about the internals of this function.
+    // Something to revisit in the future.
+    VectorIterator operator++(int) {
+      // Make a copy of the VectorIterator
+      VectorIterator it = *this;
+      // Increment the current VectorIterator by calling the "pre-fix" increment
+      ++(*this);
+      // Return the copy
+      return it;
+    }
+
+  // Define the "pre-fix" decrement operator.
+    VectorIterator& operator--() {
+      ptr_--;
+      return *this;
+    }
+
+    // Define the "post-fix" decrement operator.
+    VectorIterator operator--(int) {
+      // Make a copy of the VectorIterator
+      VectorIterator it = *this;
+      // Increment the current VectorIterator by calling the "pre-fix" increment
+      --(*this);
+      // Return the copy
+      return it;
+    }
+
+    // Define the index operator
+    ReferenceType operator[](int index) {
+      // This is the same as the line below
+      // return *(ptr_[index]);
+      return *(ptr_ + index);
+    }
+
+    // Define the arrow operator. This will return the current position of the
+    // iterator (not the necessarily the beginning).
+    PointerType operator->() { return ptr_; }
+
+    // Define the dereference operator. This will return a reference to a
+    // ValueType objecter, i.e. a ReferenceType.
+    ReferenceType operator*() { return *ptr_; }
+
+    // Define the comparison operators.
+    bool operator==(const VectorIterator& other) const {
+      return ptr_ == other.ptr_;
+    }
+
+    // The NEQ operator just returns the opposite of operator==
+    bool operator!=(const VectorIterator& other) const {
+      !(*this == other);
+    }
+
+  private:
+  // No need to initialize with 'nullptr' because it's initialized in the
+  // VectorIterator constructor.
+  PointerType ptr_;
+};
+
 template<typename T>
 class Vector
 {
-  // A custom array class that matches the interface of STL's std::array.
+  // Video #92: A custom array class that matches the interface of STL's
+  // std::array.
+public:
+  // Follow the STL naming convention and use "ValueType".
+  using ValueType = T;
+  using Iterator = VectorIterator<Vector<T>>;
+
   public:
     Vector() {
       // std::cout << "Vector Constructor." << std::endl;
       // To start, allocate enough memory for 2 elements
       _reallocate(2);
     }
+
+    // TODO: Support construction via an initializer list.
 
     ~Vector() {
       // Remove each item in the container by manually calling its destructor.
@@ -25,12 +115,15 @@ class Vector
 
       // The "standard" 'delete' will call the destructor of each item in the
       // data block (I think?)
-      // delete[] data_;
+      delete[] data_;
 
       // Use the version of delete, "operator delete", which will not call the
       // element's destructor.
-      ::operator delete(data_, capacity_ * sizeof(T));
+      // ::operator delete(data_, capacity_ * sizeof(T));
     }
+
+    // Returns the current size of the vector
+    size_t size() const { return size_; }
 
     void push_back(const T& item) {
       // std::cout << "pushing back item '" << item << "' by reference" << 
@@ -128,10 +221,9 @@ class Vector
 
     // TODO: Add insert() function.
 
-    // TODO: Add support for interating
-
-    // Returns the current size of the vector
-    size_t size() const { return size_; }
+    // Support iteration
+    Iterator begin() { return Iterator(data_); }
+    Iterator end() { return Iterator(data_ + size_); }
 
     // Support indexing into our vector (const and non-const versions are
     // effectively a getter and setter, respectively).
@@ -163,17 +255,19 @@ class Vector
       // Because "operator new" does not call the T constructor. Note that 
       // operator new returns void, so we need to cast it to a T*
       T* new_block = (T*)::operator new(new_capacity * sizeof(T));
+      T* new_block2 = 
+        static_cast<T*>(::operator new(new_capacity * sizeof(T)));
       size_t sz = new_capacity * sizeof(T);
       T* temp_block = (T*)::operator new(sz);
       T* temp_block2 = (T*)::operator new(64);
 
       // TODO: For some reason, ::operator new is allocating a 'new_block' of
       // size 8 instead of size 64. Not sure what's going on here. Posted a
-      // comment on Cherno's video. we'll see if he responds. 
-
+      // comment on Cherno's video. We'll see if he responds. 
       size_t size_T = sizeof(T);
       size_t size_old_block = sizeof(data_);
       size_t size_new_block = sizeof(new_block);
+      size_t size_new_block2 = sizeof(new_block2);
       size_t new_size = new_capacity * sizeof(T);
       size_t temp_block_sz = sizeof(temp_block);
       size_t temp_block2_sz = sizeof(temp_block2);

@@ -8,16 +8,16 @@ Why write in C++? Because we care about things like:
 
 If you don't care about these things, don't choose C++!
 
-## TODO: Debugging
-Add a section that groups together videos about debugging.
+## TODO: Workflow & Debugging
+Add a section that groups together videos about workflow and debugging.
 
 ## Introduction - How C++ Works
 
-### Video #1: Welcome to C++ (What We'll be learning)
+### Video #1: Welcome to C++ (What We'll be Learning)
 - How C++ actually works.
 - Memory and pointers.
 - Memory "arenas", custom allocators, smart pointers, move semantics.
-- Templates: "If you know how to use templates well they're extremely powerful and will make your life a lot easier." - Cherno
+- Templates: _"If you know how to use templates well they're extremely powerful and will make your life a lot easier."_ - Cherno
 - Data structures (and how to make them faster than the standard STL data structures).
 - Low-level optimization via "compiler-intrinsics" and assembly.
 
@@ -39,7 +39,7 @@ Add a section that groups together videos about debugging.
    - A linker error can happen when a symbol (e.g. a function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
    - This error is referred to as an "unresolved external symbol."
 
-## The Basics
+## C++ Fundamentals
 
 ### Video #8: Variables in C++
 - TODO:
@@ -228,7 +228,7 @@ int* create_array(const int size) {
 ### Video #43: Smart Pointers in C++
 - `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
 - `new` allocates memory on the heap and `delete` us used to free it.
-- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should never use the `new` and `delete` keywords.
+- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should _never_ use the `new` and `delete` keywords.
 - Smart pointers are effectively wrappers around raw pointers.
 - When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
 - A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
@@ -402,7 +402,7 @@ int main() {
 - __Best Practices:__ When to use templates:
    - Logging systems, buffers than need to contain various types.
 - __Best Practices:__ When not to use templates:
-   - 
+   - ...
 
 ### Video #54: Stack vs. Heap Memory in C++
 - The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
@@ -809,7 +809,7 @@ print_name(full);
 ### Video #87: Static Analysis in C++
 - How do we write _better_ code, i.e. code that produces fewer bugs.
 - How do we use a _static analyzer_ to improve our code?
-- ###__ Finish this video.
+- TODO: Finish this video.
 
 ### Video #88: Argument Evaluation Order in C++
 - Consider the following simple example. What do we think will be printed? It turns out that in C++, this toy scenario results in _undefined behavior_, i.e. the behavior will be different from compiler to compiler.
@@ -883,4 +883,46 @@ int main() {
 - __Operator new and Operator delete:__ (`::operator new` and `::operator delete`)
    - "A lot of care needs to be taken when you manually call the destructor of the objects in your container" - Cherno.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
-   - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array) "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`.
+   - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
+
+### Video #93: Iterators in C++
+- Iterators are used to traverse data structures, and if we're writing our own
+data structures, we probably want to support functionality like idexing and iteration.
+- _Range-based_ for loops (avaible since C++11) are made possible by iterators.
+`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
+```
+std::vector<int> values = { 1, 2, 3, 4, 5 };
+for (int& val : values) {
+   std::cout << "value: << val << std::endl;
+}
+```
+- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
+```
+for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
+   // Dereference the iterator (bc it's a pointer) to get the value
+   std::cout << *it << std::endl;
+}
+```
+- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
+
+### Video #94: Writing an Iterator in C++
+- We'll be adding an iterator to our custom vector class (from video #92).
+- An aside: How do we actually get better as a c++ developer?
+   - More focus/emphasis on reading and writing real-world code rather than just focusing on textbooks and tutorials.
+   - Eventually you'll get to the point where you'll only continue to learn and get better by looking at and working with an existing codebase.
+   For example, the `std::vector` template class implements an iterator. So if we want to implement an iterator for our own custom class, we _should_ be looking at the STL for guidance and using it as an example.
+
+### Video #95: How to __Really__ Learn C++
+- What should I do next in my C++ learning journey? A simple answer: _open source projects_.
+
+### Video #96: Intro to Binary and Bitwise Operators in C++
+- TODO
+
+### Video #97: Bitwise AND, OR, XOR and NOT (&, |, ^, ~) C++
+- TODO
+
+### Video #100: Maps (`srd::map` and `std::unordered_map`) in C++
+- TODO
+
+### Video #101: What Exactly is `NULL`?
+- TODO
