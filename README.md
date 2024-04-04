@@ -1,6 +1,7 @@
 # cherno-cpp
 A repository for working through [the Cherno's C++ YouTube series](https://www.youtube.com/playlist?list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb).
 
+## Overview
 Why write in C++? Because we care about things like:
 - Memory
 - Performace
@@ -8,7 +9,9 @@ Why write in C++? Because we care about things like:
 
 If you don't care about these things, don't choose C++!
 
+## Contents
 This tutorial series will cover the following topics:
+
 - [Introduction - How C++ Works](#introduction---how-c-works)
    - Welcome to C++ (1)
    - How the C++ Compiler Works
