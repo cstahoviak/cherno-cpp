@@ -43,12 +43,6 @@ This tutorial series will cover the following topics:
    - The Arrow `->` Operator
    - Local Static
    - `auto`
-- [Memory Management in C++](#memory-management-in-c)
-   - Object Lifetime (Stack/Scope Lifetime) (42)
-   - Smart Pointers
-   - Stack vs. Heap Memory
-   - Type Punning (maybe put it here?)
-   - Safety in Modern C++ and How to Teach It
 - [Data Structures](#data-structures-in-c)
    - Arrays (30)
    - Dynamic Arrays
@@ -57,6 +51,12 @@ This tutorial series will cover the following topics:
    - Multidimensional Arrays (2D Arrays)
    - Unions
    - Maps (`std::map` and `std::unordered_map`)
+- [Memory Management in C++](#memory-management-in-c)
+   - Object Lifetime (Stack/Scope Lifetime) (42)
+   - Smart Pointers
+   - Stack vs. Heap Memory
+   - Type Punning (maybe put it here?)
+   - Safety in Modern C++ and How to Teach It
 - [C++ Advanced Topics](#c-advanced-topics)
    - How to Deal with Multiple Return Values (52)
    - Templates
@@ -378,71 +378,6 @@ for (auto it; strings.begin(), it != strings.end(), it++) {
 ```
 - If you need a reference, use `auto&`.
 
-## Memory Management in C++
-
-### Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++
-- Will be taking a look at the lifetime of stack-based variables.
-- Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
-- What is meant by _scope_? Basically anything declared within `{}`.
-- All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
-- __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
-```
-int* create_array(const int size) {
-   // This creates an array on the stack (which is scope-based)
-   int array[size];
-   return array;
-}
-```
-- How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
-- A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
-- Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
-
-### Video #43: Smart Pointers in C++
-- `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
-- `new` allocates memory on the heap and `delete` us used to free it.
-- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should _never_ use the `new` and `delete` keywords.
-- Smart pointers are effectively wrappers around raw pointers.
-- When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
-- A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
-- A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
-- A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
-
-### Video #54: Stack vs. Heap Memory in C++
-- The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
-- Each program/process has its _own_ Stack and Heap.
-- Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
-- Stack vs. Heap allocation:
-```
-// Allocate an int and an int array on the stack
-int value = 10;
-int array[10];
-
-// Allocate an int and an int array on the heap
-int* heap_value = new int;
-*heap_value = 10;
-int* heap_arr = new int[10];
-
-// Must manually free heap-allocated memory
-delete heap_value;
-delete[] heap_arr;
-```
-- __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
-- _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
-- Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
-- Heap memory `==` _dynamic_ memory.
-- __Takeaway:__
-   - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
-   - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
-
-### Video #71: Safety in Modern C++ and How to Teach It
-- _Safe_ programming aims to prevent things like crashes, memory leaks (forgetting to free heap-allocated memory) and access violations. This video will focus on pointers and heap allocation.
-- Why do we care? Because we want to write real-time, performance-critical production C++ code.
-- With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
-- Note: `shared_ptr` is __not__ thread safe. Why?
-
-### Video #84: Track Memory Allocations the Easy Way in C++
-- TODO:
-
 ## Data Structures in C++
 
 ### Video #46: Dynamic Arrays in C++ (std::vector)
@@ -517,6 +452,71 @@ delete[] arr_2d;
 
 ### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
 - TODO
+
+## Memory Management in C++
+
+### Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++
+- Will be taking a look at the lifetime of stack-based variables.
+- Each time a new scope is _entered_, a new _stack frame_ is pushed onto the stack. The stack frame consists of any variables declared within that scope (and possibly other data?) When the scope is exited, that stack frame is deleted and the memory on the stack is freed.
+- What is meant by _scope_? Basically anything declared within `{}`.
+- All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
+- __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
+```
+int* create_array(const int size) {
+   // This creates an array on the stack (which is scope-based)
+   int array[size];
+   return array;
+}
+```
+- How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
+- A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
+- Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
+
+### Video #43: Smart Pointers in C++
+- `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`
+- `new` allocates memory on the heap and `delete` us used to free it.
+- Smart pointers are a way to abstract the the `new`/`delete` paradigm away. Some programmers even go so far as to say you should _never_ use the `new` and `delete` keywords.
+- Smart pointers are effectively wrappers around raw pointers.
+- When you _make_ a smart pointer, it will call `new` and allocate memory, and then (based on which type of smart pointer you use) that memory will automatically be freed when the smart pointer goes out of scope.
+- A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
+- A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
+- A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
+
+### Video #54: Stack vs. Heap Memory in C++
+- The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
+- Each program/process has its _own_ Stack and Heap.
+- Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
+- Stack vs. Heap allocation:
+```
+// Allocate an int and an int array on the stack
+int value = 10;
+int array[10];
+
+// Allocate an int and an int array on the heap
+int* heap_value = new int;
+*heap_value = 10;
+int* heap_arr = new int[10];
+
+// Must manually free heap-allocated memory
+delete heap_value;
+delete[] heap_arr;
+```
+- __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
+- _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
+- Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
+- Heap memory `==` _dynamic_ memory.
+- __Takeaway:__
+   - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
+   - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
+
+### Video #71: Safety in Modern C++ and How to Teach It
+- _Safe_ programming aims to prevent things like crashes, memory leaks (forgetting to free heap-allocated memory) and access violations. This video will focus on pointers and heap allocation.
+- Why do we care? Because we want to write real-time, performance-critical production C++ code.
+- With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
+- Note: `shared_ptr` is __not__ thread safe. Why?
+
+### Video #84: Track Memory Allocations the Easy Way in C++
+- TODO:
 
 ## C++ Advanced Topics
 
