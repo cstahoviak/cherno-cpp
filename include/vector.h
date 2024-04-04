@@ -77,7 +77,7 @@ class VectorIterator
 
     // The NEQ operator just returns the opposite of operator==
     bool operator!=(const VectorIterator& other) const {
-      !(*this == other);
+      return !(*this == other);
     }
 
   private:

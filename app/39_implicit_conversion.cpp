@@ -2,9 +2,9 @@
  * Video #39: Implicit Conversion and the 'explicit' keyword.
  */
 
-#include <iostream>
-
 #include "entity.h"
+
+#include <iostream>
 
 int main() {
 

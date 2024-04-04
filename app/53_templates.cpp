@@ -1,10 +1,11 @@
 /*
  * Video #53: Templates
  */
-#include <iostream>
 
 #include "types.h"
 #include "utils.h"
+
+#include <iostream>
 
 int main() {
   // Use a templated print function to print different types

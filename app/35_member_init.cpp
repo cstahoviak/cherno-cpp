@@ -1,12 +1,12 @@
 /*
- * Member Initializer Lists:
+ * Video #35: Member Initializer Lists:
  */
-
-#include <iostream>
-#include <memory>
 
 #include "entity.h"
 #include "log.h"
+
+#include <iostream>
+#include <memory>
 
 int main() {
   // Member Initializer Lists

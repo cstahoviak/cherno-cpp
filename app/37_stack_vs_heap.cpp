@@ -2,10 +2,10 @@
  * Video #37: How to Create/Instantiate Objects in C++ (Stack vs. Heap)
  */
 
+#include "entity.h"
+
 #include <iostream>
 #include <memory>
-
-#include "entity.h"
 
 int main() 
 {

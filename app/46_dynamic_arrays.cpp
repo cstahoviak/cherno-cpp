@@ -1,10 +1,11 @@
 /*
  * Video #46: Dynamic Arrays in C++ (std::vector)
  */
-#include <iostream>
-#include <vector>
 
 #include "types.h"
+
+#include <iostream>
+#include <vector>
 
 int main() {
   // Create a vector (list) of Vec2s

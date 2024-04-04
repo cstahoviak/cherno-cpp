@@ -3,10 +3,11 @@
  * Video #43: Smart Pointers in C++
  * Video #45: The Arrow Operator in C++
  */
-#include <iostream>
-#include <memory>
 
 #include "entity.h"
+
+#include <iostream>
+#include <memory>
 
 int main() {
   // Stack-allocate a "scoped" Entity pointer whose deletion will be managed

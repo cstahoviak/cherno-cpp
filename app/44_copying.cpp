@@ -1,9 +1,10 @@
 /*
  * Video #44: Copying and Copy Constructors
  */
-#include <iostream>
 
 #include "types.h"
+
+#include <iostream>
 
 int main() {
   // Create a String
