@@ -12,13 +12,15 @@ If you don't care about these things, don't choose C++!
 ## Contents
 This tutorial series will cover the following topics:
 
+TODO: Add links for each sub-section.
+
 - [Introduction - How C++ Works](#introduction---how-c-works)
-   - Welcome to C++ (1)
+   - [Welcome to C++ (1)](#video-1-welcome-to-c-what-well-be-learning)
    - How the C++ Compiler Works
    - How the C++ Linker Works
    - How C++ Works
 - [C++ Fundamentals](#c-fundamentals)
-   - Variables (8)
+   - [Variables (8)](#video-8-variables-in-c)
    - Functions
    - Header Files
    - Conditions and Branching
@@ -47,7 +49,7 @@ This tutorial series will cover the following topics:
    - Local Static
    - `auto`
 - [Data Structures](#data-structures-in-c)
-   - Arrays (30)
+   - [Arrays (30)](#video-30-arrays-in-c)
    - Dynamic Arrays (`std::vector`)
    - Optimizing the Use of `std::vector`
    - Static Arrays (`std::array`)
@@ -55,19 +57,18 @@ This tutorial series will cover the following topics:
    - Unions
    - Maps (`std::map` and `std::unordered_map`)
 - [Memory Management in C++](#memory-management-in-c)
-   - Object Lifetime (Stack/Scope Lifetime) (42)
+   - [Object Lifetime (Stack/Scope Lifetime) (42)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
    - Smart Pointers
    - Stack vs. Heap Memory
    - Type Punning (maybe put it here?)
    - Safety in Modern C++ and How to Teach It
 - [C++ Advanced Topics](#c-advanced-topics)
-   - How to Deal with Multiple Return Values (52)
+   - [How to Deal with Multiple Return Values (52)](#video-52-how-to-deal-with-multiple-return-values-in-c)
    - Templates
    - Macros
    - Function Pointers
    - Lambdas
    - Namespaces
-   - Threads (maybe put it here?)
    - Sorting
    - Type Punning
    - Virtual Destructors
@@ -78,22 +79,22 @@ This tutorial series will cover the following topics:
    - Iterators
    - What Exactly is `NULL`?
 - [Performance & Benchmarking](#performance--benchmarking)
-   - Threads (62)
+   - [Threads (62)](#video-62-threads-in-c)
    - Timing
    - How to Make C++ Run Faster with `std::async`
    - How to Make your Strings Faster
    - Small String Optimizations
    - Track Memory Allocations the Easy Way
 - [Storing Multiple Types of Data](#storing-multiple-types-of-data)
-   - How to Deal with Optional Data (76)
+   - [How to Deal with Optional Data (76)](#video-76-how-to-deal-with-optional-data-in-c)
    - Multiple Types of Data in a Single Variable
    - How to Store ANY Data
 - [Move Semantics](#move-semantics)
-   - l-values and r-values (85)
+   - [l-values and r-values (85)](#video-85-l-values-and-r-values-in-c)
    - Move Semantics
    - `std::move` and the Move Assignment Operator
 - [Workflow and Debugging](#todo-workflow--debugging)
-   - Using Libraries (49)
+   - [Using Libraries (49)](#video-49-using-libraries-in-c)
    - Using Dynamic Libraries
    - Making and Working with Libraries
    - Conditional and Action Breakpoints
@@ -102,7 +103,7 @@ This tutorial series will cover the following topics:
    - Continuous Integration
    - Static Analysis
 - [Writing Our Own Data Structures](#writing-our-own-data-structures)
-   - Array (91)
+   - [Custom Array (91)](#video-91-array---making-data-structures-in-c)
    - Dynamic Array (Vector)
    - Writing an Iterator
 
