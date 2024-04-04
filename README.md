@@ -48,7 +48,7 @@ This tutorial series will cover the following topics:
    - `auto`
 - [Data Structures](#data-structures-in-c)
    - Arrays (30)
-   - Dynamic Arrays
+   - Dynamic Arrays (`std::vector`)
    - Optimizing the Use of `std::vector`
    - Static Arrays (`std::array`)
    - Multidimensional Arrays (2D Arrays)
