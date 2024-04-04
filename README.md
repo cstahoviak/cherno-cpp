@@ -10,25 +10,98 @@ If you don't care about these things, don't choose C++!
 
 This tutorial series will cover the following topics:
 - [Introduction - How C++ Works](#introduction---how-c-works)
+   - Welcome to C++ (1)
+   - How the C++ Compiler Works
+   - How the C++ Linker Works
+   - How C++ Works
 - [C++ Fundamentals](#c-fundamentals)
+   - Variables (8)
+   - Functions
+   - Header Files
+   - Conditions and Branching
+   - Control Flow
+   - Pointers
+   - References
+   - Classes vs. Structs
+   - `static`
+   - Enums
+   - Destructors
+   - Inheritance
+   - Virtual Functions
+   - Interfaces (Pure Virtual Functions)
+   - Visibility
+   - `const`
+   - `mutable`
+   - Member Initializer Lists
+   - Ternary Operators
+   - How to Create/Instantiate Objects
+   - `new`
+   - Implicit Coversion and the `explicit` Keyword
+   - Operators and Operator Overloading
+   - `this`
+   - Copying and Copy Constructors
+   - The Arrow `->` Operator
+   - Local Static
+   - `auto`
 - [Memory Management in C++](#memory-management-in-c)
-- [C++ Advanced Topics]()
+   - Object Lifetime (Stack/Scope Lifetime) (42)
+   - Smart Pointers
+   - Stack vs. Heap Memory
+   - Type Punning (maybe put it here?)
+   - Safety in Modern C++ and How to Teach It
+- [Data Structures](#data-structures-in-c)
+   - Arrays (30)
+   - Dynamic Arrays
+   - Optimizing the Use of `std::vector`
+   - Static Arrays (`std::array`)
+   - Multidimensional Arrays (2D Arrays)
+   - Unions
+   - Maps (`std::map` and `std::unordered_map`)
+- [C++ Advanced Topics](#c-advanced-topics)
+   - How to Deal with Multiple Return Values (52)
+   - Templates
+   - Macros
+   - Function Pointers
+   - Lambdas
+   - Namespaces
+   - Threads (maybe put it here?)
+   - Sorting
+   - Type Punning
+   - Virtual Destructors
+   - Casting
+   - Dymamic Casting
+   - Singletons
+   - Argument Evaluation Order
+   - Iterators
+   - What Exactly is `NULL`?
+- [Performance & Benchmarking](#performance--benchmarking)
+   - Threads (62)
+   - Timing
+   - How to Make C++ Run Faster with `std::async`
+   - How to Make your Strings Faster
+   - Small String Optimizations
+   - Track Memory Allocations the Easy Way
+- [Storing Multiple Types of Data](#storing-multiple-types-of-data)
+   - How to Deal with Optional Data (76)
+   - Multiple Types of Data in a Single Variable
+   - How to Store ANY Data
+- [Move Semantics](#move-semantics)
+   - l-values and r-values (85)
+   - Move Semantics
+   - `std::move` and the Move Assignment Operator
 - [Workflow and Debugging](#todo-workflow--debugging)
+   - Using Libraries (49)
+   - Using Dynamic Libraries
+   - Making and Working with Libraries
+   - Conditional and Action Breakpoints
+   - Precompiled Headers
+   - Structured Bindings
+   - Continuous Integration
+   - Static Analysis
 - [Writing Our Own Data Structures](#writing-our-own-data-structures)
-
-## TODO: Workflow & Debugging
-Add a section that groups together videos about workflow and debugging.
-
-### Video #49: Using Libraries in C++
-- The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
-- This video: Learning to link against binaries
-- TODO: Didn't finish this video.
-
-### Video #50: Using Dynamic Libraries in C++
-- TODO:
-
-### Video #51: Making and Working with Libraries in C++
-- TODO:
+   - Array (91)
+   - Dynamic Array (Vector)
+   - Writing an Iterator
 
 ## Introduction - How C++ Works
 
@@ -361,6 +434,15 @@ delete[] heap_arr;
    - Allocating memory on the stack is effectively one CPU instruction, whereas allocating on the heap is _much_ more expensive: call `new` -> call `malloc` -> consult the _free list__ -> update the _free list_ -> ... -> eventually delete the memory.
    - The performance difference _is_ the allocation. Access _after_ allocation is approximately equivalent (_cache misses_ for heap-allocated memory can be the difference here).
 
+### Video #71: Safety in Modern C++ and How to Teach It
+- _Safe_ programming aims to prevent things like crashes, memory leaks (forgetting to free heap-allocated memory) and access violations. This video will focus on pointers and heap allocation.
+- Why do we care? Because we want to write real-time, performance-critical production C++ code.
+- With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
+- Note: `shared_ptr` is __not__ thread safe. Why?
+
+### Video #84: Track Memory Allocations the Easy Way in C++
+- TODO:
+
 ## Data Structures in C++
 
 ### Video #46: Dynamic Arrays in C++ (std::vector)
@@ -377,6 +459,64 @@ __Best Practice:__ Prefer passing dymanic arrays by const reference to avoid unc
 ### Video #47: Optimizing the use of std::vector in C++
 - We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
 - We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
+
+### Video #57: Static Arrays (`std::array`) in C++
+- Static arrays have a pre-defined size and their size __cannot__ be changed.
+- Very similair to C-style arrays: `int arr[10];` can be rewritten as a static array like `std::array<int, 10> arr;`.
+- __Question:__ How do we take a `std::array` as a function argument if we don't know the size?
+```
+// Template that doesn't assume type or size
+template<typename T, size_t s>
+void f(std::array<T, s> arr) {
+   for (const auto& item : arr) {
+      // do stuff
+   }
+}
+
+// Template that assumes the type (and int array), but not the size
+template<size_t s>
+void f(std::array<int, s> arr) {
+   for (const int& item : arr) {
+      // do stuff
+   }
+}
+```
+- `std::array` allocates its memory on the stack, whereas `std::vector` allocates on the heap.
+- __Best Practice:__ Prefer `std::array` to _old_ C-style arrays.
+   - `std::array` supports STL features like `size()` and iterators (`begin()` and `end()`).
+   - Can apply STL algos like `std::sort` to `std::array`.
+   - No additional performance cost associated with `std::array` since the `size` is stored as a template argument.
+
+### Video #64: Multidimensional Array (2D Arrays) in C++
+- n-dimensional arrays. When to use them. When _not_ to use them!
+- An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
+- Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
+- Deleting a multidimensional array isn't trivial either. Say we declare the following 5x10 2D array then attempt to delete it:
+```
+int** arr_2d = new int*[5];
+for (int i = 0; i < 5; i++) {
+    arr_2d[i] = new int[10];
+  }
+delete[] arr_2d;
+```
+That will only delete the array of pointers pointing to each of the 50 arrays of integers. The integers themselves will not be deleted and become a memory leak. What we have to do to delete a 2D array without leaking memory is:
+```
+for (int i = 0, i < 5; i++) {
+   delete[] arr_2d[i];
+}
+delete[] arr_2d;
+```
+- In the example above, there is __no guarantee__ that each of the 5 blocks of 10 integers will be contiguous in memory. Which can make our array slower to iterate over than an array that had all 5 blocks of 10 integers allocated contiguously in memory.
+- __Best Practice:__ Because of this issue, it may not be a good idea to use 2D arrays for things like images or textures where we want access to each pixel to be fast. So instead, prefer to store an image as a 1D array and be smart about how you iterate over it.
+
+### Video #67: Unions in C++
+- A Union is a bit like a class or struct type, but it can only occupy the memory of one member at a time. In other words, ... (these are kind of confusing).
+- "Put differently, A union of multiple members places each member at the same starting address. This greatly saves on memory used, but the downside is that you can only use one member at a time because they all start at the same address. As you can imagine these were enormously helpful in the 90's when memory was limited. They still have use cases today, but you have to be careful because it can feel like you're' working with separate unique variables when in reality you're working with different variables all occupying the same starting address. Unions can tend to trip you up if you're not careful leading to really wacky bugs but they can be a powerful tool if used seldomly and correctly."
+- Useful for when:
+   - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
+
+### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
+- TODO
 
 ## C++ Advanced Topics
 
@@ -474,33 +614,6 @@ int main() {
 - Cherno doesn't like overusing macros.
 - ###__ Finish adding a command line CMake variable to enable/disable macros in my code.
 
-### Video #57: Static Arrays (`std::array`) in C++
-- Static arrays have a pre-defined size and their size __cannot__ be changed.
-- Very similair to C-style arrays: `int arr[10];` can be rewritten as a static array like `std::array<int, 10> arr;`.
-- __Question:__ How do we take a `std::array` as a function argument if we don't know the size?
-```
-// Template that doesn't assume type or size
-template<typename T, size_t s>
-void f(std::array<T, s> arr) {
-   for (const auto& item : arr) {
-      // do stuff
-   }
-}
-
-// Template that assumes the type (and int array), but not the size
-template<size_t s>
-void f(std::array<int, s> arr) {
-   for (const int& item : arr) {
-      // do stuff
-   }
-}
-```
-- `std::array` allocates its memory on the stack, whereas `std::vector` allocates on the heap.
-- __Best Practice:__ Prefer `std::array` to _old_ C-style arrays.
-   - `std::array` supports STL features like `size()` and iterators (`begin()` and `end()`).
-   - Can apply STL algos like `std::sort` to `std::array`.
-   - No additional performance cost associated with `std::array` since the `size` is stored as a template argument.
-
 ### Video #58: Function Pointers in C++
 - This video will focus on C-style _raw_ function pointers.
 - Function pointers allow us to assign a function to a variable. Allows us to apply _logic_ to functions and pass functions as arguments to other functions.
@@ -534,39 +647,6 @@ auto lambda = [ captures ] { body };
    - If you _must_ `using namespace` try to confine it to as small a scope as possible. Only as a last resort, use it at the top-level of a file.
    - NEVER `using namespace` in a header file! This is an easy way to create naming conflicts.
 
-### Video #62: Threads in C++
-- Parallelization!
-- Use `std::thread` to start some process, e.g. call a function, in a new thread.
-- Use `std::thread::join` to wait for a worker thread to complete before resuming execution of the current thread, i.e. the thread that the worker thread was kicked off from.
-- See `app/threading.cpp` for an example.
-
-### Video #63: Timing in C++
-- Since C++11, we have `std::chrono` to help us with timing, i.e. understanding how much time has elapsed between various lines of code.
-- See `app/threading.cpp` to see how the `Timer` struct is used as a scope-based (lifetime based) timer to function profiling.
-- The topic of _benchmarking_ will come later and will be more in depth. Will discuss _instrumentation_, i.e. modifying source code to contain profiling tooling.
-
-### Video #64: Multidimensional Array (2D Arrays) in C++
-- n-dimensional arrays. When to use them. When _not_ to use them!
-- An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
-- Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
-- Deleting a multidimensional array isn't trivial either. Say we declare the following 5x10 2D array then attempt to delete it:
-```
-int** arr_2d = new int*[5];
-for (int i = 0; i < 5; i++) {
-    arr_2d[i] = new int[10];
-  }
-delete[] arr_2d;
-```
-That will only delete the array of pointers pointing to each of the 50 arrays of integers. The integers themselves will not be deleted and become a memory leak. What we have to do to delete a 2D array without leaking memory is:
-```
-for (int i = 0, i < 5; i++) {
-   delete[] arr_2d[i];
-}
-delete[] arr_2d;
-```
-- In the example above, there is __no guarantee__ that each of the 5 blocks of 10 integers will be contiguous in memory. Which can make our array slower to iterate over than an array that had all 5 blocks of 10 integers allocated contiguously in memory.
-- __Best Practice:__ Because of this issue, it may not be a good idea to use 2D arrays for things like images or textures where we want access to each pixel to be fast. So instead, prefer to store an image as a 1D array and be smart about how you iterate over it.
-
 ### Video #65: Sorting in C++
 - `std::sort` is C++'s built-in sorting algorithm.
 - See `app/sorting.cpp` for an example using `std::sort`.
@@ -575,12 +655,6 @@ delete[] arr_2d;
 - Even though C++ is a _strongly-typed_ language, _type punning_ is just a fancy way of getting around the type system of C++. 
 - Something that C++ is really good at is raw memory operations (memory maipulation), and we can take advantage of that to do some kind of ridiculous operations. See `app/type_punning.cpp` for an example.
 - This can get us into trouble most of the time, but it can also be incredibly powerful. For example, type punning is used in Quake's notoriously fast inverse square root function - it converts a float into a long in order to use bit manipulation.
-
-### Video #67: Unions in C++
-- A Union is a bit like a class or struct type, but it can only occupy the memory of one member at a time. In other words, ... (these are kind of confusing).
-- "Put differently, A union of multiple members places each member at the same starting address. This greatly saves on memory used, but the downside is that you can only use one member at a time because they all start at the same address. As you can imagine these were enormously helpful in the 90's when memory was limited. They still have use cases today, but you have to be careful because it can feel like you're' working with separate unique variables when in reality you're working with different variables all occupying the same starting address. Unions can tend to trip you up if you're not careful leading to really wacky bugs but they can be a powerful tool if used seldomly and correctly."
-- Useful for when:
-   - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
 
 ### Video #68: Virtual Destructors in C++
 - Virtual destructors are useful when dealing with _polymorphism_.
@@ -595,7 +669,7 @@ __Best Practice:__ [When should we __not__ use a `virtual` destructor?](https://
    3. No intention to delete an derived instance via a base-class pointer. (But how can know that the codebase won't be extended in some way in the future in such a way that would delete a derived instance via a base class pointer?)
 __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `public` and `virtual`, or `protected` and nonvirtual."
 
-### Video #69: Casting in in C++
+### Video #69: Casting in C++
 - C-style vs. C++ style casting. C style casts are simple and look something like:
 ```
 double a = 5.25;
@@ -617,18 +691,6 @@ int main() {
 }
 ```
 
-### Video #70: Conditional and Action Breakpoints in C++
-- TODO:
-
-### Video #71: Safety in Modern C++ and How to Teach It
-- _Safe_ programming aims to prevent things like crashes, memory leaks (forgetting to free heap-allocated memory) and access violations. This video will focus on pointers and heap allocation.
-- Why do we care? Because we want to write real-time, performance-critical production C++ code.
-- With C++11, _smart pointers_ were introduced to support this goal. In reality, the entire goal of smart pointers is to automate the use of `delete`.
-- Note: `shared_ptr` is __not__ thread safe. (I wonder why?)
-
-### Video #72: Precompiled Headers in C++
-- TODO:
-
 ### Video #73: Dynamic Casting in C++
 - Dynamic casting is a C++ style cast that as somewhat of a "safety net" which ensures that the casting we're doing is "valid".
 - `dynamic cast` can only be used when Runtime Type Information (RTTI) is enabled.
@@ -636,45 +698,79 @@ int main() {
 - Other _managed_ langagues, like Python, have function like `isinstance()` to achieve the same behavior.
 - See example in README from ### Video #69__ for how the failure of a `dynamic_cast` can be useful.
 
+### Video #82: Singletons in C++
+- A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
+- Examples of types of singleton classes:
+   - A random number generator: Typically, we instantiate a random number generator once with a seed and then use that single instance (and seed) to generate sequences of random numbers.
+   - A renderer:
+- Singleton classes really just behave like a namespace, i.e. a single class is just a set of "global" variables and static functions that may (or may not) act upon those global variables.
+- Worth noting one important functional difference between a namespace and a singleton class. In a namespace, all of the data is initialized (loaded into memory when the program first starts). This might be undesirable sometimes when we don't want all the data initialized until we actually need it. In contrast, singleton instances are only loaded during the first call to the `Get()` method.
+- See tamasdemjen4242's comment for even more detail on the functional difference between singleton classses and namespaces, including thread-safe vs. non-thread-safe behavior.
+- See `app/singleton.cpp` for an example.
+
+### Video #88: Argument Evaluation Order in C++
+- Consider the following simple example. What do we think will be printed? It turns out that in C++, this toy scenario results in _undefined behavior_, i.e. the behavior will be different from compiler to compiler.
+```
+void print_sum(int a, int b) {
+   std::cout << a << " +  b << " = " << a + b << std::endl;
+}
+
+int main() {
+   int val = 0;
+   // Any of the following will produce "undefined behavior".
+   print_sum(val++, val++);
+   print_sum(++val, ++val);
+}
+```
+- Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
+- In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
+
+### Video #93: Iterators in C++
+- Iterators are used to traverse data structures, and if we're writing our own
+data structures, we probably want to support functionality like idexing and iteration.
+- _Range-based_ for loops (avaible since C++11) are made possible by iterators.
+`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
+```
+std::vector<int> values = { 1, 2, 3, 4, 5 };
+for (int& val : values) {
+   std::cout << "value: << val << std::endl;
+}
+```
+- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
+```
+for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
+   // Dereference the iterator (bc it's a pointer) to get the value
+   std::cout << *it << std::endl;
+}
+```
+- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
+
+### Video #96: Intro to Binary and Bitwise Operators in C++
+- TODO
+
+### Video #97: Bitwise AND, OR, XOR and NOT (&, |, ^, ~) C++
+- TODO
+
+### Video #101: What Exactly is `NULL`?
+- TODO
+
+## Performance & Benchmarking
+
+### Video #62: Threads in C++
+- Parallelization!
+- Use `std::thread` to start some process, e.g. call a function, in a new thread.
+- Use `std::thread::join` to wait for a worker thread to complete before resuming execution of the current thread, i.e. the thread that the worker thread was kicked off from.
+- See `app/threading.cpp` for an example.
+
+### Video #63: Timing in C++
+- Since C++11, we have `std::chrono` to help us with timing, i.e. understanding how much time has elapsed between various lines of code.
+- See `app/threading.cpp` to see how the `Timer` struct is used as a scope-based (lifetime based) timer to function profiling.
+- The topic of _benchmarking_ will come later and will be more in depth. Will discuss _instrumentation_, i.e. modifying source code to contain profiling tooling.
+
 ### Video #74: Benchmarking in C++
 - Performance differences between `std::make_shared` vs. `std::shared_ptr<type> (new type)` vs. `std::make_unique`.
 - Important to perform this benchmarking in Release mode and __not__ Debug.
 - Note that we expect `std::make_shared` to be faster than `std::shared_ptr` because `std::make_shared` performs one heap-allocation, whereas calling the `std::shared_ptr` constructor performs two. But as per the results of `app/benchmarking.cpp`, this isn't always true.
-
-### Video #75: Structured Bindings in C++
-- TODO:
-
-## Storing Multiple Types of Data
-
-### Video #76: How to Deal with Optional Data in C++
-- New to C++17 is `std::optional`.
-- `std::optional<T>` __cannot__ be used with references. However,`boost::optional<T>` can handle references. This is very helpful if you want to check for existence of a bigger type in a map like `boost::optional<const Element&> GetElementAtPos(int x, int y)`. With `std::optional` you cannot do that and would have to return a pointer. The reason why it's unavailable in `std` is a bigger topic itself and you can read more online.
-- `value_or(default_value)` is also designed with backwards compatibility in mind. If new code parts want to use `std::optional<T>`, but need pass `T` to an old method (where a magic value represents "not set") you can pass `value_or(magic_value)` to it to still be compatible with this old code part.
-- `boost::optional` brings this concept even further and provides a constructor `boost::optional<T>(bool isSet, T value)` that can be used to filter out magic values on construction. So if an old method returns `T`(with either a value or a magic value "not set") you can initiate your variable like `boon  b.st::optional<T>(result != magic_value, result)`. This constructor is sadly not available in `std::optional` though.
-
-### Video #77: Multiple Types of Data in a Single Variable in C++
-- New to C++17 is `std::variant`. Similar `std::optional` in the sense that is allows us to not worry so much about the underlying data type, and be more concerned with if that data is actually available or not.
-- Allows us to create a variable that can be one of multiple types, e.g. we can declare a value that will either be a string or an int:
-```
-#include <variant>
-
-std::variant<std::string, int> data;
-```
-- We can use `std::variant::index` to determine which type the data _actually_ is. In the example above `data.index()=0` means that `data` is a `std::string` and `data.index()=1` meands that `data` is an `int`.
-- Alternatively, we can use `std::variant::get_if` to return a pointer to our data that will be `NULL` if the data is not the type we requested.
-```
-auto value = std::get_if<std::string>(&data);
-```
-- Are variants just "type-safe unions"? Short answer: not exactly. The `sizeof()` a union will be equal to the size of its largest type, whereas the size of a variant will be the combined size of all of its types, e.g. `sizeof(std::variant<std::string, int>) == sizeof(std::string) + sizeof(int)`.
-- __Best Practice:__ Prefer variants to unions because they are _type safe_.
-- Could use `std::variant` as an alternative to `std::optional` when we want to be more specific about what may have gone wrong when evaluating a function. See `app/optional.cpp` for an example of using `std::variant` to possibly return an error code enum type.
-
-### Video #78: How to Store ANY Data in C++
-- New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
-- Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
-__Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
-__Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
-- [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 ### Video #79: How to Make C++ Run Faster with `std::async`
 - How can we take advantage of parallel processing, i.e. use multiple CPU cores?
@@ -748,21 +844,40 @@ void EditiorLayer::LoadMeshes() {
 ### Video #80: How to Make Your Strings Faster in C++
 - TODO:
 
-### Video #82: Singletons in C++
-- A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
-- Examples of types of singleton classes:
-   - A random number generator: Typically, we instantiate a random number generator once with a seed and then use that single instance (and seed) to generate sequences of random numbers.
-   - A renderer:
-- Singleton classes really just behave like a namespace, i.e. a single class is just a set of "global" variables and static functions that may (or may not) act upon those global variables.
-- Worth noting one important functional difference between a namespace and a singleton class. In a namespace, all of the data is initialized (loaded into memory when the program first starts). This might be undesirable sometimes when we don't want all the data initialized until we actually need it. In contrast, singleton instances are only loaded during the first call to the `Get()` method.
-- See tamasdemjen4242's comment for even more detail on the functional difference between singleton classses and namespaces, including thread-safe vs. non-thread-safe behavior.
-- See `app/singleton.cpp` for an example.
-
 ### Video #83: Small String Optimizations in C++
 - TODO:
 
-### Video #84: Track Memory Allocations the Easy Way in C++
-- TODO:
+## Storing Multiple Types of Data
+
+### Video #76: How to Deal with Optional Data in C++
+- New to C++17 is `std::optional`.
+- `std::optional<T>` __cannot__ be used with references. However,`boost::optional<T>` can handle references. This is very helpful if you want to check for existence of a bigger type in a map like `boost::optional<const Element&> GetElementAtPos(int x, int y)`. With `std::optional` you cannot do that and would have to return a pointer. The reason why it's unavailable in `std` is a bigger topic itself and you can read more online.
+- `value_or(default_value)` is also designed with backwards compatibility in mind. If new code parts want to use `std::optional<T>`, but need pass `T` to an old method (where a magic value represents "not set") you can pass `value_or(magic_value)` to it to still be compatible with this old code part.
+- `boost::optional` brings this concept even further and provides a constructor `boost::optional<T>(bool isSet, T value)` that can be used to filter out magic values on construction. So if an old method returns `T`(with either a value or a magic value "not set") you can initiate your variable like `boon  b.st::optional<T>(result != magic_value, result)`. This constructor is sadly not available in `std::optional` though.
+
+### Video #77: Multiple Types of Data in a Single Variable in C++
+- New to C++17 is `std::variant`. Similar `std::optional` in the sense that is allows us to not worry so much about the underlying data type, and be more concerned with if that data is actually available or not.
+- Allows us to create a variable that can be one of multiple types, e.g. we can declare a value that will either be a string or an int:
+```
+#include <variant>
+
+std::variant<std::string, int> data;
+```
+- We can use `std::variant::index` to determine which type the data _actually_ is. In the example above `data.index()=0` means that `data` is a `std::string` and `data.index()=1` meands that `data` is an `int`.
+- Alternatively, we can use `std::variant::get_if` to return a pointer to our data that will be `NULL` if the data is not the type we requested.
+```
+auto value = std::get_if<std::string>(&data);
+```
+- Are variants just "type-safe unions"? Short answer: not exactly. The `sizeof()` a union will be equal to the size of its largest type, whereas the size of a variant will be the combined size of all of its types, e.g. `sizeof(std::variant<std::string, int>) == sizeof(std::string) + sizeof(int)`.
+- __Best Practice:__ Prefer variants to unions because they are _type safe_.
+- Could use `std::variant` as an alternative to `std::optional` when we want to be more specific about what may have gone wrong when evaluating a function. See `app/optional.cpp` for an example of using `std::variant` to possibly return an error code enum type.
+
+### Video #78: How to Store ANY Data in C++
+- New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
+- Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
+__Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
+__Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 ## Move Semantics
 
@@ -817,31 +932,6 @@ print_name(full);
 ```
 - Being able to distinguish an r-value from an l-value is important in the context of _move semantics_ and optimization. If we know that we are dealing with a temporary object (an r-value reference), then we don't have to worry about things like making sure we keep it alive, etc.
 
-### Video #86: Continuous Integration in C++
-- TODO:
-
-### Video #87: Static Analysis in C++
-- How do we write _better_ code, i.e. code that produces fewer bugs.
-- How do we use a _static analyzer_ to improve our code?
-- TODO: Finish this video.
-
-### Video #88: Argument Evaluation Order in C++
-- Consider the following simple example. What do we think will be printed? It turns out that in C++, this toy scenario results in _undefined behavior_, i.e. the behavior will be different from compiler to compiler.
-```
-void print_sum(int a, int b) {
-   std::cout << a << " +  b << " = " << a + b << std::endl;
-}
-
-int main() {
-   int val = 0;
-   // Any of the following will produce "undefined behavior".
-   print_sum(val++, val++);
-   print_sum(++val, ++val);
-}
-```
-- Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
-- In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
-
 ### Video #89: Move Semantics in C++
 - C++11 introduced _r-value references_ which are necessary for implementing _move semantics_.
 - Consider the case where we need to create an object and then pass it to some function that will take ownership of that object. Prior to C++11, this would require us to create a "throw away" object in the current stack frame and then copy that object to the fuction that's receiving it. This creates unnecessary copying and modern C++ should allow us to avoid unnecessary copies.
@@ -855,6 +945,37 @@ int main() {
 - The _move assignment operator_ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
    - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the _Rule of Fifths_. More on this later.
 - `std::move` is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
+
+## TODO: Workflow & Debugging
+Add a section that groups together videos about workflow and debugging.
+
+### Video #49: Using Libraries in C++
+- The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
+- This video: Learning to link against binaries
+- TODO: Didn't finish this video.
+
+### Video #50: Using Dynamic Libraries in C++
+- TODO:
+
+### Video #51: Making and Working with Libraries in C++
+- TODO:
+
+### Video #70: Conditional and Action Breakpoints in C++
+- TODO:
+
+### Video #72: Precompiled Headers in C++
+- TODO:
+
+### Video #75: Structured Bindings in C++
+- TODO:
+
+### Video #86: Continuous Integration in C++
+- TODO:
+
+### Video #87: Static Analysis in C++
+- How do we write _better_ code, i.e. code that produces fewer bugs.
+- How do we use a _static analyzer_ to improve our code?
+- TODO: Finish this video.
 
 ## Writing Our Own Data Structures
 
@@ -899,26 +1020,6 @@ int main() {
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
 
-### Video #93: Iterators in C++
-- Iterators are used to traverse data structures, and if we're writing our own
-data structures, we probably want to support functionality like idexing and iteration.
-- _Range-based_ for loops (avaible since C++11) are made possible by iterators.
-`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
-```
-std::vector<int> values = { 1, 2, 3, 4, 5 };
-for (int& val : values) {
-   std::cout << "value: << val << std::endl;
-}
-```
-- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
-```
-for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
-   // Dereference the iterator (bc it's a pointer) to get the value
-   std::cout << *it << std::endl;
-}
-```
-- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
-
 ### Video #94: Writing an Iterator in C++
 - We'll be adding an iterator to our custom vector class (from video #92).
 - An aside: How do we actually get better as a c++ developer?
@@ -928,15 +1029,3 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 
 ### Video #95: How to __Really__ Learn C++
 - What should I do next in my C++ learning journey? A simple answer: _open source projects_.
-
-### Video #96: Intro to Binary and Bitwise Operators in C++
-- TODO
-
-### Video #97: Bitwise AND, OR, XOR and NOT (&, |, ^, ~) C++
-- TODO
-
-### Video #100: Maps (`srd::map` and `std::unordered_map`) in C++
-- TODO
-
-### Video #101: What Exactly is `NULL`?
-- TODO
