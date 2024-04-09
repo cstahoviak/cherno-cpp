@@ -38,10 +38,10 @@ namespace std
   template<>
   struct hash<CityRecord>
   {
-    // Overload the call operator and return a 64 biy uint (size_t).
+    // Overload the call operator and return a 64 bit uint (size_t).
     size_t operator()(const CityRecord& key)
     {
-      // Define the hash function here
+      // Define the hash function here. 
       return hash<std::string>()(key.name);
     }
   };

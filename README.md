@@ -15,12 +15,13 @@ This tutorial series will cover the following topics:
 TODO: Add links for each sub-section.
 
 - [Introduction - How C++ Works](#introduction---how-c-works)
-   - [Welcome to C++ (1)](#video-1-welcome-to-c-what-well-be-learning)
+   - [(1) Welcome to C++](#video-1-welcome-to-c-what-well-be-learning)
    - How the C++ Compiler Works
    - How the C++ Linker Works
    - How C++ Works
+
 - [C++ Fundamentals](#c-fundamentals)
-   - [Variables (8)](#video-8-variables-in-c)
+   - [(8) Variables](#video-8-variables-in-c)
    - Functions
    - Header Files
    - Conditions and Branching
@@ -48,22 +49,26 @@ TODO: Add links for each sub-section.
    - The Arrow `->` Operator
    - Local Static
    - `auto`
+
 - [Data Structures](#data-structures-in-c)
-   - [Arrays (30)](#video-30-arrays-in-c)
-   - Dynamic Arrays (`std::vector`)
-   - Optimizing the Use of `std::vector`
-   - Static Arrays (`std::array`)
-   - Multidimensional Arrays (2D Arrays)
-   - Unions
-   - Maps (`std::map` and `std::unordered_map`)
+   - [(30) TODO: Arrays](#video-30-arrays-in-c)
+   - [(46) Dynamic Arrays (`std::vector`)](#video-46-dynamic-arrays-in-c-stdvector)
+   - [(47) Optimizing the Use of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c)
+   - [(57) Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
+   - [(64) Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
+   - [(67) Unions](#video-67-unions-in-c)
+   - [(100) Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
+
 - [Memory Management in C++](#memory-management-in-c)
-   - [Object Lifetime (Stack/Scope Lifetime) (42)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
-   - Smart Pointers
-   - Stack vs. Heap Memory
-   - Type Punning (maybe put it here?)
-   - Safety in Modern C++ and How to Teach It
+   - [(42) Object Lifetime (Stack/Scope Lifetime)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
+   - [(43) Smart Pointers](#video-43-smart-pointers-in-c)
+   - [(54) Stack vs. Heap Memory](#video-54-stack-vs-heap-memory-in-c)
+   - Type Punning (TODO: maybe put it here?)
+   - [(71) Safety in Modern C++ and How to Teach It](#video-71-safety-in-modern-c-and-how-to-teach-it)
+   - [(84) Track Memory Allocations the Easy Way](#video-84-track-memory-allocations-the-easy-way-in-c)
+
 - [C++ Advanced Topics](#c-advanced-topics)
-   - [How to Deal with Multiple Return Values (52)](#video-52-how-to-deal-with-multiple-return-values-in-c)
+   - [(52) How to Deal with Multiple Return Values](#video-52-how-to-deal-with-multiple-return-values-in-c)
    - Templates
    - Macros
    - Function Pointers
@@ -79,33 +84,37 @@ TODO: Add links for each sub-section.
    - Argument Evaluation Order
    - Iterators
    - What Exactly is `NULL`?
+
 - [Performance & Benchmarking](#performance--benchmarking)
-   - [Threads (62)](#video-62-threads-in-c)
-   - Timing
-   - How to Make C++ Run Faster with `std::async`
-   - How to Make your Strings Faster
-   - Small String Optimizations
-   - Track Memory Allocations the Easy Way
+   - [(62) Threads](#video-62-threads-in-c)
+   - [(63) Timing](#video-63-timing-in-c)
+   - [(79) How to Make C++ Run Faster with `std::async`](#video-79-how-to-make-c-run-faster-with-stdasync)
+   - [(80) TODO: How to Make your Strings Faster](#video-80-how-to-make-your-strings-faster-in-c)
+   - [(83) TODO: Small String Optimizations](#video-83-small-string-optimizations-in-c)
+
 - [Storing Multiple Types of Data](#storing-multiple-types-of-data)
-   - [How to Deal with Optional Data (76)](#video-76-how-to-deal-with-optional-data-in-c)
-   - Multiple Types of Data in a Single Variable
-   - How to Store ANY Data
+   - [(76) How to Deal with Optional Data](#video-76-how-to-deal-with-optional-data-in-c)
+   - [(77) Multiple Types of Data in a Single Variable](#video-77-multiple-types-of-data-in-a-single-variable-in-c)
+   - [(78) How to Store ANY Data](#video-78-how-to-store-any-data-in-c)
+
 - [Move Semantics](#move-semantics)
-   - [l-values and r-values (85)](#video-85-l-values-and-r-values-in-c)
-   - Move Semantics
-   - `std::move` and the Move Assignment Operator
+   - [(85) l-values and r-values](#video-85-l-values-and-r-values-in-c)
+   - [(89) Move Semantics](#video-89-move-semantics-in-c)
+   - [(90) `std::move` and the Move Assignment Operator](#video-90-stdmove-and-the-move-assigment-operator-in-c)
+
 - [Workflow and Debugging](#todo-workflow--debugging)
-   - [Using Libraries (49)](#video-49-using-libraries-in-c)
+   - [(49) Using Libraries](#video-49-using-libraries-in-c)
    - Using Dynamic Libraries
    - Making and Working with Libraries
    - Conditional and Action Breakpoints
    - Precompiled Headers
    - Continuous Integration
    - Static Analysis
+
 - [Writing Our Own Data Structures](#writing-our-own-data-structures)
-   - [Custom Array (91)](#video-91-array---making-data-structures-in-c)
-   - Dynamic Array (Vector)
-   - Writing an Iterator
+   - [(91) Custom Array](#video-91-array---making-data-structures-in-c)
+   - [(92) Dynamic Array (Vector)](#video-92-vectordynamic-array---making-data-structures-in-c)
+   - [(94) Writing an Iterator](#video-94-writing-an-iterator-in-c)
 
 ## Introduction - How C++ Works
 
@@ -457,25 +466,26 @@ delete[] arr_2d;
 ### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
 - Maps allow us to associate a _key-value_ pair (a dictionary in Python).
 - `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
-- In a tree data structure, elements are sorted via comparison (typically using a less than operator). That way, when you iterate over a map, you're iterating over the elements in a sorted order.
+   - In a tree data structure, elements are sorted via comparison (typically using a less than operator). That way, when you iterate over a map, you're iterating over the elements in a sorted order.
 - `std::unordered_map` is a _hash-table_. "It uses a _hash function_ to hash the key and generate an index to figure out what which "bucket" your value is in." - Cherno. Because it is unordered, value retrieval has the _potential_ to be faster than with `std::map`.
-__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
+   -__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
 - Requirements of the key type choice:
    - `std::unordered_map`: The key must be _hashable_. Note that pointers are _always_ hashable because a pointer is simply a 64-bit integer, i.e. `T* == uint64_t`.
+      - A hash function is _not_ required to return a unique hash. Two things with the same hash will be stored in the same bucket, which is inefficient for lookups, but ut hash collisions will not compromise the map.
    - `std::map`: The key type must implement the less than operator, `operator<`. The less than operator not only plays the role of comparison for an ordered map, it also defines a unique key within the map. So if we attempt to add a new element that evaluates as "equal to" an existing element in the map, that new element will not be added.
 - Note that the index `[]` operator for a map works strictly as an insertion operator. There is no `const` version of the index operator, i.e. `[]` works _only_ as a _setter_, and not as a _getter_.
-```
-std::unordered_map<std:string, CityRecord> cities;
+   ```
+   std::unordered_map<std:string, CityRecord> cities;
 
-// The following will return a reference to the value stored by the "Berlin" key
-// if it exists, otherwise, it will create the "Berlin" key with a possibly
-// non-initialized CityRecord instance.
-CityRecord& berlin_data = cities["Berlin"]
-```
+   // The following will return a reference to the value stored by the "Berlin" key
+   // if it exists, otherwise, it will create the "Berlin" key with a possibly
+   // non-initialized CityRecord instance.
+   CityRecord& berlin_data = cities["Berlin"]
+   ```
    - This can actually be useful in terms of creating an object _in-place_ rather than having to create it in the local stack frame and then copy it into the map.
    - If we want to retrieve data without inserting it, we need to use `at()`.
    - __Best Practice__: Prefer `at()` for retreiving map elements because it works for both non-`const` and `const` maps.
-- Iteration: recall that `std::vector` stores its data in _contiguous_ memory and this improves the efficiency of iterating over a vector. Iterating over the elements of a vector will _always_ be faster than iterating over the elements of a map.
+- __Iteration__: recall that `std::vector` stores its data in _contiguous_ memory and this improves the efficiency of iterating over a vector. Iterating over the elements of a vector will _always_ (typically by an order of magnitude or more) be faster than iterating over the elements of a map.
    - Note that it is _not_ guaranteed that the elements of a `std::unordered_map` will be kept in the order in which they were inserted.
 
 
