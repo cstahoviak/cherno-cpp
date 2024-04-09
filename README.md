@@ -12,8 +12,6 @@ If you don't care about these things, don't choose C++!
 ## Contents
 This tutorial series will cover the following topics:
 
-TODO: Add links for each sub-section.
-
 - [Introduction - How C++ Works](#introduction---how-c-works)
    - [(1) Welcome to C++](#video-1-welcome-to-c-what-well-be-learning)
    - How the C++ Compiler Works
@@ -404,7 +402,7 @@ i: 3
 - __Best Practice:__ Prefer passing dymanic arrays by `const` reference to avoid uncessary copying.
 - `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
 
-### Video #47: Optimizing the use of std::vector in C++
+### Video #47: Optimizing the use of `std::vector` in C++
 - We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
 - We can also use `std::vector.emplace_back()` to construct the object being added to the vector _in place_ (at the location in memory allocated by the vector) as opposed to creating it in the local stack frame and then having to copy it to the memory location allocated by the vector as is done by `std::vector.push_back()`.
 
@@ -432,10 +430,10 @@ void f(std::array<int, s> arr) {
 - `std::array` allocates its memory on the stack, whereas `std::vector` allocates on the heap.
 - __Best Practice:__ Prefer `std::array` to _old_ C-style arrays.
    - `std::array` supports STL features like `size()` and iterators (`begin()` and `end()`).
-   - Can apply STL algos like `std::sort` to `std::array`.
+   - Can apply STL algorithms like `std::sort` to `std::array`.
    - No additional performance cost associated with `std::array` since the `size` is stored as a template argument.
 
-### Video #64: Multidimensional Array (2D Arrays) in C++
+### Video #64: Multidimensional Arrays (2D Arrays) in C++
 - n-dimensional arrays. When to use them. When _not_ to use them!
 - An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
 - Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
@@ -459,7 +457,7 @@ delete[] arr_2d;
 
 ### Video #67: Unions in C++
 - A Union is a bit like a class or struct type, but it can only occupy the memory of one member at a time. In other words, ... (these are kind of confusing).
-- "Put differently, A union of multiple members places each member at the same starting address. This greatly saves on memory used, but the downside is that you can only use one member at a time because they all start at the same address. As you can imagine these were enormously helpful in the 90's when memory was limited. They still have use cases today, but you have to be careful because it can feel like you're' working with separate unique variables when in reality you're working with different variables all occupying the same starting address. Unions can tend to trip you up if you're not careful leading to really wacky bugs but they can be a powerful tool if used seldomly and correctly."
+- "Put differently, a union of multiple members places each member at the same starting address. This greatly saves on memory used, but the downside is that you can only use one member at a time because they all start at the same address. As you can imagine these were enormously helpful in the 90's when memory was limited. They still have use cases today, but you have to be careful because it can feel like you're working with separate unique variables when in reality you're working with different variables all occupying the same starting address. Unions can tend to trip you up if you're not careful leading to really wacky bugs but they can be a powerful tool if used seldomly and correctly."
 - Useful for when:
    - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
 
@@ -489,7 +487,6 @@ delete[] arr_2d;
    - Note that it is _not_ guaranteed that the elements of a `std::unordered_map` will be kept in the order in which they were inserted.
 
 
-
 ## Memory Management in C++
 
 ### Video #42: Object Lifetime in C++ (Stack/Scope Lifetimes) in C++
@@ -498,13 +495,13 @@ delete[] arr_2d;
 - What is meant by _scope_? Basically anything declared within `{}`.
 - All stack-based variables/objects have a scope-based lifetime, i.e. once a stask-based variable/object goes out of scope, it's memory is freed.
 - __Common mistake__: Attempt to create a stack-based variable within a function and then return a pointer to that variable. Once the function returns and that variable goes out of scope, that variable no longer exists and the pointer that is returned now points to a freed memory location that doesn't contain the data we expect it to.
-```
-int* create_array(const int size) {
-   // This creates an array on the stack (which is scope-based)
-   int array[size];
-   return array;
-}
-```
+   ```
+   int* create_array(const int size) {
+      // This creates an array on the stack (which is scope-based)
+      int array[size];
+      return array;
+   }
+   ```
 - How can take advantage of the lifespan of stack-based (scope based) variables? Yes. "Scoped" classes like _smart pointers_ and _scoped locks_ take advantage of this.
 - A Smart Pointer is effectively a wrapper around a raw pointer that heap-allocates some memory on creation and then deletes that pointer upon destruction (when the smart pointer itself goes out of scope?)
 - Mutex Locking: In the context of threading, a scoped mutex lock allows us to "lock" a function upon entry (and unlock at exit) such that mutliple threads cannot access the function (and also the data manipulted by that function?) at the same time.
