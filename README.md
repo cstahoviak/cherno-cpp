@@ -74,6 +74,7 @@ TODO: Add links for each sub-section.
    - Virtual Destructors
    - Casting
    - Dymamic Casting
+   - Structured Bindings
    - Singletons
    - Argument Evaluation Order
    - Iterators
@@ -99,7 +100,6 @@ TODO: Add links for each sub-section.
    - Making and Working with Libraries
    - Conditional and Action Breakpoints
    - Precompiled Headers
-   - Structured Bindings
    - Continuous Integration
    - Static Analysis
 - [Writing Our Own Data Structures](#writing-our-own-data-structures)
@@ -455,7 +455,30 @@ delete[] arr_2d;
    - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
 
 ### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
-- TODO
+- Maps allow us to associate a _key-value_ pair (a dictionary in Python).
+- `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
+- In a tree data structure, elements are sorted via comparison (typically using a less than operator). That way, when you iterate over a map, you're iterating over the elements in a sorted order.
+- `std::unordered_map` is a _hash-table_. "It uses a _hash function_ to hash the key and generate an index to figure out what which "bucket" your value is in." - Cherno. Because it is unordered, value retrieval has the _potential_ to be faster than with `std::map`.
+__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
+- Requirements of the key type choice:
+   - `std::unordered_map`: The key must be _hashable_. Note that pointers are _always_ hashable because a pointer is simply a 64-bit integer, i.e. `T* == uint64_t`.
+   - `std::map`: The key type must implement the less than operator, `operator<`. The less than operator not only plays the role of comparison for an ordered map, it also defines a unique key within the map. So if we attempt to add a new element that evaluates as "equal to" an existing element in the map, that new element will not be added.
+- Note that the index `[]` operator for a map works strictly as an insertion operator. There is no `const` version of the index operator, i.e. `[]` works _only_ as a _setter_, and not as a _getter_.
+```
+std::unordered_map<std:string, CityRecord> cities;
+
+// The following will return a reference to the value stored by the "Berlin" key
+// if it exists, otherwise, it will create the "Berlin" key with a possibly
+// non-initialized CityRecord instance.
+CityRecord& berlin_data = cities["Berlin"]
+```
+   - This can actually be useful in terms of creating an object _in-place_ rather than having to create it in the local stack frame and then copy it into the map.
+   - If we want to retrieve data without inserting it, we need to use `at()`.
+   - __Best Practice__: Prefer `at()` for retreiving map elements because it works for both non-`const` and `const` maps.
+- Iteration: recall that `std::vector` stores its data in _contiguous_ memory and this improves the efficiency of iterating over a vector. Iterating over the elements of a vector will _always_ be faster than iterating over the elements of a map.
+   - Note that it is _not_ guaranteed that the elements of a `std::unordered_map` will be kept in the order in which they were inserted.
+
+
 
 ## Memory Management in C++
 
@@ -701,6 +724,32 @@ int main() {
 - If RTTI is enabled, dynamic casting happens at runtime, not at compile time which means it comes with some performance cost.
 - Other _managed_ langagues, like Python, have function like `isinstance()` to achieve the same behavior.
 - See example in README from ### Video #69__ for how the failure of a `dynamic_cast` can be useful.
+
+### Video #75: Structured Bindings
+- Structed Bindings are a new feature to C++17 that allow us to handle multiple return values [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c) in a cleaner way.
+- Structured bindings allow us to "cleanly" return things like Tuples and Pairs.
+- In [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c), Cherno said that her preferred returning an instance of a struct that contains the members he wanted to return, but his opinion has changed somewhat to prefer returning tuples and/or pairs via _structured bindings_.
+- Recall that when returning a `std::tuple` (or `std::pair`), accessing the tuple members was a bit ugly, and we had to use `std::get` and an index that wasn't very human-readable:
+```
+std::tuple<std::string, int> create_person(std::string name, int age) {
+   return { name, age };
+}
+
+std::tuple<std::string, int> person = create_person("Cherno", 24);
+std::string& name = std::get<0>(person);
+int age = std::get<1>(person);
+```
+- `std::tie` offers a slightly cleaner implentation that we didn't touch on before, but returning a struct with named members is still probably a better idea than this.
+```
+std::string name;
+int age;
+std::tie(name, age) = create_person("Cherno", 24);
+```
+- This is where _structured bindings_ come to the rescue!
+```
+auto [name, age] = create_person("Cherno", 24);
+```
+- The advantage with using structured bindings is that we don't necessarily need to create all sorts of unnecessary struct types that may only be used in a handleful of places. This allows us to declutter our namespaces and remove unnecessary types.
 
 ### Video #82: Singletons in C++
 - A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
