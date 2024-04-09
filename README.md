@@ -400,8 +400,8 @@ i: 3
 - Dynamic arrays store their memory contiguously (in line, not fragmented in memory). This is optimal for any operation that requires iterating over the vector.
 - When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of copying largely solves this issue, but not entirely because there is still some copying involved.
 - __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
-- __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
-__Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
+   - __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when that vector may need to be resized frequently.
+- __Best Practice:__ Prefer passing dymanic arrays by `const` reference to avoid uncessary copying.
 - `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
 
 ### Video #47: Optimizing the use of std::vector in C++
@@ -468,7 +468,7 @@ delete[] arr_2d;
 - `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
    - In a tree data structure, elements are sorted via comparison (typically using a less than operator). That way, when you iterate over a map, you're iterating over the elements in a sorted order.
 - `std::unordered_map` is a _hash-table_. "It uses a _hash function_ to hash the key and generate an index to figure out what which "bucket" your value is in." - Cherno. Because it is unordered, value retrieval has the _potential_ to be faster than with `std::map`.
-   -__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
+-__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
 - Requirements of the key type choice:
    - `std::unordered_map`: The key must be _hashable_. Note that pointers are _always_ hashable because a pointer is simply a 64-bit integer, i.e. `T* == uint64_t`.
       - A hash function is _not_ required to return a unique hash. Two things with the same hash will be stored in the same bucket, which is inefficient for lookups, but ut hash collisions will not compromise the map.
@@ -700,7 +700,7 @@ class is that the Base constructor is called first, followed by the Derived
 constructor. When the Derived instance is destroyed, the reverse order occurs.
 - In order to _guarantee_ that the Base destructor is called, we can make the Base destructor as `virtual` (see `app/virtual_destructors.cpp` for an example).
 - __Best Practice:__ When creating an class that we intend to be extended, i.e. derived from or sub-classed, we __need to__ declare its destructor as `virtual`. Otherwise, we cannot _safely_ extend that class in any case where we want to treat the derived class as if it were an instance of the base class, e.g. when passing a derived object to a function that may delete the derived instance via a base class pointer.
-__Best Practice:__ [When should we __not__ use a `virtual` destructor?](https://stackoverflow.com/questions/300986/when-should-you-not-use-virtual-destructors)
+- __Best Practice:__ [When should we __not__ use a `virtual` destructor?](https://stackoverflow.com/questions/300986/when-should-you-not-use-virtual-destructors)
    1. When we have no intention on deriving from the class.
    2. The class will never be instantiated on the heap.
    3. No intention to delete an derived instance via a base-class pointer. (But how can know that the codebase won't be extended in some way in the future in such a way that would delete a derived instance via a base class pointer?)
@@ -938,8 +938,8 @@ auto value = std::get_if<std::string>(&data);
 ### Video #78: How to Store ANY Data in C++
 - New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
 - Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
-__Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
-__Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
+- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
 - [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 ## Move Semantics
