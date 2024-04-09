@@ -111,7 +111,7 @@ TODO: Add links for each sub-section.
    - Continuous Integration
    - Static Analysis
 
-- [Writing Our Own Data Structures](#writing-our-own-data-structures)
+- [Writing Our Own Data Structures](#writing-our-own-data-structures) (Putting it all Together!)
    - [(91) Custom Array](#video-91-array---making-data-structures-in-c)
    - [(92) Dynamic Array (Vector)](#video-92-vectordynamic-array---making-data-structures-in-c)
    - [(94) Writing an Iterator](#video-94-writing-an-iterator-in-c)
@@ -376,19 +376,19 @@ i: 3
 - When to use `auto`?
    - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
    - For iterators in for loops:
-```
-std::vector<std::string> strings;
+   ```
+   std::vector<std::string> strings;
 
-// This is ugly and long
-for (std::vector<strd::string>::iterator it; strings.begin(), it != strings.end(), it++) {
-   // do something
-}
+   // This is ugly and long
+   for (std::vector<std::string>::iterator it; strings.begin(), it != strings.end(), it++) {
+      // do something
+   }
 
-// This is much cleaner and easier to read
-for (auto it; strings.begin(), it != strings.end(), it++) {
-   // do something
-}
-```
+   // This is much cleaner and easier to read
+   for (auto it; strings.begin(), it != strings.end(), it++) {
+      // do something
+   }
+   ```
 - If you need a reference, use `auto&`.
 
 ## Data Structures in C++
@@ -398,7 +398,7 @@ for (auto it; strings.begin(), it != strings.end(), it++) {
 - `std::vector` is actually a dynamic array (list) - _dynamic_ in the sense that it can be resized, e.g. extended, appended to, etc.
 - When you exceed the allocated size of a particular `std::vector` instance, it creates a new array in memory, copies the contents of the original vector into the new vector and deletes the original vector. In practice, this re-allocation can occur quite often and can result in performance losses.
 - Dynamic arrays store their memory contiguously (in line, not fragmented in memory). This is optimal for any operation that requires iterating over the vector.
-- When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of cpying largely solves this issue, but not entirely because there is still come copying involved.
+- When this can become non-optimal is when you anticipate that your vector will need to be resized frequently because this will require copying the objects themselves over and over. _Moving_ instead of copying largely solves this issue, but not entirely because there is still some copying involved.
 - __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
 - __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when thart vector may need to be resized frequently.
 __Best Practice:__ Prefer passing dymanic arrays by const reference to avoid uncessary copying.
