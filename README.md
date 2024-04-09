@@ -468,7 +468,7 @@ delete[] arr_2d;
 - `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
    - In a tree data structure, elements are sorted via comparison (typically using a less than operator). That way, when you iterate over a map, you're iterating over the elements in a sorted order.
 - `std::unordered_map` is a _hash-table_. "It uses a _hash function_ to hash the key and generate an index to figure out what which "bucket" your value is in." - Cherno. Because it is unordered, value retrieval has the _potential_ to be faster than with `std::map`.
--__Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
+- __Best Practice:__ Because of this performance difference, prefer using `std::unordered_map` over `std::map` unless you need your elements to be sorted.
 - Requirements of the key type choice:
    - `std::unordered_map`: The key must be _hashable_. Note that pointers are _always_ hashable because a pointer is simply a 64-bit integer, i.e. `T* == uint64_t`.
       - A hash function is _not_ required to return a unique hash. Two things with the same hash will be stored in the same bucket, which is inefficient for lookups, but ut hash collisions will not compromise the map.
@@ -637,9 +637,9 @@ int main() {
 - At compile-time, a templated function only gets created (and linked) for the particular types that it's actually called within the source code.
 - If a templated function is _never_ called in your code, the the compiler never actually creates any versions of the function, and it's possible to have errors in a templated function that can go undetected.
 - The STL (Standard _Template_ Library) is a collection of standarized templated classes.
-- __Best Practices:__ When to use templates:
+- __Best Practice:__ When to use templates:
    - Logging systems, buffers than need to contain various types.
-- __Best Practices:__ When not to use templates:
+- __Best Practice:__ When not to use templates:
    - ...
 
 ### Video #55: Macros in C++
