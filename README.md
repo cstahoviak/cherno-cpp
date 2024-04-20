@@ -12,107 +12,111 @@ If you don't care about these things, don't choose C++!
 ## Contents
 This tutorial series will cover the following topics:
 
-- [Introduction - How C++ Works](#introduction---how-c-works)
-   - [(1) Welcome to C++](#video-1-welcome-to-c-what-well-be-learning)
-   - How the C++ Compiler Works
-   - How the C++ Linker Works
-   - How C++ Works
+- Introduction - How C++ Works
+   - (1) [Welcome to C++](#video-1-welcome-to-c-what-well-be-learning)
+   - (5) [How C++ Works](#video-5-how-c-works)
+   - (6) [TODO: How the C++ Compiler Works](#video-6-how-the-c-compiler-works)
+   - (7) [TODO: How the C++ Linker Works](#video-7-how-the-c-linker-works)
 
-- [C++ Fundamentals](#c-fundamentals)
-   - [(8) Variables](#video-8-variables-in-c)
-   - Functions
-   - Header Files
-   - Conditions and Branching
-   - Control Flow
-   - Pointers
-   - References
-   - Classes vs. Structs
-   - `static`
-   - Enums
-   - Destructors
-   - Inheritance
-   - Virtual Functions
-   - Interfaces (Pure Virtual Functions)
-   - Visibility
-   - `const`
-   - `mutable`
-   - Member Initializer Lists
-   - Ternary Operators
-   - How to Create/Instantiate Objects
-   - `new`
-   - Implicit Coversion and the `explicit` Keyword
-   - Operators and Operator Overloading
-   - `this`
-   - Copying and Copy Constructors
-   - The Arrow `->` Operator
-   - Local Static
-   - `auto`
+- C++ Fundamentals
+   - (8) [Variables](#video-8-variables-in-c)
+   - (9) [Functions](#video-9-functions-in-c)
+   - (10) [Header Files](#video-10-header-files)
+   - (12) [Conditions and Branching](#video-12-conditions-and-branching-in-c)
+   - (15) [Control Flow](#video-15-control-flow-in-c)
+   - (16) [Pointers](#video-16-pointers-in-c)
+   - (17) [References](#video-17-references-in-c)
+   - (19) [Classes vs. Structs](#video-19-classes-vs-structs-in-c)
+   - (21) [`static`](#video-21-static-in-c)
+   - (23) [Enums](#video-23-enums-in-c)
+   - (25) [Destructors](#video-25-destructors-in-c)
+   - (26) [Inheritance](#video-26-inheritance-in-c)
+   - (27) [Virtual Functions](#video-68-virtual-destructors-in-c)
+   - (28) [Interfaces (Pure Virtual Functions)](#video-28-interfaces-in-c-pure-virtual-functions)
+   - (29) [Visibility](#video-29-visibility-in-c)
+   - (33) [`const`](#video-33-const-in-c)
+   - (34) [`mutable`](#video-34-the-mutable-keyword-in-c)
+   - (35) [Member Initializer Lists](#video-35-member-initializer-lists-in-c)
+   - (36) [Ternary Operators](#video-36-ternary-operators-in-c)
+   - (37) [How to Create/Instantiate Objects](#video-37-how-to-createinstantiate-objects-in-c)
+   - (38) [`new`](#video-38-the-new-keyword-in-c)
+   - (39) [Implicit Coversion and the `explicit` Keyword](#video-39-implicit-conversion-and-the-explicit-keyword-in-c)
+   - (40) [Operators and Operator Overloading](#video-40-operators-and-operator-overloading-in-c)
+   - (41) [`this`](#video-41-this-keyword-in-c)
+   - (44) [Copying and Copy Constructors](#video-44-copying-and-copy-constructors-in-c)
+   - (45) [The Arrow `->` Operator](#video-45-the-arrow-operator-in-c)
+   - (48) [Local Static](#video-48-local-static-in-c)
+   - (56) [`auto`](#video-56-the-auto-keyword-in-c)
 
-- [Data Structures](#data-structures-in-c)
-   - [(30) TODO: Arrays](#video-30-arrays-in-c)
-   - [(46) Dynamic Arrays (`std::vector`)](#video-46-dynamic-arrays-in-c-stdvector)
-   - [(47) Optimizing the Use of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c)
-   - [(57) Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
-   - [(64) Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
-   - [(67) Unions](#video-67-unions-in-c)
-   - [(100) Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
+- Data Structures
+   - (30) [TODO: Arrays](#video-30-arrays-in-c)
+   - (46) [Dynamic Arrays (`std::vector`)](#video-46-dynamic-arrays-in-c-stdvector)
+   - (47) [Optimizing the Use of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c)
+   - (57) [Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
+   - (64) [Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
+   - (67) U[nions](#video-67-unions-in-c)
+   - (100) [Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
 
-- [Memory Management in C++](#memory-management-in-c)
-   - [(42) Object Lifetime (Stack/Scope Lifetime)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
-   - [(43) Smart Pointers](#video-43-smart-pointers-in-c)
-   - [(54) Stack vs. Heap Memory](#video-54-stack-vs-heap-memory-in-c)
+- Memory Management in C++
+   - (42) [Object Lifetime (Stack/Scope Lifetime)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
+   - (43) [Smart Pointers](#video-43-smart-pointers-in-c)
+   - (54) [Stack vs. Heap Memory](#video-54-stack-vs-heap-memory-in-c)
    - Type Punning (TODO: maybe put it here?)
-   - [(71) Safety in Modern C++ and How to Teach It](#video-71-safety-in-modern-c-and-how-to-teach-it)
-   - [(84) Track Memory Allocations the Easy Way](#video-84-track-memory-allocations-the-easy-way-in-c)
+   - (71) [Safety in Modern C++ and How to Teach It](#video-71-safety-in-modern-c-and-how-to-teach-it)
+   - (84) [Track Memory Allocations the Easy Way](#video-84-track-memory-allocations-the-easy-way-in-c)
 
-- [C++ Advanced Topics](#c-advanced-topics)
-   - [(52) How to Deal with Multiple Return Values](#video-52-how-to-deal-with-multiple-return-values-in-c)
-   - Templates
-   - Macros
-   - Function Pointers
-   - Lambdas
-   - Namespaces
-   - Sorting
-   - Type Punning
-   - Virtual Destructors
-   - Casting
-   - Dymamic Casting
-   - Structured Bindings
-   - Singletons
-   - Argument Evaluation Order
-   - Iterators
-   - What Exactly is `NULL`?
+- C++ Advanced Topics
+   - (52) [How to Deal with Multiple Return Values](#video-52-how-to-deal-with-multiple-return-values-in-c)
+   - (53) [Templates](#video-53-templates-in-c)
+   - (55) [Macros](#video-55-macros-in-c)
+   - (58) [Function Pointers](#video-58-function-pointers-in-c)
+   - (59) [Lambdas](#video-59-lambdas-in-c)
+   - (61) [Namespaces](#video-61-namespaces-in-c)
+   - (65) [Sorting](#video-65-sorting-in-c)
+   - (66) [Type Punning](#video-66-type-punning-in-c)
+   - (68) [Virtual Destructors](#video-68-virtual-destructors-in-c)
+   - (69) [Casting](#video-69-casting-in-c)
+   - (73) [Dymamic Casting](#video-73-dynamic-casting-in-c)
+   - (75) [Structured Bindings](#video-75-structured-bindings)
+   - (82) [Singletons](#video-82-singletons-in-c)
+   - (88) [Argument Evaluation Order](#video-88-argument-evaluation-order-in-c)
+   - (93) [Iterators](#video-93-iterators-in-c)
+   - (96) [TODO: Binary and Bitwise Operators](#video-96-intro-to-binary-and-bitwise-operators-in-c)
+   - (97) [TODO: Bitwise AND, OR, XOR and NOT](#video-97-bitwise-and-or-xor-and-not-----c)
+   - (101) [TODO: What Exactly is `NULL`?](#video-101-what-exactly-is-null)
 
-- [Performance & Benchmarking](#performance--benchmarking)
-   - [(62) Threads](#video-62-threads-in-c)
-   - [(63) Timing](#video-63-timing-in-c)
-   - [(79) How to Make C++ Run Faster with `std::async`](#video-79-how-to-make-c-run-faster-with-stdasync)
-   - [(80) TODO: How to Make your Strings Faster](#video-80-how-to-make-your-strings-faster-in-c)
-   - [(83) TODO: Small String Optimizations](#video-83-small-string-optimizations-in-c)
+- Performance & Benchmarking
+   - (62) [Threads](#video-62-threads-in-c)
+   - (63) [Timing](#video-63-timing-in-c)
+   - (74) [Benchmarking](#video-74-benchmarking-in-c)
+   - (79) [How to Make C++ Run Faster with `std::async`](#video-79-how-to-make-c-run-faster-with-stdasync)
+   - (80) [TODO: How to Make your Strings Faster](#video-80-how-to-make-your-strings-faster-in-c)
+   - (83) [TODO: Small String Optimizations](#video-83-small-string-optimizations-in-c)
 
-- [Storing Multiple Types of Data](#storing-multiple-types-of-data)
-   - [(76) How to Deal with Optional Data](#video-76-how-to-deal-with-optional-data-in-c)
-   - [(77) Multiple Types of Data in a Single Variable](#video-77-multiple-types-of-data-in-a-single-variable-in-c)
-   - [(78) How to Store ANY Data](#video-78-how-to-store-any-data-in-c)
+- Storing Multiple Types of Data
+   - (76) [How to Deal with Optional Data](#video-76-how-to-deal-with-optional-data-in-c)
+   - (77) [Multiple Types of Data in a Single Variable](#video-77-multiple-types-of-data-in-a-single-variable-in-c)
+   - (78) [How to Store ANY Data](#video-78-how-to-store-any-data-in-c)
 
-- [Move Semantics](#move-semantics)
-   - [(85) l-values and r-values](#video-85-l-values-and-r-values-in-c)
-   - [(89) Move Semantics](#video-89-move-semantics-in-c)
-   - [(90) `std::move` and the Move Assignment Operator](#video-90-stdmove-and-the-move-assigment-operator-in-c)
+- Move Semantics
+   - (85) [l-values and r-values](#video-85-l-values-and-r-values-in-c)
+   - (89) [Move Semantics](#video-89-move-semantics-in-c)
+   - (90) [`std::move` and the Move Assignment Operator](#video-90-stdmove-and-the-move-assigment-operator-in-c)
 
-- [Workflow and Debugging](#todo-workflow--debugging)
-   - [(49) Using Libraries](#video-49-using-libraries-in-c)
-   - Using Dynamic Libraries
-   - Making and Working with Libraries
-   - Conditional and Action Breakpoints
-   - Precompiled Headers
-   - Continuous Integration
-   - Static Analysis
+- Workflow and Debugging
+   - (49) [Using Libraries](#video-49-using-libraries-in-c)
+   - (50) [TODO: Using Dynamic Libraries](#video-50-using-dynamic-libraries-in-c)
+   - (51) [TODO: Making and Working with Libraries](#video-51-making-and-working-with-libraries-in-c)
+   - (70) [TODO: Conditional and Action Breakpoints](#video-70-conditional-and-action-breakpoints-in-c)
+   - (72) [TODO: Precompiled Headers](#video-72-precompiled-headers-in-c)
+   - (86) [TODO: Continuous Integration](#video-86-continuous-integration-in-c)
+   - (87) [TODO: Static Analysis](#video-87-static-analysis-in-c)
 
-- [Writing Our Own Data Structures](#writing-our-own-data-structures) (Putting it all Together!)
-   - [(91) Custom Array](#video-91-array---making-data-structures-in-c)
-   - [(92) Dynamic Array (Vector)](#video-92-vectordynamic-array---making-data-structures-in-c)
-   - [(94) Writing an Iterator](#video-94-writing-an-iterator-in-c)
+- Writing Our Own Data Structures
+   - (91) [Custom Array](#video-91-array---making-data-structures-in-c)
+   - (92) [Dynamic Array (Vector)](#video-92-vectordynamic-array---making-data-structures-in-c)
+   - (94) [Writing an Iterator](#video-94-writing-an-iterator-in-c)
+
 
 ## Introduction - How C++ Works
 
@@ -123,12 +127,6 @@ This tutorial series will cover the following topics:
 - Templates: _"If you know how to use templates well they're extremely powerful and will make your life a lot easier."_ - Cherno
 - Data structures (and how to make them faster than the standard STL data structures).
 - Low-level optimization via "compiler-intrinsics" and assembly.
-
-### Video #6: How the C++ Compiler Works
-- TODO:
-
-### Video #7: How the C++ Linker Works
-- TODO:
 
 ### Video #5: How C++ Works
 - What we want to know: How to we go from source code (.cpp files) to an executable binary?
@@ -141,6 +139,13 @@ This tutorial series will cover the following topics:
 - The _linker_ "glues" the object files into an executable.
    - A linker error can happen when a symbol (e.g. a function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
    - This error is referred to as an "unresolved external symbol."
+
+### Video #6: How the C++ Compiler Works
+- TODO:
+
+### Video #7: How the C++ Linker Works
+- TODO:
+
 
 ## C++ Fundamentals
 
@@ -389,6 +394,7 @@ i: 3
    ```
 - If you need a reference, use `auto&`.
 
+
 ## Data Structures in C++
 
 ### Video #46: Dynamic Arrays in C++ (std::vector)
@@ -551,6 +557,7 @@ delete[] heap_arr;
 
 ### Video #84: Track Memory Allocations the Easy Way in C++
 - TODO:
+
 
 ## C++ Advanced Topics
 
@@ -814,6 +821,7 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 ### Video #101: What Exactly is `NULL`?
 - TODO
 
+
 ## Performance & Benchmarking
 
 ### Video #62: Threads in C++
@@ -907,6 +915,7 @@ void EditiorLayer::LoadMeshes() {
 ### Video #83: Small String Optimizations in C++
 - TODO:
 
+
 ## Storing Multiple Types of Data
 
 ### Video #76: How to Deal with Optional Data in C++
@@ -938,6 +947,7 @@ auto value = std::get_if<std::string>(&data);
 - __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
 - __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
 - [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
+
 
 ## Move Semantics
 
@@ -1006,7 +1016,8 @@ print_name(full);
    - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the _Rule of Fifths_. More on this later.
 - `std::move` is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
 
-## TODO: Workflow & Debugging
+
+## Workflow & Debugging
 Add a section that groups together videos about workflow and debugging.
 
 ### Video #49: Using Libraries in C++
@@ -1026,9 +1037,6 @@ Add a section that groups together videos about workflow and debugging.
 ### Video #72: Precompiled Headers in C++
 - TODO:
 
-### Video #75: Structured Bindings in C++
-- TODO:
-
 ### Video #86: Continuous Integration in C++
 - TODO:
 
@@ -1036,6 +1044,7 @@ Add a section that groups together videos about workflow and debugging.
 - How do we write _better_ code, i.e. code that produces fewer bugs.
 - How do we use a _static analyzer_ to improve our code?
 - TODO: Finish this video.
+
 
 ## Writing Our Own Data Structures
 
