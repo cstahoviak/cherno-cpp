@@ -54,7 +54,7 @@ This tutorial series will cover the following topics:
    - (47) [Optimizing the Use of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c)
    - (57) [Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
    - (64) [Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
-   - (67) U[nions](#video-67-unions-in-c)
+   - (67) [Unions](#video-67-unions-in-c)
    - (100) [Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
 
 - Memory Management in C++
