@@ -5,6 +5,7 @@
 // Needed for uint64_t
 #include <cstddef>
 #include <iostream>
+#include <optional>
 #include <map>
 #include <unordered_map>
 #include <vector>
