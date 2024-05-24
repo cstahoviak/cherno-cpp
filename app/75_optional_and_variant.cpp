@@ -1,12 +1,12 @@
 /*
-* Video #75: Optional Data
+* Video #76: Optional Data
 *
 * In the example below, we show the difference between using std::optional and
 * std::variant when attempting to get more information from the return value of
 * a function.
 *
-* Video #75: std::optional
-* Video #76: std::variant
+* Video #76: std::optional
+* Video #77: std::variant
 */
 
 #include <fstream>

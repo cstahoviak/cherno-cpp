@@ -138,7 +138,7 @@ int main() {
     founded_map[cities[name]] = 1800;
   }
 
-  // Iterate over a map and use structured bindings (in C++!7) to access the
+  // Iterate over a map and use structured bindings (in C++17) to access the
   // key-value pairs.
   std::cout << "\nIterating over ordered map:" << std::endl;
   for (auto& [record, year] : founded_map) {

@@ -60,7 +60,7 @@ int main() {
   // even further.
   std::cout << "\nC++17 range-based iteration over an unordered map:"
     << std::endl;
-  for (auto [key, value] : map) {
+  for (auto& [key, value] : map) {
     std::cout << key << ": " << value << std::endl;
   }
 }
