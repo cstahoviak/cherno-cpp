@@ -764,6 +764,7 @@ std::tie(name, age) = create_person("Cherno", 24);
 auto [name, age] = create_person("Cherno", 24);
 ```
 - The advantage with using structured bindings is that we don't necessarily need to create all sorts of unnecessary struct types that may only be used in a handleful of places. This allows us to declutter our namespaces and remove unnecessary types.
+- See `app/93_iterators.cpp` and `app/100_maps.cpp` for examples of using structured bindings.
 
 ### Video #82: Singletons in C++
 - A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
