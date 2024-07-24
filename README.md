@@ -64,6 +64,7 @@ This tutorial series will cover the following topics:
    - Type Punning (TODO: maybe put it here?)
    - (71) [Safety in Modern C++ and How to Teach It](#video-71-safety-in-modern-c-and-how-to-teach-it)
    - (84) [Track Memory Allocations the Easy Way](#video-84-track-memory-allocations-the-easy-way-in-c)
+   - (103) [Weak Pointers (`std::weak_ptr`)](#video-105-weak-pointer-in-c-stdweak_ptr)
 
 - C++ Advanced Topics
    - (52) [How to Deal with Multiple Return Values](#video-52-how-to-deal-with-multiple-return-values-in-c)
@@ -83,7 +84,8 @@ This tutorial series will cover the following topics:
    - (93) [Iterators](#video-93-iterators-in-c)
    - (96) [TODO: Binary and Bitwise Operators](#video-96-intro-to-binary-and-bitwise-operators-in-c)
    - (97) [TODO: Bitwise AND, OR, XOR and NOT](#video-97-bitwise-and-or-xor-and-not-----c)
-   - (101) [TODO: What Exactly is `NULL`?](#video-101-what-exactly-is-null)
+   - (101) [What Exactly is `NULL`?](#video-101-what-exactly-is-null)
+   - (103) [Conversion Operators](#video-103-conversion-operators-in-c)
 
 - Performance & Benchmarking
    - (62) [Threads](#video-62-threads-in-c)
@@ -558,6 +560,9 @@ delete[] heap_arr;
 ### Video #84: Track Memory Allocations the Easy Way in C++
 - TODO:
 
+### [Video #105 Weak Pointer in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
+- _"Weak pointers - the pointers for those of you who are just not quite strong enough to use proper pointers."_ - Cherno
+
 
 ## C++ Advanced Topics
 
@@ -625,7 +630,7 @@ struct FileInfo {
 }
 
 FileInfo f() {
-   // Take advatage of "implicit conversion to create the FileInfo object
+   // Take advatage of "implicit" conversion to create the FileInfo object
    return {"local_dir", "my_file", "txt"};
 }
 
@@ -819,7 +824,7 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 ### Video #97: Bitwise AND, OR, XOR and NOT (&, |, ^, ~) C++
 - TODO
 
-### Video #101: What Exactly is `NULL`?
+### [Video #101: What Exactly is `NULL`?](https://www.youtube.com/watch?v=PksUUwvq-po&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=101)
 - In _managed languages_ like C# or Java, if you try to use an object that's `NULL`, you'll get a `NullReferenceException` (C#) or a `NullPointerExeption` (Java). That's because these languages do some "hand holding" to help you from fucking up too badly. But what about C++?
 - What is the _value_ of `NULL` in C++?
    - `void* value = nullptr;`
@@ -857,21 +862,44 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
    - In C, since there are no classes, we would create `EntityData` as a struct and then implement its member functions separately because structs in C cannot have member functions.
    - Surprisingly, this separation of data and member functions is exactly what the C++ compiler creates for us!
    - __In C++, the compiler converts member functions of a class to "regular" free-floating functions (that exist outside of the class) that take in an instance of the class as their first argument__. That instance is referred to as the `this` keyword!
-   ```
-   const std::string& name(const EntityData* self) {
-      return self->name_;
-   }
+      ```
+      const std::string& name(const EntityData* self) {
+         return self->name_;
+      }
 
-   void print_type(EntityData* self) {
-      // Note that if self == nullptr, this has no effect below
-      std::cout << "Entity\n";
-   }  
-   ```
+      void print_type(EntityData* self) {
+         // Note that if self == nullptr, this has no effect below
+         std::cout << "Entity\n";
+      }  
+      ```
    - So now we understand that when we do the following, we're not _actually_ calling a function that exists _within_ with Entity class. We're actually calling out to a _stand-alone_ function at some location within our compiled binary, and calling that particular function is totally valid and will not crash since `self` is never dereferenced by the `print_type()` member function.
    ```
    Entity* entity = nullptr;
    entity->print_type();
    ```
+
+### [Video #103: Conversion Operators in C++](https://www.youtube.com/watch?v=OK0G4cmeX-I&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=103)
+- Let's consider a simple example.
+   ```
+   struct Orange {
+      operator float() { return 5.5f; }
+   }
+
+   void print_float(float value) {
+      std::cout << value << "\n";
+   }
+
+   int main() {
+      Orange orange;
+
+      // Conversion operators allow for the following to work
+      print_float(orange)
+      std::cout << float(orange) << std::endl;
+   }
+   ```
+- See `app/103_conversion_operators.cpp` for more detailed examples.
+- (from YouTube comments) _"Pretty much 99% of conversions operators should be marked explicit (even boolean ones) to prevent weird bugs and unexpected conversions from happening."_
+- (from YouTube comments) _"Like with single argument constructors, the default should be to add the explicit keyword and only omit if absolutely necessary."_
 
 
 
