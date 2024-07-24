@@ -820,7 +820,59 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 - TODO
 
 ### Video #101: What Exactly is `NULL`?
-- TODO
+- In _managed languages_ like C# or Java, if you try to use an object that's `NULL`, you'll get a `NullReferenceException` (C#) or a `NullPointerExeption` (Java). That's because these languages do some "hand holding" to help you from fucking up too badly. But what about C++?
+- What is the _value_ of `NULL` in C++?
+   - `void* value = nullptr;`
+   - If we take a look at the _value_ of `value`, we'll see that it's `0x00000000`, i.e. 8 bytes of all zeros.
+   - Why 8 bytes? Because this example was built on a 64 bit system, and __any__ pointer (or memory address) on a 64 bit system will __always__ be 8 bytes. On a 32 bit system, pointers are 4 bytes.
+- What about `NULL` (as opposed to `nullptr`)?
+   - `NULL` is from C, however, it's totally acceptable to use it in C++ too.
+   - Let's look at the definition of `NULL`:
+   ```
+   #ifndef NULL
+      #ifdef __cplusplus
+         #define NULL 0
+      #else
+         #define NULL (void *)0)
+      #endif
+   #endif
+   ```
+   - So really, `NULL` (in C++) is just an integer defined as `0`.
+   - But be careful, because `0` and `0x00000000` are __not__ the same thing. One is an integer (not a valid memory address) and the other is a memory address (a pointer).
+- Let's look at an interesting example that will teach us more about the role of the C++ compiler. Consider the code from the `app/101_null.cpp` app.
+   ```
+   class Entity {
+      public:
+         Entity() = default;
+
+         const std::string& name() const { return name_; }
+         void print_type() { std::cout << "Entity\n"; }
+
+      private:
+         Entity* parent_;
+         std::string name_;
+   };
+   ```
+   - The code above is what we're used to in C++. But to understand the role of the compiler better, it's useful to understand how this class would be implemted in C (where classes do not exist).
+   - In C, since there are no classes, we would create `EntityData` as a struct and then implement its member functions separately because structs in C cannot have member functions.
+   - Surprisingly, this separation of data and member functions is exactly what the C++ compiler creates for us!
+   - __In C++, the compiler converts member functions of a class to "regular" free-floating functions (that exist outside of the class) that take in an instance of the class as their first argument__. That instance is referred to as the `this` keyword!
+   ```
+   const std::string& name(const EntityData* self) {
+      return self->name_;
+   }
+
+   void print_type(EntityData* self) {
+      // Note that if self == nullptr, this has no effect below
+      std::cout << "Entity\n";
+   }  
+   ```
+   - So now we understand that when we do the following, we're not _actually_ calling a function that exists _within_ with Entity class. We're actually calling out to a _stand-alone_ function at some location within our compiled binary, and calling that particular function is totally valid and will not crash since `self` is never dereferenced by the `print_type()` member function.
+   ```
+   Entity* entity = nullptr;
+   entity->print_type();
+   ```
+
 
 
 ## Performance & Benchmarking
