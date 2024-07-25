@@ -16,7 +16,7 @@ std::ostream& operator<<(std::ostream& stream, const Vec3& vec) {
   std::stringstream ss;
   ss << &vec;
   return stream << "Vec3(x=" << vec.x << ", y=" << vec.y << ", z=" << 
-    vec.z << ") (" << ss.str().substr(ss.str().size() - 4, 4) << ")";
+    vec.z << ") (0x" << ss.str().substr(ss.str().size() - 4, 4) << ")";
 }
 
 std::ostream& operator<<(std::ostream& stream, const String& string) {

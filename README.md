@@ -1200,13 +1200,13 @@ Add a section that groups together videos about workflow and debugging.
 - Resizing strategies:
    - Maybe revisit [Video #47: Optimizing the Usage of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c).
    - Instead of copying, we can _move_ the contents of the old vector into the newly resized vector.
-   - Note that in more _sophisticated_ dynamic array (vector) implementations, you have the option of specifying a _custom allocator_ that may not necesarily hit the heap each time it needs to resize. This is beyond the scope of this video, but it can be really useful if you're writing a custom piece of software.
+   - (13:10) Note that in more _sophisticated_ dynamic array (vector) implementations, you have the option of specifying a _custom allocator_ that may not necesarily hit the heap each time it needs to resize. This is beyond the scope of this video, but it can be really useful if you're writing a custom piece of software.
 - Two options for adding elements to our Vector:
    - `push_back`: Used to add an element to the Vector container by either copying or moving. Moving should be preferred.
    - `emplace_back`: Rather that constructing an instance of the element in the stack frame of the calling function and then _moving_ it into our `Vector` data storage, instead we construct the new element _in place_, i.e. in the memory that we've already allocated for it in `Vector::data_` by simply taking the arguments that we'll pass to the constructor the element type.
       - __Best Practice:__ Prefer _placement_ `new` for _truly_ constructing objects _in place_.
 - __Operator new and Operator delete:__ (`::operator new` and `::operator delete`)
-   - "A lot of care needs to be taken when you manually call the destructor of the objects in your container" - Cherno.
+   - _"A lot of care needs to be taken when you manually call the destructor of the objects in your container"_ - Cherno.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
 

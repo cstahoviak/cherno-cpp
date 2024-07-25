@@ -26,21 +26,45 @@ int main() {
     print_vector(vec);
   }
 
-  return 0;
-
   // Now let's use our custom Vec3 type with our Vector container
   std::cout << "\nUse our custom 'Vector' container with Vec3:" << std::endl;
 
   // Construct 3 Vec3 in the current stack frame and push them into our Vector.
   std::cout << "\nPush back Vec3 objects by copy:" << std::endl;
   {
+    /* For the following code snippet, Cherno's output looks like:
+     * Copy
+     * Destroy
+     * Copy
+     * Copy
+     * Destroy
+     * Destroy
+     * Copy
+     * Destroy
+     * 
+     * And mine looks like:
+     * Copy (Assignment)
+     * Destroyed
+     * Copy (Assignment)
+     * Destroyed
+     * Copy (Assignment)
+     * Copy (Assignment)
+     * Destroyed
+     * Destroyed
+     * Copy (Assignment)
+     * Destroyed
+     * 
+     * So where are the first two Copy/Destroy statements coming from?
+     */
     Vector<Vec3> vectors;
+
     Vec3 vec0 = Vec3(1.0f);
     Vec3 vec1 = Vec3(2, 3, 4);
     Vec3 vec2;
     vectors.push_back(vec0);
     vectors.push_back(vec1);
     vectors.push_back(vec2);
+
     print_vector(vectors);
   }
 

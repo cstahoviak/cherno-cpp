@@ -66,6 +66,11 @@ struct Vec3
   float y{0.0f};
   float z{0.0f};
 
+  // Simple Constructors
+  // Vec3() = default;
+  // Vec3(float scalar) : x(scalar), y(scalar), z(scalar) {}
+  // Vec3(float x, float y, float z): x(x), y(y), z(z) {}
+
   // A default constructor
   Vec3() { _init_memory_block(); }
 
@@ -82,17 +87,22 @@ struct Vec3
     // std::cout << "Copy Constructor\t" << *this << std::endl;
     std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
       << std::endl;
-      mem_block_ = other.mem_block_;
+      // mem_block_ = other.mem_block_;
   }
 
   // Move Constructor
   Vec3(Vec3&& other) : x(other.x), y(other.y), z(other.z) {
     // std::cout << "Move Constructor\t" << *this << std::endl;
-    std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
+    std::cout << "Vec3 Move Constructor:\t" << other << " -> " << *this
       << std::endl;
       mem_block_ = other.mem_block_;
       other.mem_block_ = nullptr;
   }
+
+  // If went we want to prevent a Vec3 instance from ever being copied, we
+  // could delete the Copy Constructor and the Copy Assignment operator.
+  // Vec3(const Vec3& other) = delete;
+  // Vec3& operator=(const Vec3& other) = delete;
 
   // Copy Assignment Operator
   Vec3& operator=(const Vec3& other) {
@@ -102,7 +112,7 @@ struct Vec3
     x = other.x;
     y = other.y;
     z = other.z;
-    mem_block_ = other.mem_block_;
+    // mem_block_ = other.mem_block_;
     return *this;
   }
 
@@ -116,6 +126,7 @@ struct Vec3
     y = other.y;
     z = other.z;
 
+    // Added at 37:35
     mem_block_ = other.mem_block_;
     other.mem_block_ = nullptr;
 
@@ -123,9 +134,12 @@ struct Vec3
   }
 
   ~Vec3() {
-    std::cout << "Destroyed\t\t" << *this << std::endl;
-    // Free the heap-allocated memory in the destructor
-    delete[] mem_block_;
+    std::cout << "Vec3 Destroyed\t\t" << this << std::endl;
+    // Free the heap-allocated memory in the destructor.
+    // TODO: My understanding is that if we use new[] (in _init_memory_block()),
+    // then we have to follow that with a delete[] call. But with this line, I
+    // get a segfault. This is addressed at 38:30 of video #92.
+    // delete[] mem_block_;
   }
 
   // Declare the stream insertion operator overload as a 'friend' of this
@@ -135,9 +149,9 @@ struct Vec3
 
   // Add a heap-allocated member to demonstrate how we need to take care when
   // removing items from a container, e.g. removing a Vec3 element from our
-  // custon Vector container.
+  // custom Vector container.
   private:
-    int* mem_block_;
+    int* mem_block_ = nullptr;
     size_t block_size_{10};
     
     void _init_memory_block() { mem_block_ = new int[block_size_]; }
