@@ -18,10 +18,15 @@ int main() {
     vec.push_back("Cherno");
     vec.push_back("C++");
     vec.push_back("Series");
+    vec.push_back("Vector");
+    vec.push_back("Vector");
+    vec.push_back("Vector");
 
     // Print the vector to verify that each push back succeeded
     print_vector(vec);
   }
+
+  return 0;
 
   // Now let's use our custom Vec3 type with our Vector container
   std::cout << "\nUse our custom 'Vector' container with Vec3:" << std::endl;

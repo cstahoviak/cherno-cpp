@@ -1066,7 +1066,7 @@ data structures, we probably want to support functionality like idexing and iter
 - New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
 - Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
 - __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
-- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves the problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [StackOverflow](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
 - [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 
@@ -1198,7 +1198,7 @@ Add a section that groups together videos about workflow and debugging.
    - A pointer to the beginning of a block of heap-allocated memory.
    - The ability to resize our vector when we run out of room to _push back_ a new element. This requires allocating a new block of memory on the heap, copying over the contents of the current vector, and then freeing the memory that was copied from.
 - Resizing strategies:
-   - Maybe revisit Video #47: Optimizing the Usage of `std::vector`.
+   - Maybe revisit [Video #47: Optimizing the Usage of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c).
    - Instead of copying, we can _move_ the contents of the old vector into the newly resized vector.
    - Note that in more _sophisticated_ dynamic array (vector) implementations, you have the option of specifying a _custom allocator_ that may not necesarily hit the heap each time it needs to resize. This is beyond the scope of this video, but it can be really useful if you're writing a custom piece of software.
 - Two options for adding elements to our Vector:
