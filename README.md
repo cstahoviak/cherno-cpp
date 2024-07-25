@@ -937,8 +937,8 @@ data structures, we probably want to support functionality like idexing and iter
       std::cout << float(orange) << std::endl;
    }
    ```
-- (from YouTube comments) _"Pretty much 99% of conversions operators should be marked explicit (even boolean ones) to prevent weird bugs and unexpected conversions from happening."_
-- (from YouTube comments) _"Like with single argument constructors, the default should be to add the explicit keyword and only omit if absolutely necessary."_
+- (from YouTube comments) _"Pretty much 99% of conversions operators should be marked `explicit` (even boolean ones) to prevent weird bugs and unexpected conversions from happening."_
+- (from YouTube comments) _"Like with single argument constructors, the default should be to add the `explicit` keyword and only omit if absolutely necessary."_
 - See `app/103_conversion_operators.cpp` for more detailed examples.
 
 
