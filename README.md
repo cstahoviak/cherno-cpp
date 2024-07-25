@@ -261,13 +261,13 @@ an object of a class that consists of non-primitive type members, i.e. members o
 - e.g. `std::string rank = (level >= MASTER_LVL) ? "Master" : "Novice"`
 - Using a ternary operator to do something like this is actually _faster_ because of something called _Return Value Optimization_.
 - In the example below, an empty string object called `rank` is created and then overriden with either "Master" or "Novice" once the conditional is evaluated. Using the ternary operator prevents `rank` from being created as an empty string object before being re-assigned.
-```
-std::string rank;
-if (level >= MASTER_LVL)
-   rank = "Master";
-else
-   rank = "Novice";
-```
+   ```
+   std::string rank;
+   if (level >= MASTER_LVL)
+      rank = "Master";
+   else
+      rank = "Novice";
+   ```
 - Worth noting that ternary operators can be nested, but this can quickly become confusing to read and isn't recommended.
 
 ### Video #37: How to Create/Instantiate Objects in C++
@@ -328,51 +328,51 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
 ### Video #45: The Arrow Operator in C++
 - The arrow operator `->` is used to _dereference_ a pointer.
 - The following lines are equivalent (the () are required in the first line because of operator precedence, i.e. dereferencing must take place before accessing the member method):
-```
-(*ptr).member_method();
-ptr->member_method();
-```
+   ```
+   (*ptr).member_method();
+   ptr->member_method();
+   ```
 - Because the `->` is an operator, it can be overloaded. This can useful if we choose to write our own scoped pointer class, e.g. `ScopedPtr`.
 - Bonus functionality: The arrow operator can be used to determine the offset in memory of a particular member variable, e.g:
-```
-struct Vec3
-{
-   // Floats are 4 bytes in length
-   float x, y, z;
-}
+   ```
+   struct Vec3
+   {
+      // Floats are 4 bytes in length
+      float x, y, z;
+   }
 
-int main() {
-   // Starting at zero (nullptr) give me the offset of the member y
-   int offset = (int)&((Vec3*)nullptr)->y;
-   <!-- int offset = (int)&((Vec3*)0)->y; -->
-   std::cout << offset << std::endl;
-}
+   int main() {
+      // Starting at zero (nullptr) give me the offset of the member y
+      int offset = (int)&((Vec3*)nullptr)->y;
+      <!-- int offset = (int)&((Vec3*)0)->y; -->
+      std::cout << offset << std::endl;
+   }
 
-Terminal Output:
-4
-```
+   Terminal Output:
+   4
+   ```
 
 ### Video #48: Local Static in C++
 - Can declare a variable as `static` in a local scope - this is different from the other two use cases of static that we've seen already.
 - Declaring a variable as `static` within a local scope (e.g. within a function) restricts access to that variable to that local scope, but extends its lifetime to the lifetime of the program.
-```
-void f() {
-   static int i = 0;
-   i++;
-   std::cout << "i: << i << std::endl;
-}
+   ```
+   void f() {
+      static int i = 0;
+      i++;
+      std::cout << "i: << i << std::endl;
+   }
 
-int main() {
-   f();
-   f();
-   f();
-}
+   int main() {
+      f();
+      f();
+      f();
+   }
 
-Terminal Output:
-i: 1
-i: 2
-i: 3
-```
+   Terminal Output:
+   i: 1
+   i: 2
+   i: 3
+   ```
 - Often use of local `static` variables are discouraged.
 - One possible use case is for _Singleton_ classses, i.e. a class that should only have one instance in existance.
 
@@ -381,19 +381,19 @@ i: 3
 - When to use `auto`?
    - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
    - For iterators in for loops:
-   ```
-   std::vector<std::string> strings;
+      ```
+      std::vector<std::string> strings;
 
-   // This is ugly and long
-   for (std::vector<std::string>::iterator it; strings.begin(), it != strings.end(), it++) {
-      // do something
-   }
+      // This is ugly and long
+      for (std::vector<std::string>::iterator it; strings.begin(), it != strings.end(), it++) {
+         // do something
+      }
 
-   // This is much cleaner and easier to read
-   for (auto it; strings.begin(), it != strings.end(), it++) {
-      // do something
-   }
-   ```
+      // This is much cleaner and easier to read
+      for (auto it; strings.begin(), it != strings.end(), it++) {
+         // do something
+      }
+      ```
 - If you need a reference, use `auto&`.
 
 
@@ -418,23 +418,23 @@ i: 3
 - Static arrays have a pre-defined size and their size __cannot__ be changed.
 - Very similair to C-style arrays: `int arr[10];` can be rewritten as a static array like `std::array<int, 10> arr;`.
 - __Question:__ How do we take a `std::array` as a function argument if we don't know the size?
-```
-// Template that doesn't assume type or size
-template<typename T, size_t s>
-void f(std::array<T, s> arr) {
-   for (const auto& item : arr) {
-      // do stuff
+   ```
+   // Template that doesn't assume type or size
+   template<typename T, size_t s>
+   void f(std::array<T, s> arr) {
+      for (const auto& item : arr) {
+         // do stuff
+      }
    }
-}
 
-// Template that assumes the type (and int array), but not the size
-template<size_t s>
-void f(std::array<int, s> arr) {
-   for (const int& item : arr) {
-      // do stuff
+   // Template that assumes the type (and int array), but not the size
+   template<size_t s>
+   void f(std::array<int, s> arr) {
+      for (const int& item : arr) {
+         // do stuff
+      }
    }
-}
-```
+   ```
 - `std::array` allocates its memory on the stack, whereas `std::vector` allocates on the heap.
 - __Best Practice:__ Prefer `std::array` to _old_ C-style arrays.
    - `std::array` supports STL features like `size()` and iterators (`begin()` and `end()`).
@@ -446,20 +446,20 @@ void f(std::array<int, s> arr) {
 - An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
 - Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
 - Deleting a multidimensional array isn't trivial either. Say we declare the following 5x10 2D array then attempt to delete it:
-```
-int** arr_2d = new int*[5];
-for (int i = 0; i < 5; i++) {
-    arr_2d[i] = new int[10];
-  }
-delete[] arr_2d;
-```
+   ```
+   int** arr_2d = new int*[5];
+   for (int i = 0; i < 5; i++) {
+      arr_2d[i] = new int[10];
+   }
+   delete[] arr_2d;
+   ```
 That will only delete the array of pointers pointing to each of the 50 arrays of integers. The integers themselves will not be deleted and become a memory leak. What we have to do to delete a 2D array without leaking memory is:
-```
-for (int i = 0, i < 5; i++) {
-   delete[] arr_2d[i];
-}
-delete[] arr_2d;
-```
+   ```
+   for (int i = 0, i < 5; i++) {
+      delete[] arr_2d[i];
+   }
+   delete[] arr_2d;
+   ```
 - In the example above, there is __no guarantee__ that each of the 5 blocks of 10 integers will be contiguous in memory. Which can make our array slower to iterate over than an array that had all 5 blocks of 10 integers allocated contiguously in memory.
 - __Best Practice:__ Because of this issue, it may not be a good idea to use 2D arrays for things like images or textures where we want access to each pixel to be fast. So instead, prefer to store an image as a 1D array and be smart about how you iterate over it.
 
@@ -529,20 +529,20 @@ delete[] arr_2d;
 - Each program/process has its _own_ Stack and Heap.
 - Each thread will create its own stack, but the heap is shared among threads (hence the need for thread-safety in multi-threaded applications). 
 - Stack vs. Heap allocation:
-```
-// Allocate an int and an int array on the stack
-int value = 10;
-int array[10];
+   ```
+   // Allocate an int and an int array on the stack
+   int value = 10;
+   int array[10];
 
-// Allocate an int and an int array on the heap
-int* heap_value = new int;
-*heap_value = 10;
-int* heap_arr = new int[10];
+   // Allocate an int and an int array on the heap
+   int* heap_value = new int;
+   *heap_value = 10;
+   int* heap_arr = new int[10];
 
-// Must manually free heap-allocated memory
-delete heap_value;
-delete[] heap_arr;
-```
+   // Must manually free heap-allocated memory
+   delete heap_value;
+   delete[] heap_arr;
+   ```
 - __Reminder:__ The lifetime of a stack-allocated variable is scope-based - whenever a scope is exited, all stack-allocated memory within that scope is freed.
 - _Freeing_ memory on the stack is the same thing as resetting the stack pointer back to the beginning of the stack.
 - Heap allocation via the `new` keyword effectively calls `malloc()` under the hood and returns a pointer to a free portion of memory that is maintained by the _free list_.
@@ -600,7 +600,6 @@ delete[] heap_arr;
 - (from YouTube comments) _"Writing your own smart pointers is probably one of the best learning exercises for C++ in my opinion... it teaches you a lot about __templating__, __object lifetime__ and __operator overloading__, just to scratch the surface."_
 - (from YouTube comments) _"The ability to write your own smart pointer should be a fundamental skill that one learns when learning C++. Knowing how to do this teaches you __RAII__, which is useful for many things besides memory management. It also forces you the better understand the overhead of managing memory. If you can write a smart pointer for memory, you can do the same for managing any other resource as well."_
 - See `app/105_weak_pointers.cpp` for a more detailed example.
-
 
 
 ## C++ Advanced Topics
@@ -698,7 +697,7 @@ delete[] heap_arr;
    - Templates get "evaluated" at compile-time.
    - Macros are evaluated in the preprocessor step and strictly consist of "pure text replacement" which comes before compilation.
 - Cherno doesn't like overusing macros.
-- ###__ Finish adding a command line CMake variable to enable/disable macros in my code.
+- __TODO:__ Finish adding a command line CMake variable to enable/disable macros in my code.
 
 ### Video #58: Function Pointers in C++
 - This video will focus on C-style _raw_ function pointers.
@@ -709,10 +708,10 @@ delete[] heap_arr;
 ### Video #59: Lambdas in C++
 - Anywhere that you use or require a function pointer in C++, you _can_ use a lambda instead. But when is it good idea to do so?
 - Declaring a lambda can look like:
-```
-auto lambda = [ captures ]( params ) { body };
-auto lambda = [ captures ] { body };
-```
+   ```
+   auto lambda = [ captures ]( params ) { body };
+   auto lambda = [ captures ] { body };
+   ```
 - _Captures:_ 
    - `[a, &b]` captures `a` by copy and `b` by reference.
    - `[this]` captures the current object (`*this`) by reference.
@@ -757,26 +756,26 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 
 ### Video #69: Casting in C++
 - C-style vs. C++ style casting. C style casts are simple and look something like:
-```
-double a = 5.25;
-double b = (int)a + 5.3    // b = 10.3
-```
+   ```
+   double a = 5.25;
+   double b = (int)a + 5.3    // b = 10.3
+   ```
 - C++ style casts are different and include `static_cast`, `reinterpret_cast` (i.e. type punning), `dynamic_cast` and `const_cast`. C++ style casts don't actually do anything that C-style casts can't achieve, but they are more or less syntactical sugar on tope of C-style casting.
 - `static_cast` helps to avoid removing constness that can be easily done through C-style casting.
 - Say we have multiple derived classes from a single base class, and we're using a base class pointer to deal with the derived objects. A `dynamic_cast` can help us determine which derived type we're actually working with:
-```
-class Base { ... }
-class Derived : public Base { ... }
-class AnotherDerived : public Base { ... }
+   ```
+   class Base { ... }
+   class Derived : public Base { ... }
+   class AnotherDerived : public Base { ... }
 
-int main() {
-   Derived* derived = new Derived()
-   Base* obj = derived;
+   int main() {
+      Derived* derived = new Derived()
+      Base* obj = derived;
 
-   // 'another' will evaluate to NULL because obj is not a AnotherDerived instance
-   Derived* another = dynamic_cast<AnotherDerived>(obj); 
-}
-```
+      // 'another' will evaluate to NULL because obj is not a AnotherDerived instance
+      Derived* another = dynamic_cast<AnotherDerived>(obj); 
+   }
+   ```
 
 ### Video #73: Dynamic Casting in C++
 - Dynamic casting is a C++ style cast that acts as somewhat of a "safety net" which ensures that the casting we're doing is "valid".
@@ -788,7 +787,7 @@ int main() {
 ### Video #75: Structured Bindings
 - Structed Bindings are a new feature to C++17 that allow us to handle [multiple return values](#video-52-how-to-deal-with-multiple-return-values-in-c) in a cleaner way.
 - Structured bindings allow us to "cleanly" return things like Tuples and Pairs.
-- In [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c), Cherno said that her preferred returning an instance of a struct that contains the members he wanted to return, but his opinion has changed somewhat to prefer returning tuples and/or pairs via _structured bindings_.
+- In [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c), Cherno said that he preferred returning an instance of a struct that contains the members he wanted to return, but his opinion has changed somewhat to prefer returning tuples and/or pairs via _structured bindings_.
 - Recall that when returning a `std::tuple` (or `std::pair`), accessing the tuple members was a bit ugly, and we had to use `std::get` and an index that wasn't very human-readable:
    ```
    std::tuple<std::string, int> create_person(std::string name, int age) {
@@ -813,10 +812,10 @@ int main() {
 - See `app/93_iterators.cpp` and `app/100_maps.cpp` for examples of using structured bindings.
 
 ### Video #82: Singletons in C++
-- A _singleton_ (a type of _design pattern_) is a class (or struct) that you intend to only ever have a single instance of.
+- A _singleton_ (a type of [design pattern](https://refactoring.guru/design-patterns/cpp)) is a class (or struct) that you intend to only ever have a single instance of.
 - Examples of types of singleton classes:
    - A random number generator: Typically, we instantiate a random number generator once with a seed and then use that single instance (and seed) to generate sequences of random numbers.
-   - A renderer:
+   - A renderer: In a rendering or scene generation application, typically a single renderer will render all renderable objects (point sources, meshes, etc.) in the scene for each frame.
 - Singleton classes really just behave like a namespace, i.e. a single class is just a set of "global" variables and static functions that may (or may not) act upon those global variables.
 - Worth noting one important functional difference between a namespace and a singleton class. In a namespace, all of the data is initialized (loaded into memory when the program first starts). This might be undesirable sometimes when we don't want all the data initialized until we actually need it. In contrast, singleton instances are only loaded during the first call to the `Get()` method.
 - See tamasdemjen4242's comment for even more detail on the functional difference between singleton classses and namespaces, including thread-safe vs. non-thread-safe behavior.
@@ -824,39 +823,39 @@ int main() {
 
 ### Video #88: Argument Evaluation Order in C++
 - Consider the following simple example. What do we think will be printed? It turns out that in C++, this toy scenario results in _undefined behavior_, i.e. the behavior will be different from compiler to compiler.
-```
-void print_sum(int a, int b) {
-   std::cout << a << " +  b << " = " << a + b << std::endl;
-}
+   ```
+   void print_sum(int a, int b) {
+      std::cout << a << " +  b << " = " << a + b << std::endl;
+   }
 
-int main() {
-   int val = 0;
-   // Any of the following will produce "undefined behavior".
-   print_sum(val++, val++);
-   print_sum(++val, ++val);
-}
-```
+   int main() {
+      int val = 0;
+      // Any of the following will produce "undefined behavior".
+      print_sum(val++, val++);
+      print_sum(++val, ++val);
+   }
+   ```
 - Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
 - In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
 
 ### Video #93: Iterators in C++
 - Iterators are used to traverse data structures, and if we're writing our own
 data structures, we probably want to support functionality like idexing and iteration.
-- _Range-based_ for loops (avaible since C++11) are made possible by iterators.
+- _Range-based_ for loops (available since C++11) are made possible by iterators.
 `std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
-```
-std::vector<int> values = { 1, 2, 3, 4, 5 };
-for (int& val : values) {
-   std::cout << "value: << val << std::endl;
-}
-```
+   ```
+   std::vector<int> values = { 1, 2, 3, 4, 5 };
+   for (int& val : values) {
+      std::cout << "value: << val << std::endl;
+   }
+   ```
 - Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
-```
-for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
-   // Dereference the iterator (bc it's a pointer) to get the value
-   std::cout << *it << std::endl;
-}
-```
+   ```
+   for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
+      // Dereference the iterator (bc it's a pointer) to get the value
+      std::cout << *it << std::endl;
+   }
+   ```
 - See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
 
 ### Video #96: Intro to Binary and Bitwise Operators in C++
@@ -874,15 +873,15 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 - What about `NULL` (as opposed to `nullptr`)?
    - `NULL` is from C, however, it's totally acceptable to use it in C++ too.
    - Let's look at the definition of `NULL`:
-   ```
-   #ifndef NULL
-      #ifdef __cplusplus
-         #define NULL 0
-      #else
-         #define NULL (void *)0)
+      ```
+      #ifndef NULL
+         #ifdef __cplusplus
+            #define NULL 0
+         #else
+            #define NULL (void *)0)
+         #endif
       #endif
-   #endif
-   ```
+      ```
    - So really, `NULL` (in C++) is just an integer defined as `0`.
    - But be careful, because `0` and `0x00000000` are __not__ the same thing. One is an integer (not a valid memory address) and the other is a memory address (a pointer).
 - Let's look at an interesting example that will teach us more about the role of the C++ compiler. Consider the code from the `app/101_null.cpp` app.
@@ -899,7 +898,7 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
          std::string name_;
    };
    ```
-   - The code above is what we're used to in C++. But to understand the role of the compiler better, it's useful to understand how this class would be implemted in C (where classes do not exist).
+   - The code above is what we're used to in C++. But to understand the role of the compiler better, it's useful to understand how this class would be implemented in C (where classes do not exist).
    - In C, since there are no classes, we would create `EntityData` as a struct and then implement its member functions separately because structs in C cannot have member functions.
    - Surprisingly, this separation of data and member functions is exactly what the C++ compiler creates for us!
    - __In C++, the compiler converts member functions of a class to "regular" free-floating functions (that exist outside of the class) that take in an instance of the class as their first argument__. That instance is referred to as the `this` keyword!
@@ -914,10 +913,10 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
       }  
       ```
    - So now we understand that when we do the following, we're not _actually_ calling a function that exists _within_ with Entity class. We're actually calling out to a _stand-alone_ function at some location within our compiled binary, and calling that particular function is totally valid and will not crash since `self` is never dereferenced by the `print_type()` member function.
-   ```
-   Entity* entity = nullptr;
-   entity->print_type();
-   ```
+      ```
+      Entity* entity = nullptr;
+      entity->print_type();
+      ```
 
 ### [Video #103: Conversion Operators in C++](https://www.youtube.com/watch?v=OK0G4cmeX-I&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=103)
 - Let's consider a simple example.
@@ -938,9 +937,9 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
       std::cout << float(orange) << std::endl;
    }
    ```
-- See `app/103_conversion_operators.cpp` for more detailed examples.
 - (from YouTube comments) _"Pretty much 99% of conversions operators should be marked explicit (even boolean ones) to prevent weird bugs and unexpected conversions from happening."_
 - (from YouTube comments) _"Like with single argument constructors, the default should be to add the explicit keyword and only omit if absolutely necessary."_
+- See `app/103_conversion_operators.cpp` for more detailed examples.
 
 
 
@@ -966,70 +965,70 @@ for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
 - How can we take advantage of parallel processing, i.e. use multiple CPU cores?
 - MSVS supports an interesting visualization called "Parallel Stacks".2
 - The following is an example snippet from Cherno's game engine that will asynchronously load a list of textures in parallel.
-```
-#include <future>
-#include <string>
+   ```
+   #include <future>
+   #include <string>
 
-static std::mutex s_meshes_mutex;
+   static std::mutex s_meshes_mutex;
 
-// Note that filepath is passed by copy because there's a possibility that the
-// 'mesh_filepaths' variables from 'EditiorLayer::LoadMeshes()' may have gone
-// out of scope while this function is still being called asynchonously.
-static void load_mesh(std::vector<Ref<Mesh>>* meshes, std::string filepath) {
-   auto mesh = Mesh::load(filepath)
+   // Note that filepath is passed by copy because there's a possibility that the
+   // 'mesh_filepaths' variables from 'EditiorLayer::LoadMeshes()' may have gone
+   // out of scope while this function is still being called asynchonously.
+   static void load_mesh(std::vector<Ref<Mesh>>* meshes, std::string filepath) {
+      auto mesh = Mesh::load(filepath)
 
-   // Q: Can we actually 'push_back' onto a vector concurrently? No, this is
-   // where "mutuex" and "locks" come into play in order to "lock" our resource
-   // (the vector) while one thread accesses/modifies it to prevent another
-   // thread from doing the same.
-   
-   std::Lock_guard<std::mutex> lock(s_meshes_mutex);
-   meshes->push_back(mesh);
+      // Q: Can we actually 'push_back' onto a vector concurrently? No, this is
+      // where "mutuex" and "locks" come into play in order to "lock" our resource
+      // (the vector) while one thread accesses/modifies it to prevent another
+      // thread from doing the same.
+      
+      std::Lock_guard<std::mutex> lock(s_meshes_mutex);
+      meshes->push_back(mesh);
 
-   // Note that std::Lock_gaurd is scope-based and will "release" the lock on
-   // the s_meshes_mutex once the lock goes out of scope (the end of this 
-   // function).
-}
-
-class EditorLayer : Layer
-{
-   public:
-      enum class PropertyFlag
-      {
-         None = 0,
-         ColorProperty = 1
-      };
-
-      EditorLayer();
-      virtual ~EditorLayer();
-      ...
-
-   private:
-      std::vector<std::future<void>> m_futures;
-}
-
-void EditiorLayer::LoadMeshes() {
-   std::ifstream stream("data/models.txt);
-   std::string line;
-   std::vector<std::string> mesh_filepaths;
-   while (std::getline(Stream line)) {
-      mesh_filepaths.push_back(line);
+      // Note that std::Lock_gaurd is scope-based and will "release" the lock on
+      // the s_meshes_mutex once the lock goes out of scope (the end of this 
+      // function).
    }
 
-   // Load each mesh in serial
-   for (const auto& filename : mesh_filepaths) {
-      m_meshes.push_back(Mesh::load(file));
+   class EditorLayer : Layer
+   {
+      public:
+         enum class PropertyFlag
+         {
+            None = 0,
+            ColorProperty = 1
+         };
+
+         EditorLayer();
+         virtual ~EditorLayer();
+         ...
+
+      private:
+         std::vector<std::future<void>> m_futures;
    }
 
-   // Load each mesh in parallel
-   for (const auto& filename : mesh_filepaths) {
-      // std::async actually returns a std::future object, and we need to store
-      // that "future" object. Why? ...
-      m_futures.push_back(
-         std::async(std::launch::async, load_mesh, &m_meshes, file));
+   void EditiorLayer::LoadMeshes() {
+      std::ifstream stream("data/models.txt);
+      std::string line;
+      std::vector<std::string> mesh_filepaths;
+      while (std::getline(Stream line)) {
+         mesh_filepaths.push_back(line);
+      }
+
+      // Load each mesh in serial
+      for (const auto& filename : mesh_filepaths) {
+         m_meshes.push_back(Mesh::load(file));
+      }
+
+      // Load each mesh in parallel
+      for (const auto& filename : mesh_filepaths) {
+         // std::async actually returns a std::future object, and we need to store
+         // that "future" object. Why? ...
+         m_futures.push_back(
+            std::async(std::launch::async, load_mesh, &m_meshes, file));
+      }
    }
-}
-```
+   ```
 
 ### Video #80: How to Make Your Strings Faster in C++
 - TODO:
@@ -1049,16 +1048,16 @@ void EditiorLayer::LoadMeshes() {
 ### Video #77: Multiple Types of Data in a Single Variable in C++
 - New to C++17 is `std::variant`. Similar `std::optional` in the sense that is allows us to not worry so much about the underlying data type, and be more concerned with if that data is actually available or not.
 - Allows us to create a variable that can be one of multiple types, e.g. we can declare a value that will either be a string or an int:
-```
-#include <variant>
+   ```
+   #include <variant>
 
-std::variant<std::string, int> data;
-```
+   std::variant<std::string, int> data;
+   ```
 - We can use `std::variant::index` to determine which type the data _actually_ is. In the example above `data.index()=0` means that `data` is a `std::string` and `data.index()=1` meands that `data` is an `int`.
 - Alternatively, we can use `std::variant::get_if` to return a pointer to our data that will be `NULL` if the data is not the type we requested.
-```
-auto value = std::get_if<std::string>(&data);
-```
+   ```
+   auto value = std::get_if<std::string>(&data);
+   ```
 - Are variants just "type-safe unions"? Short answer: not exactly. The `sizeof()` a union will be equal to the size of its largest type, whereas the size of a variant will be the combined size of all of its types, e.g. `sizeof(std::variant<std::string, int>) == sizeof(std::string) + sizeof(int)`.
 - __Best Practice:__ Prefer variants to unions because they are _type safe_.
 - Could use `std::variant` as an alternative to `std::optional` when we want to be more specific about what may have gone wrong when evaluating a function. See `app/optional.cpp` for an example of using `std::variant` to possibly return an error code enum type.
@@ -1079,49 +1078,49 @@ auto value = std::get_if<std::string>(&data);
 - An l-value has a location in memory, and an r-value is simply a _temporary value_ that has no memory allocated to it. An r-value can be a literal, like `10` or it can be the return value of a function. In all cases, we cannot assign another r-value to an r-value.
 - You cannot create an l-value reference, e.g. `int&` from an r-value. You can only create an l-value reference from an existing l-value.
 - A special rule (related to `const`): You can create a `const` l-value reference from an r-value, e.g. `const int& val = 10;`. This allows us to pass either an l-value or an r-value to a function like:
-```
-void set_value(const int& value) {
-   // do something with value
-}
+   ```
+   void set_value(const int& value) {
+      // do something with value
+   }
 
-int main() {
-   // Create an l-value (i)
-   int i = 10;
-   
-   // Call set_value with an l-value
-   set_value(i);
+   int main() {
+      // Create an l-value (i)
+      int i = 10;
+      
+      // Call set_value with an l-value
+      set_value(i);
 
-   // Call set_value with an r-value (only possible because set_value takes a
-   // const l-value reference)
-   set_value(10);
-}
-```
+      // Call set_value with an r-value (only possible because set_value takes a
+      // const l-value reference)
+      set_value(10);
+   }
+   ```
 - Let's look at one more example where `first` and `last` are l-values, but `first + last` is an r-value because it is a temporary object that gets created and then assigned to the l-value `full`.
-```
-void print_name(const std::string& name) {
-   std::cout << name << std::endl;
-}
+   ```
+   void print_name(const std::string& name) {
+      std::cout << name << std::endl;
+   }
 
-std::string first = "Yan";
-std::string last = "Chernikov";
+   std::string first = "Yan";
+   std::string last = "Chernikov";
 
-// Assign the r-value "first + last" to the l-value "full".
-std::string full = first + last;
-print_name(full);
+   // Assign the r-value "first + last" to the l-value "full".
+   std::string full = first + last;
+   print_name(full);
 
-// Only works if print_name accepts a const l-value reference.
-print_name(first + last);
-```
-- Note that a function that accepts both l-values and r-values MUST be written to accept a `const` l-value reference. This is why you'll see a lot of const references being used in C++.
-- Do we have a way to write a function that only accepts temporary objects (r-values)? Yes! We need to use something called an _r-value reference_. We can modify the code above such that `print_name` accepts an r-value reference.
-```
-void print_name(std::string&& name) {
-   std::cout << name << std::endl;
-}
+   // Only works if print_name accepts a const l-value reference.
+   print_name(first + last);
+   ```
+   - Note that a function that accepts both l-values and r-values MUST be written to accept a `const` l-value reference. This is why you'll see a lot of const references being used in C++.
+   - Do we have a way to write a function that only accepts temporary objects (r-values)? Yes! We need to use something called an _r-value reference_. We can modify the code above such that `print_name` accepts an r-value reference.
+   ```
+   void print_name(std::string&& name) {
+      std::cout << name << std::endl;
+   }
 
-// The line below will throw the error "An rvalue reference cannot be bound to an lvalue."
-print_name(full);
-```
+   // The line below will throw the error "An rvalue reference cannot be bound to an lvalue."
+   print_name(full);
+   ```
 - Being able to distinguish an r-value from an l-value is important in the context of _move semantics_ and optimization. If we know that we are dealing with a temporary object (an r-value reference), then we don't have to worry about things like making sure we keep it alive, etc.
 
 ### Video #89: Move Semantics in C++
@@ -1177,18 +1176,18 @@ Add a section that groups together videos about workflow and debugging.
    - `std::vector` always allocates on the heap and can be dynamically resized, whereas a fixed-size `std::array` allocates its memory on the stack.
    - __Best Practice:__ If you don't need heap allocations, don't use them because they'll just slow things down.
    - `std::vector` can be dynamically allocated, i.e. its size does not have to be determined at compile time, but a `std::array` must define its size at compile-time:
-   ```
-   // This is just fine
-   size_t size = get_size();
-   int* heap_arr = new int[size];
+      ```
+      // This is just fine
+      size_t size = get_size();
+      int* heap_arr = new int[size];
 
-   // This throws an error: "Expression must have a constant value."
-   int array[size];
+      // This throws an error: "Expression must have a constant value."
+      int array[size];
 
-   // However, we can use the size of an array to set another array's size
-   std::array arr1<int, 10>;
-   std::array arr1<float, arr1.size()>;
-   ```
+      // However, we can use the size of an array to set another array's size
+      std::array arr1<int, 10>;
+      std::array arr1<float, arr1.size()>;
+      ```
 - See `include/array.h` and `app/custom_array.cpp` for implementation and use of our custon `Array` class.
 
 ### Video #92: VECTOR/DYNAMIC ARRAY - Making Data Structures in C++
