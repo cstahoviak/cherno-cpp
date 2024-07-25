@@ -563,7 +563,7 @@ delete[] heap_arr;
 ### [Video #105 Weak Pointers in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
 - _"Weak pointers - the pointers for those of you who are just not quite strong enough to use proper pointers."_ - Cherno
 - Weak pointers, `std::weak_ptr`, are intended to be used with shared pointers, `std::shared_ptr`.
-- Shared pointers, `std::shared_ptr`, refresher:
+- Shared pointers (`std::shared_ptr`) refresher:
    - Recall that a shared pointer is a wrapper around a raw pointer to a heap-allocated object that implements a _reference counter_.
       ```
       // Create a new heap-allocated Object managed by a raw pointer
@@ -777,11 +777,11 @@ int main() {
 ```
 
 ### Video #73: Dynamic Casting in C++
-- Dynamic casting is a C++ style cast that as somewhat of a "safety net" which ensures that the casting we're doing is "valid".
-- `dynamic cast` can only be used when Runtime Type Information (RTTI) is enabled.
+- Dynamic casting is a C++ style cast that acts as somewhat of a "safety net" which ensures that the casting we're doing is "valid".
+- `dynamic_cast` can only be used when Runtime Type Information (RTTI) is enabled.
 - If RTTI is enabled, dynamic casting happens at runtime, not at compile time which means it comes with some performance cost.
-- Other _managed_ langagues, like Python, have function like `isinstance()` to achieve the same behavior.
-- See example in README from ### Video #69__ for how the failure of a `dynamic_cast` can be useful.
+- Other _managed_ langagues, like Python, have built-ins like `isinstance()` to achieve the same behavior.
+- See example from [Video #69](#video-69-casting-in-c) README for how the failure of a `dynamic_cast` can be useful.
 
 ### Video #75: Structured Bindings
 - Structed Bindings are a new feature to C++17 that allow us to handle multiple return values [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c) in a cleaner way.
