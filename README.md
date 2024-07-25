@@ -560,8 +560,47 @@ delete[] heap_arr;
 ### Video #84: Track Memory Allocations the Easy Way in C++
 - TODO:
 
-### [Video #105 Weak Pointer in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
+### [Video #105 Weak Pointers in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
 - _"Weak pointers - the pointers for those of you who are just not quite strong enough to use proper pointers."_ - Cherno
+- Weak pointers, `std::weak_ptr`, are intended to be used with shared pointers, `std::shared_ptr`.
+- Shared pointers, `std::shared_ptr`, refresher:
+   - Recall that a shared pointer is a wrapper around a raw pointer to a heap-allocated object that implements a _reference counter_.
+      ```
+      // Create a new heap-allocated Object managed by a raw pointer
+      Object* obj = new Object();
+
+      // Instead, use a shared pointer to automate the lifetime management (scope) of the Object instance.
+      std::shared_ptr<Object> obj1 = std::make_shared<Object>();
+      ```
+   - The real _magic_ of `std::shared_ptr` is that the object that the shared pointer manages will not go out of scope (be deleted) untill _every_ reference to that shared pointer has gone out of scope.
+   - Shared pointers maintain a __strong reference__ to the object that they're managing, i.e. the reference is _strong enough_ to keep the underlying object instance alive (until the reference counter reaches zero).
+   - One strong use case for weak pointers is in the case of cyclical references, i.e. when you have 2 or more classes that maintain references to instances of the other class(es). If we choose to use `std::shared_ptr` to maintain those cyclical references then the instances of `A` and `B` that we create will never go out of scope (their destructors will never be called):
+      ```
+      // Forward declare B
+      struct B
+
+      struct A {
+         std::shared_ptr<B> ptr_b
+         ~A() { std::cout << "A destroyed!" << std::endl; }
+      }
+
+      struct B {
+         std::shared_ptr<A>ptr_a
+         ~B() { std::cout << "B destroyed!" << std::endl; }
+      }
+
+      int main() {
+         std::shared_ptr<A> a = std::make_shared<A>();
+         std::shared_ptr<B> b = std::make_shared<B>();
+
+         a->ptr_b = b;
+         b->ptr_a = a;
+      }
+      ```
+   - (from YouTube comments) _"Writing your own smart pointers is probably one of the best learning exercises for C++ in my opinion... it teaches you a lot about __templating__, __object lifetime__ and __operator overloading__, just to scratch the surface."_
+   - (from YouTube comments) _"The ability to write your own smart pointer should be a fundamental skill that one learns when learning C++. Knowing how to do this teaches you __RAII__, which is useful for many things besides memory management. It also forces you the better understand the overhead of managing memory. If you can write a smart pointer for memory, you can do the same for managing any other resource as well."_
+   - See `app/105_weak_pointers.cpp` for a more detailed example.
+
 
 
 ## C++ Advanced Topics

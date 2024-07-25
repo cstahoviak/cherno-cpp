@@ -10,7 +10,7 @@ class Entity
   // entirely of pure virtual methods.
 {
   public:
-    Entity() { std::cout << "Entity Created!" << std::endl; };
+    Entity() { std::cout << "Entity " << this << " Created!" << std::endl; };
 
     // Use member initializer list. NOTE that member variables will be
     // initialized in the order that they are declared in the class, NOT the
@@ -41,10 +41,12 @@ class Entity
     // NOTE: This method MUST be marked as const if it is expected to be
     // accessed by a const Entity reference (const Entity&) as in the
     // operator<< overload that we've defined.
-    int get_x() const {
+    int get_x() const
+    {
       // A const member method CAN modify mutable member vars.
       debug_flag_ = true;
-      return x_; };
+      return x_;
+    };
     int get_y() const { return y_; };
 
     // In some cases it may be useful to define a non-const version of a getter.

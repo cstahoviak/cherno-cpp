@@ -92,8 +92,9 @@ int main()
     // Manage the Entity via a "scoped pointer"
     ScopedPointer<Entity> e = new Entity();
 
-    // Check to see if pointer is valid
-    if(entity) {
+    // Check to see if pointer is valid. This works because the ScopedPointer
+    // class defines the bool() conversion operator.
+    if(e) {
       std::cout << "Entity is valid!" << std::endl;
     }
   }
@@ -117,7 +118,5 @@ int main()
     timer2.stop();
     double total_time = timer + timer2;
     std::cout << "\ntotal time: " << total_time << " seconds." << std::endl;
-
   }
-
 }

@@ -25,10 +25,12 @@
 template<typename T>
 void print(T value) { std::cout << value << std::endl; }
 
-struct Timer {
-  // Timer is a scope-based timer utility that will capture the total time that
-  // this struct is in scope.
-  
+/**
+ * @brief Timer is a scope-based timer utility that will capture the total time
+ * that this struct is in scope.
+ */
+struct Timer
+{
   std::chrono::high_resolution_clock::time_point start;
   std::chrono::high_resolution_clock::time_point end;
   std::chrono::duration<float> duration;
