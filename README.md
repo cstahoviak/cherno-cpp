@@ -660,7 +660,7 @@ delete[] heap_arr;
       std::string first = result.first;
    }
    ```
-- __Option 4:__ (Cherno's favoite) create a struct (a _named tuple_ in Python) that excplicitly contains the items that we want to return.
+- __Option 4:__ (Cherno's favorite) create a struct (a _named tuple_ in Python) that excplicitly contains the items that we want to return.
    ```
    struct FileInfo {
       std::string directory;
@@ -786,29 +786,29 @@ int main() {
 - See example from [Video #69](#video-69-casting-in-c) README for how the failure of a `dynamic_cast` can be useful.
 
 ### Video #75: Structured Bindings
-- Structed Bindings are a new feature to C++17 that allow us to handle multiple return values (see [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c)) in a cleaner way.
+- Structed Bindings are a new feature to C++17 that allow us to handle [multiple return values](#video-52-how-to-deal-with-multiple-return-values-in-c) in a cleaner way.
 - Structured bindings allow us to "cleanly" return things like Tuples and Pairs.
 - In [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c), Cherno said that her preferred returning an instance of a struct that contains the members he wanted to return, but his opinion has changed somewhat to prefer returning tuples and/or pairs via _structured bindings_.
 - Recall that when returning a `std::tuple` (or `std::pair`), accessing the tuple members was a bit ugly, and we had to use `std::get` and an index that wasn't very human-readable:
-```
-std::tuple<std::string, int> create_person(std::string name, int age) {
-   return { name, age };
-}
+   ```
+   std::tuple<std::string, int> create_person(std::string name, int age) {
+      return { name, age };
+   }
 
-std::tuple<std::string, int> person = create_person("Cherno", 24);
-std::string& name = std::get<0>(person);
-int age = std::get<1>(person);
-```
+   std::tuple<std::string, int> person = create_person("Cherno", 24);
+   std::string& name = std::get<0>(person);
+   int age = std::get<1>(person);
+   ```
 - `std::tie` offers a slightly cleaner implentation that we didn't touch on before, but returning a struct with named members is still probably a better idea than this.
-```
-std::string name;
-int age;
-std::tie(name, age) = create_person("Cherno", 24);
-```
+   ```
+   std::string name;
+   int age;
+   std::tie(name, age) = create_person("Cherno", 24);
+   ```
 - This is where _structured bindings_ come to the rescue!
-```
-auto [name, age] = create_person("Cherno", 24);
-```
+   ```
+   auto [name, age] = create_person("Cherno", 24);
+   ```
 - The advantage with using structured bindings is that we don't necessarily need to create all sorts of unnecessary struct types that may only be used in a handleful of places. This allows us to declutter our namespaces and remove unnecessary types.
 - See `app/93_iterators.cpp` and `app/100_maps.cpp` for examples of using structured bindings.
 
