@@ -609,75 +609,76 @@ delete[] heap_arr;
 - How to deal with _tuples_ and _pairs_.
 - In C++, a function can return only _one_ value.
 - __Option 1:__ One way to get around this is to have your function return `void` and instead pass in references to the objects you want to assign and set them via reference instead of actually returning anything.
-```
-void f(std::string& out_str1, strd::string& out_str2) {
-   out_str1 = "one";
-   out_str2 = "two";
-}
+   ```
+   void f(std::string& out_str1, strd::string& out_str2) {
+      out_str1 = "one";
+      out_str2 = "two";
+   }
 
-int main() {
-   std::string a, b;
-   f(a, b)
-}
-```
+   int main() {
+      std::string a, b;
+      f(a, b)
+   }
+   ```
 - __Option 1b:__ As an alternative to passing by reference, we can pass a pointer, and this allows us the addional option of passing `nullptr` when we don't actually want to set that value.
-```
-void f(std::string* out_str1, strd::string* out_str2) {
-   if (out_str1) { out_str1 = "one"; }
-   if (out_str2) { out_str2 = "two"; }
-}
+   ```
+   void f(std::string* out_str1, strd::string* out_str2) {
+      if (out_str1) { out_str1 = "one"; }
+      if (out_str2) { out_str2 = "two"; }
+   }
 
-int main() {
-   std::string a, b;
-   f(nullptr, &b)
-}
-```
+   int main() {
+      std::string a, b;
+      f(nullptr, &b)
+   }
+   ```
 - __Option 2:__ We can return a heap-allocated `std::array`. Not really great option. Cherno isn't a fan of this method, or of using `std::array`.
-```
-#include <array>
+   ```
+   #include <array>
 
-std::array<std::string, 2> f() {
-   return std::array<std::string, 2>("one", "two");
-}
+   std::array<std::string, 2> f() {
+      return std::array<std::string, 2>("one", "two");
+   }
 
-int main() {
-   std::string* result_array = f();
-}
-```
-___Option 3:__ Using _Tuples_ and _Pairs_.
-- Ugly because accessing members of a tuple can only be done via `std::get<index>(tuple_var)` or `tuple_var.first` and we may want to be more explicit that this and actually name the members of the tuple for the sake of code readabilty.
-```
-#include <tuple>
+   int main() {
+      std::string* result_array = f();
+   }
+   ```
+- __Option 3:__ Using _Tuples_ and _Pairs_.
+   - Ugly because accessing members of a tuple can only be done via `std::get<index>(tuple_var)` or `tuple_var.first` and we may want to be more explicit that this and actually name the members of the tuple for the sake of code readabilty.
+   ```
+   #include <tuple>
 
-std::tuple<std::string, std::string> f() {
-   return std::make_pair("one", "two")
-}
+   std::tuple<std::string, std::string> f() {
+      return std::make_pair("one", "two")
+   }
 
-int main() {
-   std::tuple<std::string, std::string> result = f();
-   // Now get the first (index zero) string from the tuple (2 options)
-   std::string first = std::get<0>(result);
-   std::string first = result.first;
-}
-```
+   int main() {
+      std::tuple<std::string, std::string> result = f();
+      // Now get the first (index zero) string from the tuple (2 options)
+      std::string first = std::get<0>(result);
+      std::string first = result.first;
+   }
+   ```
 - __Option 4:__ (Cherno's favoite) create a struct (a _named tuple_ in Python) that excplicitly contains the items that we want to return.
-```
-struct FileInfo {
-   std::string directory;
-   std::string filename;
-   std::string extension;
-}
+   ```
+   struct FileInfo {
+      std::string directory;
+      std::string filename;
+      std::string extension;
+   }
 
-FileInfo f() {
-   // Take advatage of "implicit" conversion to create the FileInfo object
-   return {"local_dir", "my_file", "txt"};
-}
+   FileInfo f() {
+      // Take advatage of "implicit" conversion to create the FileInfo object
+      return {"local_dir", "my_file", "txt"};
+   }
 
-int main() {
-   FileInfo file_info = f();
-   filename = file_info.filename;
-}
-```
+   int main() {
+      FileInfo file_info = f();
+      filename = file_info.filename;
+   }
+   ```
+- Refer to [Structured Bindings](#video-75-structured-bindings) for a better/cleaner/more modern way of dealing with multiple return values.
 
 ### Video #53: Templates in C++
 - A template allows us to get the compiler to write code for us based on a set of rules.
@@ -771,6 +772,7 @@ class AnotherDerived : public Base { ... }
 int main() {
    Derived* derived = new Derived()
    Base* obj = derived;
+
    // 'another' will evaluate to NULL because obj is not a AnotherDerived instance
    Derived* another = dynamic_cast<AnotherDerived>(obj); 
 }
@@ -784,7 +786,7 @@ int main() {
 - See example from [Video #69](#video-69-casting-in-c) README for how the failure of a `dynamic_cast` can be useful.
 
 ### Video #75: Structured Bindings
-- Structed Bindings are a new feature to C++17 that allow us to handle multiple return values [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c) in a cleaner way.
+- Structed Bindings are a new feature to C++17 that allow us to handle multiple return values (see [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c)) in a cleaner way.
 - Structured bindings allow us to "cleanly" return things like Tuples and Pairs.
 - In [Video #52](#video-52-how-to-deal-with-multiple-return-values-in-c), Cherno said that her preferred returning an instance of a struct that contains the members he wanted to return, but his opinion has changed somewhat to prefer returning tuples and/or pairs via _structured bindings_.
 - Recall that when returning a `std::tuple` (or `std::pair`), accessing the tuple members was a bit ugly, and we had to use `std::get` and an index that wasn't very human-readable:
