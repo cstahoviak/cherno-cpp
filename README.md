@@ -1209,13 +1209,13 @@ Add a section that groups together videos about workflow and debugging.
    - _"A lot of care needs to be taken when you manually call the destructor of the objects in your container"_ - Cherno.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
-   - Choosing to include the Copy Constructor and CopyAssignment operator for the `Vec3` class (when Cherno decided to delete them) forced me to revisit some topics related to [move semantics](https://stackoverflow.com/questions/3106110/what-is-move-semantics).
-      - __[The Rule of Three](https://en.wikipedia.org/wiki/Rule_of_three_%28C++_programming%29):__ If a class defines any of the following then it should probably explicitly define all three.
-         - Desstructor
-         - Copy Constructor
-         - Copy Assignment Operator
-      - __[The Copy-And-Swap Idiom](https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom):__ Make a copy (typically of a heap-allocated member variable), swap the contents with the copy, and then get rid of the copy by leaving the scope.
-      - __RAII:__ There is tie-in to the concept of RAII (Resource Acquisition is Initialization) here in the sense that in the `Vec3` class, we have chosen to manually manage our own memory via `new[]` and `delete[]`.
+- Choosing to include the Copy Constructor and CopyAssignment operator for the `Vec3` class (when Cherno decided to delete them) forced me to revisit some topics related to [move semantics](https://stackoverflow.com/questions/3106110/what-is-move-semantics).
+   - __[The Rule of Three](https://en.wikipedia.org/wiki/Rule_of_three_%28C++_programming%29):__ If a class defines any of the following then it should probably explicitly define all three.
+      - Desstructor
+      - Copy Constructor
+      - Copy Assignment Operator
+   - __[The Copy-And-Swap Idiom](https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom):__ Make a copy (typically of a heap-allocated member variable), swap the contents with the copy, and then get rid of the copy by leaving the scope.
+   - __RAII:__ There is tie-in to the concept of RAII (Resource Acquisition is Initialization) here in the sense that in the `Vec3` class, we have chosen to manually manage our own memory via `new[]` and `delete[]`.
 
 ### [Video #94: Writing an Iterator in C++](https://www.youtube.com/watch?v=F9eDv-YIOQ0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=94)
 - We'll be adding an iterator to our custom vector class (from [video #92](#video-92-vectordynamic-array---making-data-structures-in-c)).
