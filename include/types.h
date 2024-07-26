@@ -66,6 +66,11 @@ struct Vec3
   float y{0.0f};
   float z{0.0f};
 
+  // Simple Constructors
+  // Vec3() = default;
+  // Vec3(float scalar) : x(scalar), y(scalar), z(scalar) {}
+  // Vec3(float x, float y, float z): x(x), y(y), z(z) {}
+
   // A default constructor
   Vec3() { _init_memory_block(); }
 
@@ -78,23 +83,57 @@ struct Vec3
   }
 
   // Create a Copy Constructor so that we know when a Vec3 object is copied
-  Vec3(const Vec3& other) : x(other.x), y(other.y), z(other.z) {
-    // std::cout << "Copy Constructor\t" << *this << std::endl;
+  /**
+   * @brief Define the copy constructor.
+   * 
+   * Note that for a struct/class that manages some heap-allocated memory
+   * (mem_block_ in our case), it should obey the Rule of 3, i.e. if a class
+   * defines any of the following, it should probably define all three.
+   * 
+   * Destructor
+   * Copy Constructor
+   * Copy Assignment Operator
+   * 
+   * https://stackoverflow.com/questions/3106110/what-is-move-semantics
+   * 
+   * Also worth looking into is the copy-and-swap idiom, i.e. make a copy, swap
+   * the contents with the copy, and then get rid of the copy by leaving the
+   * scope, but I'll save that for another day.
+   * https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
+   * 
+   * @param other 
+   */
+  Vec3(const Vec3& other) : 
+    x(other.x), y(other.y), z(other.z), block_size_(other.block_size_) {
     std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
       << std::endl;
-      mem_block_ = other.mem_block_;
+      // (37:25) We need to make sure that the copy constructor copies memory
+      // from the "other" Vec3 instance, so we'll perform a "deep copy".
+    mem_block_ = new int[other.block_size_];
+    std::memcpy(mem_block_, other.mem_block_, other.block_size_);
   }
 
   // Move Constructor
-  Vec3(Vec3&& other) : x(other.x), y(other.y), z(other.z) {
+  Vec3(Vec3&& other) : 
+    x(other.x), y(other.y), z(other.z), block_size_(other.block_size_) {
     // std::cout << "Move Constructor\t" << *this << std::endl;
-    std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
+    std::cout << "Vec3 Move Constructor:\t" << other << " -> " << *this
       << std::endl;
       mem_block_ = other.mem_block_;
       other.mem_block_ = nullptr;
   }
 
-  // Copy Assignment Operator
+  // If went we want to prevent a Vec3 instance from ever being copied, we
+  // could delete the Copy Constructor and the Copy Assignment operator.
+  // Vec3(const Vec3& other) = delete;
+  // Vec3& operator=(const Vec3& other) = delete;
+
+  /**
+   * @brief Copy Assignment Operator
+   * 
+   * @param other 
+   * @return Vec3& 
+   */
   Vec3& operator=(const Vec3& other) {
     // std::cout << "Copy Assignment\t" << *this << std::endl;
     std::cout << "Vec3 Copy Assignment:\t" << other << " -> " << *this
@@ -102,11 +141,20 @@ struct Vec3
     x = other.x;
     y = other.y;
     z = other.z;
-    mem_block_ = other.mem_block_;
+
+    // Perform a deep copy on the heap-allocated mem_block_
+    mem_block_ = new int[other.block_size_];
+    std::memcpy(mem_block_, other.mem_block_, other.block_size_);
+
     return *this;
   }
 
-  // Move Assignment Operator
+  /**
+   * @brief Move Assignment Operator
+   * 
+   * @param other 
+   * @return Vec3& 
+   */
   Vec3& operator=(Vec3&& other) {
     // std::cout << "Move Assignment\t" << *this << std::endl;
     std::cout << "Vec3 Move Assignment:\t" << other << " -> " << *this
@@ -116,15 +164,48 @@ struct Vec3
     y = other.y;
     z = other.z;
 
+    // Added at 37:35
     mem_block_ = other.mem_block_;
     other.mem_block_ = nullptr;
 
     return *this;
   }
 
+  /**
+   * @brief The "stand-alone" assignment operator.
+   * 
+   * TODO: Implement a single Assignment operator that takes advantage of the
+   * "copy-and-swap" idiom via std::swap.
+   * 
+   * https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
+   * 
+   * Note that 'other' is passed by value, meaning that it has to initialized
+   * just like any other Vec3 object. How it's iniialized (either by the Copy
+   * Constructor or the Move Constructor) will depend on whether 'other' is an
+   * l-value or an -r-value.
+   * 
+   * l-value: initialized by the copy constructor.
+   * r-value: initialized by the move constructor.
+   * 
+   * TODO: This builds, but segfaults. I'll debug this another time.
+   * 
+   * @param other 
+   * @return Vec3& 
+   */
+  // Vec3& operator=(Vec3 other) {
+  //   std::cout << "Vec3 Assignment:\t" << other << " -> " << *this
+  //     << std::endl;
+  //   x = other.x;
+  //   y = other.y;
+  //   z = other.z;
+
+  //   std::swap(mem_block_, other.mem_block_);
+  //   return *this;
+  // }
+
   ~Vec3() {
-    std::cout << "Destroyed\t\t" << *this << std::endl;
-    // Free the heap-allocated memory in the destructor
+    std::cout << "Vec3 Destroyed\t\t" << this << std::endl;
+    // (38:15) Free the heap-allocated memory in the destructor.
     delete[] mem_block_;
   }
 
@@ -135,9 +216,9 @@ struct Vec3
 
   // Add a heap-allocated member to demonstrate how we need to take care when
   // removing items from a container, e.g. removing a Vec3 element from our
-  // custon Vector container.
+  // custom Vector container.
   private:
-    int* mem_block_;
+    int* mem_block_ = nullptr;
     size_t block_size_{10};
     
     void _init_memory_block() { mem_block_ = new int[block_size_]; }
@@ -190,8 +271,14 @@ class String
         std::memcpy(buffer_, other.buffer_, size_);
     }
 
-    // (Video #89) Write a Move Constructor for the String class that accepts an
-    // r-value reference. Move constructors cannot throw exceptions? Why?
+    /**
+     * @brief (Video #89) Write a Move Constructor for the String class that
+     * accepts an r-value reference.
+     * 
+     * NOTE: Move constructors cannot throw exceptions? Why?
+     * 
+     * @param other The String instance being "moved from".
+     */
     String(String&& other) noexcept : size_(other.size_) {
       std::cout << "String Move Constructor invoked." << std::endl;
       // Reassign the data buffer pointer from the "other" String to this

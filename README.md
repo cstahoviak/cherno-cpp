@@ -55,6 +55,7 @@ This tutorial series will cover the following topics:
    - (57) [Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
    - (64) [Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
    - (67) [Unions](#video-67-unions-in-c)
+   - (93) [Iterators](#video-93-iterators-in-c)
    - (100) [Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
 
 - Memory Management in C++
@@ -81,7 +82,6 @@ This tutorial series will cover the following topics:
    - (75) [Structured Bindings](#video-75-structured-bindings)
    - (82) [Singletons](#video-82-singletons-in-c)
    - (88) [Argument Evaluation Order](#video-88-argument-evaluation-order-in-c)
-   - (93) [Iterators](#video-93-iterators-in-c)
    - (96) [TODO: Binary and Bitwise Operators](#video-96-intro-to-binary-and-bitwise-operators-in-c)
    - (97) [TODO: Bitwise AND, OR, XOR and NOT](#video-97-bitwise-and-or-xor-and-not-----c)
    - (101) [What Exactly is `NULL`?](#video-101-what-exactly-is-null)
@@ -469,6 +469,26 @@ That will only delete the array of pointers pointing to each of the 50 arrays of
 - Useful for when:
    - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
 
+### Video #93: Iterators in C++
+- Iterators are used to traverse data structures, and if we're writing our own
+data structures, we probably want to support functionality like idexing and iteration.
+- _Range-based_ for loops (available since C++11) are made possible by iterators.
+`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
+   ```
+   std::vector<int> values = { 1, 2, 3, 4, 5 };
+   for (int& val : values) {
+      std::cout << "value: << val << std::endl;
+   }
+   ```
+- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
+   ```
+   for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
+      // Dereference the iterator (bc it's a pointer) to get the value
+      std::cout << *it << std::endl;
+   }
+   ```
+- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via [structured bindings](#video-75-structured-bindings).
+
 ### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
 - Maps allow us to associate a _key-value_ pair (a dictionary in Python).
 - `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
@@ -838,26 +858,6 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 - Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
 - In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
 
-### Video #93: Iterators in C++
-- Iterators are used to traverse data structures, and if we're writing our own
-data structures, we probably want to support functionality like idexing and iteration.
-- _Range-based_ for loops (available since C++11) are made possible by iterators.
-`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
-   ```
-   std::vector<int> values = { 1, 2, 3, 4, 5 };
-   for (int& val : values) {
-      std::cout << "value: << val << std::endl;
-   }
-   ```
-- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
-   ```
-   for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
-      // Dereference the iterator (bc it's a pointer) to get the value
-      std::cout << *it << std::endl;
-   }
-   ```
-- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
-
 ### Video #96: Intro to Binary and Bitwise Operators in C++
 - TODO
 
@@ -1066,7 +1066,7 @@ data structures, we probably want to support functionality like idexing and iter
 - New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
 - Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
 - __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
-- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves tje problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [SO](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves the problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [StackOverflow](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
 - [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 
@@ -1198,24 +1198,35 @@ Add a section that groups together videos about workflow and debugging.
    - A pointer to the beginning of a block of heap-allocated memory.
    - The ability to resize our vector when we run out of room to _push back_ a new element. This requires allocating a new block of memory on the heap, copying over the contents of the current vector, and then freeing the memory that was copied from.
 - Resizing strategies:
-   - Maybe revisit Video #47: Optimizing the Usage of `std::vector`.
+   - Maybe revisit [Video #47: Optimizing the Usage of `std::vector`](#video-47-optimizing-the-use-of-stdvector-in-c).
    - Instead of copying, we can _move_ the contents of the old vector into the newly resized vector.
-   - Note that in more _sophisticated_ dynamic array (vector) implementations, you have the option of specifying a _custom allocator_ that may not necesarily hit the heap each time it needs to resize. This is beyond the scope of this video, but it can be really useful if you're writing a custom piece of software.
+   - (13:10) Note that in more _sophisticated_ dynamic array (vector) implementations, you have the option of specifying a _custom allocator_ that may not necesarily hit the heap each time it needs to resize. This is beyond the scope of this video, but it can be really useful if you're writing a custom piece of software.
 - Two options for adding elements to our Vector:
    - `push_back`: Used to add an element to the Vector container by either copying or moving. Moving should be preferred.
    - `emplace_back`: Rather that constructing an instance of the element in the stack frame of the calling function and then _moving_ it into our `Vector` data storage, instead we construct the new element _in place_, i.e. in the memory that we've already allocated for it in `Vector::data_` by simply taking the arguments that we'll pass to the constructor the element type.
       - __Best Practice:__ Prefer _placement_ `new` for _truly_ constructing objects _in place_.
 - __Operator new and Operator delete:__ (`::operator new` and `::operator delete`)
-   - "A lot of care needs to be taken when you manually call the destructor of the objects in your container" - Cherno.
+   - _"A lot of care needs to be taken when you manually call the destructor of the objects in your container"_ - Cherno.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
+   - Choosing to include the Copy Constructor and CopyAssignment operator for the `Vec3` class (when Cherno decided to delete them) forced me to revisit some topics related to [move semantics](https://stackoverflow.com/questions/3106110/what-is-move-semantics).
+      - __[The Rule of Three](https://en.wikipedia.org/wiki/Rule_of_three_%28C++_programming%29):__ If a class defines any of the following then it should probably explicitly define all three.
+         - Desstructor
+         - Copy Constructor
+         - Copy Assignment Operator
+      - __[The Copy-And-Swap Idiom](https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom):__ Make a copy (typically of a heap-allocated member variable), swap the contents with the copy, and then get rid of the copy by leaving the scope.
+      - __RAII:__ There is tie-in to the concept of RAII (Resource Acquisition is Initialization) here in the sense that in the `Vec3` class, we have chosen to manually manage our own memory via `new[]` and `delete[]`.
 
-### Video #94: Writing an Iterator in C++
-- We'll be adding an iterator to our custom vector class (from video #92).
+### [Video #94: Writing an Iterator in C++](https://www.youtube.com/watch?v=F9eDv-YIOQ0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=94)
+- We'll be adding an iterator to our custom vector class (from [video #92](#video-92-vectordynamic-array---making-data-structures-in-c)).
 - An aside: How do we actually get better as a c++ developer?
    - More focus/emphasis on reading and writing real-world code rather than just focusing on textbooks and tutorials.
    - Eventually you'll get to the point where you'll only continue to learn and get better by looking at and working with an existing codebase.
-   For example, the `std::vector` template class implements an iterator. So if we want to implement an iterator for our own custom class, we _should_ be looking at the STL for guidance and using it as an example.
+   - For example, the `std::vector` template class implements an iterator. So if we want to implement an iterator for our own custom class, we _should_ be looking at the STL for guidance and using it as an example.
+- In this video, we've written an interator for our custom `Vector` class, but this isn't particulary difficult because it really just boils down to incrementing a pointer. However, the concept of an iterator applies to _any_ data structure, e.g. a graph, tree, map, etc.
+   - For example, with a graph data structure, we may want to update the `++` operator to visit a child node and move down (or up) the data structure in some hierarchical way.
+   - __TODO:__ Implement an iterator for our custom `Array` class, `include/array.h`.
+   - __TODO:__ Take a look at the iterator for `std::unordered_map`.
 
 ### Video #95: How to __Really__ Learn C++
 - What should I do next in my C++ learning journey? A simple answer: _open source projects_.

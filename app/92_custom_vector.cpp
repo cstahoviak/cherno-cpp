@@ -11,37 +11,67 @@
 int main() {
   // Lets think about some basic vector operations that our custom vector class
   // should support, e.g. instantiation and extending the vector.
-  std::cout << "Use our custom 'Vector' container with std::string:" 
+  std::cout << "1. Use our custom 'Vector' container with std::string:"
     << std::endl;
   {
     Vector<std::string> vec;
     vec.push_back("Cherno");
     vec.push_back("C++");
     vec.push_back("Series");
+    vec.push_back("Vector");
+    vec.push_back("Vector");
+    vec.push_back("Vector");
 
     // Print the vector to verify that each push back succeeded
     print_vector(vec);
   }
 
   // Now let's use our custom Vec3 type with our Vector container
-  std::cout << "\nUse our custom 'Vector' container with Vec3:" << std::endl;
-
-  // Construct 3 Vec3 in the current stack frame and push them into our Vector.
-  std::cout << "\nPush back Vec3 objects by copy:" << std::endl;
+  std::cout << "\n2. Use our custom 'Vector' container with Vec3:" << std::endl;
   {
+    /* For the following code snippet, Cherno's output looks like:
+     * Copy
+     * Destroy
+     * Copy
+     * Copy
+     * Destroy
+     * Destroy
+     * Copy
+     * Destroy
+     * 
+     * And mine looks like:
+     * Copy (Assignment)
+     * Destroyed
+     * Copy (Assignment)
+     * Destroyed
+     * Copy (Assignment)
+     * Copy (Assignment)
+     * Destroyed
+     * Destroyed
+     * Copy (Assignment)
+     * Destroyed
+     * 
+     * So where are the first two Copy/Destroy statements coming from?
+     */
     Vector<Vec3> vectors;
+
+    // Construct 3 Vec3 objects in the current stack frame and push them into
+    // our Vector.
+    std::cout << "Push back Vec3 objects by copy:" << std::endl;
+
     Vec3 vec0 = Vec3(1.0f);
     Vec3 vec1 = Vec3(2, 3, 4);
     Vec3 vec2;
     vectors.push_back(vec0);
-    vectors.push_back(vec1);
-    vectors.push_back(vec2);
+    // vectors.push_back(vec1);
+    // vectors.push_back(vec2);
+
     print_vector(vectors);
   }
 
   // Next, treat each Vec3 item as a temporary value (r-value) and use the
   // version of push_back that accepts an r-value reference.
-  std::cout << "\nPush back Vec3 objects by r-value reference:" << std::endl;
+  std::cout << "\n3. Push back Vec3 objects by r-value reference:" << std::endl;
   {
     /*
      * TODO: Cherno's output looks like the following:
@@ -83,7 +113,7 @@ int main() {
   // Use Vector::emplace_back_inefficient to construct objects "in place" rather
   // than constructing them in the current stack frame and then "moving" them
   // into our Vector data storage.
-  std::cout << "\nConstruct Vec3 objects in-place via " << 
+  std::cout << "\n4. Construct Vec3 objects in-place via " << 
     "Vector::emplace_back_inefficient:" << std::endl;
   {
     Vector<Vec3> vectors;
@@ -95,7 +125,7 @@ int main() {
 
   // Use the "efficient" version of emplace_back that uses the "placement" new
   // keyword.
-  std::cout << "\nConstruct Vec3 objects in-place via Vector::emplace_back:" 
+  std::cout << "\n5. Construct Vec3 objects in-place via Vector::emplace_back:" 
     << std::endl;
   {
     Vector<Vec3> vectors;
