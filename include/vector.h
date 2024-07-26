@@ -4,12 +4,16 @@
 #include <cstddef>
 #include <iostream>
 
+/**
+ * @brief Video #94: Implementing an iterator for our custom Vector class.
+ * 
+ * @tparam Vector 
+ */
 template<typename Vector>
 class VectorIterator
 {
-  // Video #94: Implementing an iterator for our custom Vector class.
   public:
-  // Follow the STL naming convention and use "ValueType".
+    // Follow the STL naming convention and use "ValueType".
     using ValueType = typename Vector::ValueType;
     using PointerType = ValueType*;
     using ReferenceType = ValueType&;
@@ -17,19 +21,28 @@ class VectorIterator
   public:
     VectorIterator(PointerType ptr) : ptr_(ptr) {}
 
-    // Define the "pre-fix" increment operator. The pointer is already of the
-    // correct type, so this increment will increment the correct number of
-    // bytes based on the type that our VEctor container stores.
+    /**
+     * @brief Define the "pre-fix" increment operator. The pointer is already of
+     * the correct type, so this increment will increment the correct number of
+     * bytes based on the type that our VEctor container stores.
+     * 
+     * @return VectorIterator& 
+     */
     VectorIterator& operator++() {
       ptr_++;
       return *this;
     }
 
-    // Define the "post-fix" increment operator. This will return a copy of the
-    // VectorIterator object because we don't want to modify the current object
-    // in-place.
-    // TODO: A little confuised still about the internals of this function.
-    // Something to revisit in the future.
+    /**
+     * @brief Define the "post-fix" increment operator. This will return a copy
+     * of the VectorIterator object because we don't want to modify the current
+     * object in-place.
+     * 
+     * TODO: A little confused still about the internals of this function.
+     * Something to revisit in the future.
+     * 
+     * @return VectorIterator 
+     */
     VectorIterator operator++(int) {
       // Make a copy of the VectorIterator
       VectorIterator it = *this;
@@ -39,35 +52,56 @@ class VectorIterator
       return it;
     }
 
-  // Define the "pre-fix" decrement operator.
+    /**
+     * @brief Define the "pre-fix" decrement operator.
+     * 
+     * @return VectorIterator& 
+     */
     VectorIterator& operator--() {
       ptr_--;
       return *this;
     }
 
-    // Define the "post-fix" decrement operator.
+    /**
+     * @brief Define the "post-fix" decrement operator.
+     * 
+     * @return VectorIterator 
+     */
     VectorIterator operator--(int) {
       // Make a copy of the VectorIterator
       VectorIterator it = *this;
-      // Increment the current VectorIterator by calling the "pre-fix" increment
+      // Decrement the current VectorIterator by calling the "pre-fix" increment
       --(*this);
       // Return the copy
       return it;
     }
 
-    // Define the index operator
+    /**
+     * @brief Define the index operator.
+     * 
+     * @param index 
+     * @return ReferenceType 
+     */
     ReferenceType operator[](int index) {
-      // This is the same as the line below
+      // These two lines are equivalent.
       // return *(ptr_[index]);
       return *(ptr_ + index);
     }
 
-    // Define the arrow operator. This will return the current position of the
-    // iterator (not the necessarily the beginning).
+    /**
+     * @brief Define the arrow operator. This will return the current position
+     * of the iterator (not the necessarily the beginning).
+     * 
+     * @return PointerType 
+     */
     PointerType operator->() { return ptr_; }
 
-    // Define the dereference operator. This will return a reference to a
-    // ValueType objecter, i.e. a ReferenceType.
+    /**
+     * @brief Define the dereference operator. This will return a reference to a
+     * ValueType objecter, i.e. a ReferenceType.
+     * 
+     * @return ReferenceType 
+     */
     ReferenceType operator*() { return *ptr_; }
 
     // Define the comparison operators.
@@ -81,9 +115,10 @@ class VectorIterator
     }
 
   private:
-  // No need to initialize with 'nullptr' because it's initialized in the
-  // VectorIterator constructor.
-  PointerType ptr_;
+    // ptr_ represents the current position of the iterator. There is no need to
+    // initialize with 'nullptr' because it's initialized in the VectorIterator
+    // constructor.
+    PointerType ptr_;
 };
 
 /**
@@ -96,7 +131,7 @@ template<typename T>
 class Vector
 {
   public:
-    // Follow the STL naming convention and use "ValueType".
+    // (video #94) Follow the STL naming convention and use "ValueType".
     using ValueType = T;
     using Iterator = VectorIterator<Vector<T>>;
 
@@ -121,8 +156,8 @@ class Vector
       // data block (I think?)
       // delete[] data_;
 
-      // 2. Use the version of delete, "operator delete", which will not call the
-      // element's destructor.
+      // 2. Use the version of delete, "operator delete", which will not call
+      // the element's destructor.
       ::operator delete(data_, capacity_ * sizeof(T));
     }
 
@@ -252,7 +287,7 @@ class Vector
 
     // TODO: Add insert() function.
 
-    // Support iteration
+    // (video #94) Support iteration.
     Iterator begin() { return Iterator(data_); }
     Iterator end() { return Iterator(data_ + size_); }
 

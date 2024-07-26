@@ -55,6 +55,7 @@ This tutorial series will cover the following topics:
    - (57) [Static Arrays (`std::array`)](#video-57-static-arrays-stdarray-in-c)
    - (64) [Multidimensional Arrays (2D Arrays)](#video-64-multidimensional-array-2d-arrays-in-c)
    - (67) [Unions](#video-67-unions-in-c)
+   - (93) [Iterators](#video-93-iterators-in-c)
    - (100) [Maps (`std::map` and `std::unordered_map`)](#video-100-maps-stdmap-and-stdunordered_map-in-c)
 
 - Memory Management in C++
@@ -81,7 +82,6 @@ This tutorial series will cover the following topics:
    - (75) [Structured Bindings](#video-75-structured-bindings)
    - (82) [Singletons](#video-82-singletons-in-c)
    - (88) [Argument Evaluation Order](#video-88-argument-evaluation-order-in-c)
-   - (93) [Iterators](#video-93-iterators-in-c)
    - (96) [TODO: Binary and Bitwise Operators](#video-96-intro-to-binary-and-bitwise-operators-in-c)
    - (97) [TODO: Bitwise AND, OR, XOR and NOT](#video-97-bitwise-and-or-xor-and-not-----c)
    - (101) [What Exactly is `NULL`?](#video-101-what-exactly-is-null)
@@ -469,6 +469,26 @@ That will only delete the array of pointers pointing to each of the 50 arrays of
 - Useful for when:
    - We want to give two different names to the same variable, e.g. it may be useful to think of a three-element vector (x, y, z) as a color (RGB) where x maps to R and so forth.
 
+### Video #93: Iterators in C++
+- Iterators are used to traverse data structures, and if we're writing our own
+data structures, we probably want to support functionality like idexing and iteration.
+- _Range-based_ for loops (available since C++11) are made possible by iterators.
+`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
+   ```
+   std::vector<int> values = { 1, 2, 3, 4, 5 };
+   for (int& val : values) {
+      std::cout << "value: << val << std::endl;
+   }
+   ```
+- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
+   ```
+   for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
+      // Dereference the iterator (bc it's a pointer) to get the value
+      std::cout << *it << std::endl;
+   }
+   ```
+- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via [structured bindings](#video-75-structured-bindings).
+
 ### Video #100: Maps (`std::map` and `std::unordered_map`) in C++
 - Maps allow us to associate a _key-value_ pair (a dictionary in Python).
 - `std::map` is an _ordered_ map that is a "self-balancing binary search tree," typically a "red-black" tree.
@@ -838,26 +858,6 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 - Note that the C++ compiler can evaluate certain expressions at compile-time, e.g. the C++ compiler is smart enough to replace `int a = 1 + 2;` with `int a = 3;` at compile-time rather than do the sum operation at runtime.
 - In C++17, the C++ standard added rules for the evaluation of _postfix-expressions_, e.g. the post-increment operator `++`, that state that multiple post-fix expressions must be evaluated sequentially (rather simultaneously at compile-time) but this rule doesn't actually lead to a deterministic evaluation of `print_sum(val++, val++);`.
 
-### Video #93: Iterators in C++
-- Iterators are used to traverse data structures, and if we're writing our own
-data structures, we probably want to support functionality like idexing and iteration.
-- _Range-based_ for loops (available since C++11) are made possible by iterators.
-`std::vector` implements both the `begin()` and `end()` functions that each return an _iterator_ that points to a particular position (the beginning and the _past-the-end_ element) in the vector.
-   ```
-   std::vector<int> values = { 1, 2, 3, 4, 5 };
-   for (int& val : values) {
-      std::cout << "value: << val << std::endl;
-   }
-   ```
-- Traversing a container by using its iterator explicitly is also possible, but less common because a range-based iteration is essentially shorthand for this. But in some situations, e.g. erasing or inserting new elements, you may want to manipulate the iterator.
-   ```
-   for (std::vector<int>::iterator it = values.begin(); it != values.end(); it++) {
-      // Dereference the iterator (bc it's a pointer) to get the value
-      std::cout << *it << std::endl;
-   }
-   ```
-- See `app/93_iterators.cpp` for more examples, including iteration over non-indexable types, e.g. an unordered map (dictionary), via _structured bindings_.
-
 ### Video #96: Intro to Binary and Bitwise Operators in C++
 - TODO
 
@@ -1210,12 +1210,16 @@ Add a section that groups together videos about workflow and debugging.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
 
-### Video #94: Writing an Iterator in C++
-- We'll be adding an iterator to our custom vector class (from video #92).
+### [Video #94: Writing an Iterator in C++](https://www.youtube.com/watch?v=F9eDv-YIOQ0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=94)
+- We'll be adding an iterator to our custom vector class (from [video #92](#video-92-vectordynamic-array---making-data-structures-in-c)).
 - An aside: How do we actually get better as a c++ developer?
    - More focus/emphasis on reading and writing real-world code rather than just focusing on textbooks and tutorials.
    - Eventually you'll get to the point where you'll only continue to learn and get better by looking at and working with an existing codebase.
-   For example, the `std::vector` template class implements an iterator. So if we want to implement an iterator for our own custom class, we _should_ be looking at the STL for guidance and using it as an example.
+   - For example, the `std::vector` template class implements an iterator. So if we want to implement an iterator for our own custom class, we _should_ be looking at the STL for guidance and using it as an example.
+- In this video, we've written an interator for our custom `Vector` class, but this isn't particulary difficult because it really just boils down to incrementing a pointer. However, the concept of an iterator applies to _any_ data structure, e.g. a graph, tree, map, etc.
+   - For example, with a graph data structure, we may want to update the `++` operator to visit a child node and move down (or up) the data structure in some hierarchical way.
+   - __TODO:__ Implement an iterator for our custom `Array` class, `include/array.h`.
+   - __TODO:__ Take a look at the iterator for `std::unordered_map`.
 
 ### Video #95: How to __Really__ Learn C++
 - What should I do next in my C++ learning journey? A simple answer: _open source projects_.

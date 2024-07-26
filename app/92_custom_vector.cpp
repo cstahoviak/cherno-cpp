@@ -28,9 +28,6 @@ int main() {
 
   // Now let's use our custom Vec3 type with our Vector container
   std::cout << "\nUse our custom 'Vector' container with Vec3:" << std::endl;
-
-  // Construct 3 Vec3 in the current stack frame and push them into our Vector.
-  std::cout << "\nPush back Vec3 objects by copy:" << std::endl;
   {
     /* For the following code snippet, Cherno's output looks like:
      * Copy
@@ -58,15 +55,22 @@ int main() {
      */
     Vector<Vec3> vectors;
 
+    // Construct 3 Vec3 objects in the current stack frame and push them into
+    // our Vector.
+    std::cout << "\nPush back Vec3 objects by copy:" << std::endl;
+
     Vec3 vec0 = Vec3(1.0f);
     Vec3 vec1 = Vec3(2, 3, 4);
     Vec3 vec2;
     vectors.push_back(vec0);
-    vectors.push_back(vec1);
-    vectors.push_back(vec2);
+    // vectors.push_back(vec1);
+    // vectors.push_back(vec2);
 
     print_vector(vectors);
   }
+
+  return 0;
+
 
   // Next, treat each Vec3 item as a temporary value (r-value) and use the
   // version of push_back that accepts an r-value reference.

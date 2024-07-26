@@ -87,7 +87,9 @@ struct Vec3
     // std::cout << "Copy Constructor\t" << *this << std::endl;
     std::cout << "Vec3 Copy Constructor:\t" << other << " -> " << *this
       << std::endl;
-      // mem_block_ = other.mem_block_;
+      // (37:25) We need to make sure that the copy constructor copies memory
+      // from the "other" Vec3 instance
+      mem_block_ = other.mem_block_;
   }
 
   // Move Constructor
@@ -112,7 +114,8 @@ struct Vec3
     x = other.x;
     y = other.y;
     z = other.z;
-    // mem_block_ = other.mem_block_;
+    // Added at 37:35
+    mem_block_ = other.mem_block_;
     return *this;
   }
 
@@ -135,11 +138,8 @@ struct Vec3
 
   ~Vec3() {
     std::cout << "Vec3 Destroyed\t\t" << this << std::endl;
-    // Free the heap-allocated memory in the destructor.
-    // TODO: My understanding is that if we use new[] (in _init_memory_block()),
-    // then we have to follow that with a delete[] call. But with this line, I
-    // get a segfault. This is addressed at 38:30 of video #92.
-    // delete[] mem_block_;
+    // (38:15) Free the heap-allocated memory in the destructor.
+    delete[] mem_block_;
   }
 
   // Declare the stream insertion operator overload as a 'friend' of this
