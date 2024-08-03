@@ -172,16 +172,30 @@ This tutorial series will cover the following topics:
 - `continue`, `break`, `return`
 
 ### Video #16: Pointers in C++
-- "Possibly the most important episode in the series!"
+- _"Possibly the most important episode in the series!"_ - Cherno
 - raw pointers, not discussing _smart pointers_ today.
 - A pointer is an integer that represents a memory address.
 - Being "invalid" is a perfectly acceptable state for a pointer.
 - `0`, `NULL` and `nullptr` mean the same thing when it comes to pointers.
+- Note that dereferencing should always be done prior to any operations on the underlying object, e.g. if we wanted to increment an integer `value` via an `int*` to `value`, we'd do `(*ptr)++` instead of `*ptr++`. The latter will increment the pointer and then attempt to derefernece it (most likely leading to a crash).
 
-### Video #17: References in C++
-- References are really just an extension of pointers
-- References are "pointers in disguise".
-- References must "reference" existing variables, whereas pointers can be created as new variables.
+### [Video #17: References in C++](https://www.youtube.com/watch?v=IzoFn3dfsPA&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=17)
+- References are really just an extension of pointers.
+- References are "pointers in disguise", i.e. references are just syntacial suger on top of pointers.
+- References __must__ "reference" existing variables, whereas pointers can be created as new variables.
+Reference themselves are __not__ new variables (i.e. they don't occupy memory and have their own memory address), they are simply an alias for an existing variable.
+- A reference __cannot__ be reassigned.
+- The following two ways of incrementing an `int` are effectively the same:
+   ```
+   void increment_via_pointer(int* ptr) {
+      // Dereference pointer before incrementing underlying value
+      (*ptr)++;
+   }
+
+   void increment_via_reference(int& value) {
+      value++;
+   }
+   ```
 
 ### Video #19: Classes vs. Structs in C++
 - Visibility of member variables:
