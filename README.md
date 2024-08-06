@@ -31,7 +31,7 @@ This tutorial series will cover the following topics:
    - (23) [Enums](#video-23-enums-in-c)
    - (25) [Destructors](#video-25-destructors-in-c)
    - (26) [Inheritance](#video-26-inheritance-in-c)
-   - (27) [Virtual Functions](#video-68-virtual-destructors-in-c)
+   - (27) [Virtual Functions](#video-27-virtual-functions-in-c)
    - (28) [Interfaces (Pure Virtual Functions)](#video-28-interfaces-in-c-pure-virtual-functions)
    - (29) [Visibility](#video-29-visibility-in-c)
    - (33) [`const`](#video-33-const-in-c)
@@ -62,10 +62,9 @@ This tutorial series will cover the following topics:
    - (42) [Object Lifetime (Stack/Scope Lifetime)](#video-42-object-lifetime-in-c-stackscope-lifetimes-in-c)
    - (43) [Smart Pointers](#video-43-smart-pointers-in-c)
    - (54) [Stack vs. Heap Memory](#video-54-stack-vs-heap-memory-in-c)
-   - Type Punning (TODO: maybe put it here?)
    - (71) [Safety in Modern C++ and How to Teach It](#video-71-safety-in-modern-c-and-how-to-teach-it)
    - (84) [Track Memory Allocations the Easy Way](#video-84-track-memory-allocations-the-easy-way-in-c)
-   - (103) [Weak Pointers (`std::weak_ptr`)](#video-105-weak-pointer-in-c-stdweak_ptr)
+   - (103) [Weak Pointers (`std::weak_ptr`)](#video-105-weak-pointers-in-c-stdweak_ptr)
 
 - C++ Advanced Topics
    - (52) [How to Deal with Multiple Return Values](#video-52-how-to-deal-with-multiple-return-values-in-c)
@@ -178,13 +177,16 @@ This tutorial series will cover the following topics:
 - Being "invalid" is a perfectly acceptable state for a pointer.
 - `0`, `NULL` and `nullptr` mean the same thing when it comes to pointers.
 - Note that dereferencing should always be done prior to any operations on the underlying object, e.g. if we wanted to increment an integer `value` via an `int*` to `value`, we'd do `(*ptr)++` instead of `*ptr++`. The latter will increment the pointer and then attempt to derefernece it (most likely leading to a crash).
+- Pointers are _ContiguousIterators_ (of an array). You can use `++` to go to the next item that a pointer is pointing to, and `+4` to go to the 5th element.
 
-### [Video #17: References in C++](https://www.youtube.com/watch?v=IzoFn3dfsPA&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=17)
+### Video #17: [References in C++](https://www.youtube.com/watch?v=IzoFn3dfsPA&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=17)
 - References are really just an extension of pointers.
 - References are "pointers in disguise", i.e. references are just syntacial suger on top of pointers.
 - References __must__ "reference" existing variables, whereas pointers can be created as new variables.
-Reference themselves are __not__ new variables (i.e. they don't occupy memory and have their own memory address), they are simply an alias for an existing variable.
+- Unlike pointers which have a unique identity, i.e. a distinct memory address and an amout of space that can be measured with `sizeof`, references are __not__ new variables (i.e. they don't occupy memory or have their own memory address), they are simply an __alias__ for an existing variable.
 - A reference __cannot__ be reassigned.
+- You cannot create a collection (e.g. `std::vector`) of references.
+- A pointer can be assigned to `nullptr`, whereas a reference must be bound to an existing object.
 - The following two ways of incrementing an `int` are effectively the same:
    ```
    void increment_via_pointer(int* ptr) {
@@ -204,12 +206,13 @@ Reference themselves are __not__ new variables (i.e. they don't occupy memory an
 
 ### Video #21: `Static` in C++
 - __Context 1__: `static` keyword when used outside of a class or struct.
-   - `static` effectively allows you to mark a variable as "private" for a specfic translation unit (cpp file).
+   - `static` effectively allows you to mark a variable as "private" for a specific translation unit (cpp file).
    - This prevents any other translation unit (cpp file) from finding that `static` variable in the linking process via the `extern` keyword.
 - __Context 2__: `static` keyword when used inside a class or struct.
    - A `static` member variable of a class/struct is the same across all instances of that class/struct, i.e. there will be only __one instance__ of the `static` member variable.
    - A `static` method of a class does not have access to the object itself, i.e. cannot access the `this` keyword.
    - static methods (and also variables?) cannot access non-static variables because static methods do not actually have a "class instance".
+- See more on `static` from [this](https://stackoverflow.com/questions/15235526/the-static-keyword-and-its-various-uses-in-c) StackOverflow question.
 
 ### Video #23: Enums in C++
 - Enums provide a way to give a name to a value and organize groups of names and values that make sense together.
@@ -231,12 +234,12 @@ Reference themselves are __not__ new variables (i.e. they don't occupy memory an
 - Virtual functions allow us to override methods in sub-classes. A method marked as `virtual` in the parent class can be overridden in the child-class.
 - Virtual functions implement "dynamic dispatch" via a "v-table". The v-table contains a mapping of all the virtual functions in the base-class to their overridden functions in the child-class.
 - Marking a function as virtual tells the compiler to create a v-table for that function.
-- If you want to override a function in the child-class, you __must__ mark the correspodning fucntion in the parent-class as `virtual`. 
+- If you want to override a function in the child-class, you __must__ mark the corresponding function in the parent-class as `virtual`. 
 - The `override` keyword should be used to mark the child-class method to indicate that it is overriding a virtual method of the parent class.
 - Virtual functions come at the expense of creating a v-table, but in reality, the performance difference is negligible.
 
 ### Video #28: Interfaces in C++ (Pure Virtual Functions)
-- The concept of a "pure virtual function" in a base class allows us to  define a base-class member function that does not have an implementation, thereby forcing sub-classes to implement that function.
+- The concept of a "pure virtual function" in a base class allows us to define a base-class member function that does not have an implementation, thereby forcing sub-classes to implement that function.
 - This is similar to an `abstractmethod` in python.
 - An "interface class" consists entirely of "pure virtual methods" and cannot actually be instantiated.
 - A sub-class of an interface class can __only__ be instantiated if it implements __all__ of the pure virtual methods defined by the parent-class.
@@ -250,8 +253,8 @@ Reference themselves are __not__ new variables (i.e. they don't occupy memory an
 - TODO
 
 ### Video #33: `Const` in C++
-- NOTE: This is where I picked up after the interview. I'm taking my time getting through the content now.
-- A "promise" that something will not be changed (not actually strictly enforced).
+- __NOTE__: _This is where I picked up after the interview. I'm taking my time getting through the content now._
+- `const` is a "promise" that something will not be changed (not actually strictly enforced).
 - `const int* ptr`: value at pointer location cannot be changed, i.e. cannot do `*ptr = 100;`, but the pointer can be re-assigned to a new address.
 - `int* const ptr`: The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.
 - `const int* const ptr`: The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.
@@ -267,7 +270,7 @@ Reference themselves are __not__ new variables (i.e. they don't occupy memory an
 ### Video #35: Member Initializer Lists in C++
 - A way to initialize class member function via the contstructor.
 - Member initializer lists are the most memory/time efficient way to construct
-an object of a class that consists of non-primitive type members, i.e. members of other class types. For an example of this, see the `member_init.cpp` app that demonstrates how the Entity's Logger is effectively created twice (and thrown away once) when member initialization is used improperly.
+an object of a class that consists of non-primitive type members, i.e. members of other class types. For an example of this, see `app/member_init.cpp` that demonstrates how the Entity's Logger is effectively created twice (and thrown away once) when member initialization is used improperly.
 
 ### Video #36: Ternary Operators in C++
 - Effectively syntatic sugar for an if statement.
@@ -319,6 +322,24 @@ Entity* e2 = (Entity*)malloc(sizeof(Entity));
 ### Video #39: Implicit Conversion and the `explicit` Keyword in C++
 - Implicit Conversion allows C++ to convert between one type and another, so long as only a "single step" conversion exists between those two types.
 - `explicit` __disables__ implicit conversion.
+- Since C++11, `explicit` can be applied to more than just constructors - it's now valid when applied to conversion operators as well.
+- In the following example, marking the `Foo` constructor `explicit` would prevent implicit conversion from taking place in the call to `bar(42);`.
+   ```
+   struct Foo {
+      // A "converting constructor" allows implicit conversion.
+      Foo(int x) {}
+   };
+   
+   // It looks like we have to pass a Foo, but do we?
+   void bar(Foo foo) {};
+
+   int main() {
+    // This is allowed because of implicit conversion.
+    bar(42);
+   }  
+   ```
+- Also note that an `explicit` constructor will prevent _copy-initialization_, e.g. `Foo foo = 7`. Only _direct_initialization_, `Foo foo{7}` is allowed for a constructor marked `explicit`.
+- See [cppquiz.org #131](https://cppquiz.org/quiz/giveup/131) for further explanation.
 - Probably won't find myself using this very often, but good to know it exists and what it does.
 
 ### Video #40: Operators and Operator Overloading in C++
@@ -336,8 +357,8 @@ Entity* e2 = (Entity*)malloc(sizeof(Entity));
 - Copying is expensive and should be avoided if unnecessary.
 - The _Copy Constructor_ is supplied by default by C++ and is implemented as a
 _shallow copy_. This will create problems for any objects that have heap-allocated member pointers because the pointer itself will be copied. This results in pointer stored by the copied object pointing to the same memory address as the original object. When that memory is freed by the original object, attempting to free that same memory by the copied object will cause hard-to-diagnose errors.
-- In order to implement a _deep copy_ of an object, we must rewrtite the Copy Constructor ourselves: `<Type>(const <Type>& other){}`
-- __Best Practice__: Prefer passing objects by const reference (`const <type>&`) to prevent unecessary copying.
+- In order to implement a _deep copy_ of an object, we must rewrite the Copy Constructor ourselves: `<Type>(const <Type>& other){}`
+- __Best Practice__: Prefer passing objects by const reference (`const <type>&`) to prevent unnecessary copying.
 
 ### Video #45: The Arrow Operator in C++
 - The arrow operator `->` is used to _dereference_ a pointer.
@@ -391,7 +412,7 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
 - One possible use case is for _Singleton_ classses, i.e. a class that should only have one instance in existance.
 
 ### Video #56: The `auto` Keyword in C++
-- `auto` allows C++ to become a psuedo _weakly-typed_ language.
+- `auto` allows C++ to become a _psuedo weakly-typed_ language.
 - When to use `auto`?
    - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
    - For iterators in for loops:
@@ -594,7 +615,7 @@ data structures, we probably want to support functionality like idexing and iter
 ### Video #84: Track Memory Allocations the Easy Way in C++
 - TODO:
 
-### [Video #105 Weak Pointers in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
+### Video #105: [Weak Pointers in C++ (`std::weak_ptr`)](https://www.youtube.com/watch?v=M0GLQEfplxs&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=105)
 - _"Weak pointers - the pointers for those of you who are just not quite strong enough to use proper pointers."_ - Cherno
 - Weak pointers, `std::weak_ptr`, are intended to be used with shared pointers, `std::shared_ptr`.
 - Shared pointers (`std::shared_ptr`) refresher:
@@ -693,6 +714,7 @@ data structures, we probably want to support functionality like idexing and iter
       std::string first = result.first;
    }
    ```
+   - Note that `std::get<T>(std::tuple)` can only be used on a tuple which has exactly one element of type `T` in it.
 - __Option 4:__ (Cherno's favorite) create a struct (a _named tuple_ in Python) that excplicitly contains the items that we want to return.
    ```
    struct FileInfo {
@@ -752,6 +774,19 @@ data structures, we probably want to support functionality like idexing and iter
    - `[&]` captures all _automatic_ variables used in the body of the lamda by reference and the current object by reference if it exists.
    -  `[=]` captures all _automatic_ variables used in the body of the lamda by copy and the current object by reference if it exists.
    - `[]` captures nothing.
+- Lambda are also known as a _closure_. Closures are unnamed function objects. Hence, we need `auto` to deduce the type of a closure. We don't know its type but the compiler does.
+- `std::function` is a general-purpose polymorphic function wrapper.
+   - Lambdas closures as function objects can be converted to their respective `std::function` objects:
+      ```
+      std::function<void(int, int)> f = [](int some, int some2) {
+         // do something
+      }
+      ```
+- Lambdas can also be declared like:
+   ```
+   auto L = [](auto flag) -> auto { return flag ? Foo{"a"} : Fpp{"b"}; };
+   ```
+   where the return type is inferred from the type of the operance of its return statement, in this case, the return type is `Foo`.
 
 ### Video #61: Namespaces in C++
 - Standard `C` does not support namespaces and so often times in C and C++ compatible libraries, like OpenGL, you'll see function names that have prepended the library name, e.g. `gl_get_vertex()`
@@ -780,7 +815,7 @@ data structures, we probably want to support functionality like idexing and iter
 - Remember the order of operations when it comes to instantiating and destroying an instance of a derived class - what we'll notice for the derived
 class is that the Base constructor is called first, followed by the Derived
 constructor. When the Derived instance is destroyed, the reverse order occurs.
-- In order to _guarantee_ that the Base destructor is called, we can make the Base destructor as `virtual` (see `app/virtual_destructors.cpp` for an example).
+- In order to _guarantee_ that the Base destructor is called, we can mark the Base destructor as `virtual` (see `app/virtual_destructors.cpp` for an example).
 - __Best Practice:__ When creating an class that we intend to be extended, i.e. derived from or sub-classed, we __need to__ declare its destructor as `virtual`. Otherwise, we cannot _safely_ extend that class in any case where we want to treat the derived class as if it were an instance of the base class, e.g. when passing a derived object to a function that may delete the derived instance via a base class pointer.
 - __Best Practice:__ [When should we __not__ use a `virtual` destructor?](https://stackoverflow.com/questions/300986/when-should-you-not-use-virtual-destructors)
    1. When we have no intention on deriving from the class.
@@ -878,7 +913,7 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 ### Video #97: Bitwise AND, OR, XOR and NOT (&, |, ^, ~) C++
 - TODO
 
-### [Video #101: What Exactly is `NULL`?](https://www.youtube.com/watch?v=PksUUwvq-po&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=101)
+### Video #101: [What Exactly is `NULL`?](https://www.youtube.com/watch?v=PksUUwvq-po&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=101)
 - In _managed languages_ like C# or Java, if you try to use an object that's `NULL`, you'll get a `NullReferenceException` (C#) or a `NullPointerExeption` (Java). That's because these languages do some "hand holding" to help you from fucking up too badly. But what about C++?
 - What is the _value_ of `NULL` in C++?
    - `void* value = nullptr;`
@@ -932,7 +967,7 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
       entity->print_type();
       ```
 
-### [Video #103: Conversion Operators in C++](https://www.youtube.com/watch?v=OK0G4cmeX-I&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=103)
+### Video #103: [Conversion Operators in C++](https://www.youtube.com/watch?v=OK0G4cmeX-I&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=103)
 - Let's consider a simple example.
    ```
    struct Orange {
@@ -1143,7 +1178,7 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 - So how do we _move_ an object rather than copying it?
    - We must implement a _move constructor_ for the class that we wish to support moving.
    - We need to use `std::move` to invoke that class's move constructor.
-   - See `app/move_semantics.cpp` and the `String` class in `typed.h` for an implementation of a _move constroctor_ and use of `std::move`.
+   - See `app/move_semantics.cpp` and the `String` class in `types.h` for an implementation of a _move constroctor_ and use of `std::move`.
 
 ### Video #90: `std::move` and the Move Assigment Operator in C++
 - The _move constructor_, `Type(Type&& other)` is invoked when constructing a new object and passing it as an r-value reference.
@@ -1224,14 +1259,14 @@ Add a section that groups together videos about workflow and debugging.
    - We do this for both `Vector::pop_back` and `Vector::clear`. For a type that doesn't perform any heap allocation, like the `Vec3` class, we won't really run into any issues calling `~Vec3` manually, but as soon as type that your container supports does do some sort of heap allocation, you can very quickly run into issues.
    - "When you write `p = new T[N]`, the compiler generates code that calls `operator new[]` to allocate enough memory for `N` objects of type `T` plus whatever book-keeping information it needs. When you subsequently call `delete[] p`, the compiler calls the destructor for each of the `N` elements in the array that `p` points to, and then calls `operator delete[]` to release the memory that it got from `operator new[]`." - [SO](https://stackoverflow.com/questions/50069257/why-does-operator-new-allocate-memory-for-the-size-of-the-array)
 - Choosing to include the Copy Constructor and CopyAssignment operator for the `Vec3` class (when Cherno decided to delete them) forced me to revisit some topics related to [move semantics](https://stackoverflow.com/questions/3106110/what-is-move-semantics).
-   - __[The Rule of Three](https://en.wikipedia.org/wiki/Rule_of_three_%28C++_programming%29):__ If a class defines any of the following then it should probably explicitly define all three.
+   - __[The Rule of Three](https://en.wikipedia.org/wiki/Rule_of_three_%28C++_programming%29)__: If a class defines any of the following then it should probably explicitly define all three.
       - Desstructor
       - Copy Constructor
       - Copy Assignment Operator
    - __[The Copy-And-Swap Idiom](https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom):__ Make a copy (typically of a heap-allocated member variable), swap the contents with the copy, and then get rid of the copy by leaving the scope.
    - __RAII:__ There is tie-in to the concept of RAII (Resource Acquisition is Initialization) here in the sense that in the `Vec3` class, we have chosen to manually manage our own memory via `new[]` and `delete[]`.
 
-### [Video #94: Writing an Iterator in C++](https://www.youtube.com/watch?v=F9eDv-YIOQ0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=94)
+### Video #94: [Writing an Iterator in C++](https://www.youtube.com/watch?v=F9eDv-YIOQ0&list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&index=94)
 - We'll be adding an iterator to our custom vector class (from [video #92](#video-92-vectordynamic-array---making-data-structures-in-c)).
 - An aside: How do we actually get better as a c++ developer?
    - More focus/emphasis on reading and writing real-world code rather than just focusing on textbooks and tutorials.
