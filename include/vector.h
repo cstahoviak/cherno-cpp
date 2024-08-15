@@ -200,8 +200,6 @@ class Vector
       // reference, once we're within the scope of this function, 'item' becomes
       // an l-value (pretty odd, right?). So we need to use std::move() to cast
       // the l-value 'item' as an r-value to "move" it into our data_ array.
-      // TODO: This is segfaulting because sizeof(data_) = 8 and sizeof(T) = 32,
-      // i.e. there is not enough space allocated to store a T.
       // data_[size_] = std::move(item);
 
       // 2. (from Nikiux133's YouTube comment) See the comment in _reallocate().

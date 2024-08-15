@@ -226,9 +226,21 @@ This tutorial series will cover the following topics:
    - Any manually-allocated memory on the heap needs to be manually cleaned up in the destructor or you will create memory leaks.
 
 ### Video #26: Inheritance in C++
-- A note on Constructors: Every constructor in the inheritance hierarchy gets called in the order of base-class -> derived-class.
+- A note on Constructors: every constructor in the inheritance hierarchy gets called in the order of base-class -> derived-class.
 - Destructors get called in the _reverse_ order!
-- Polymorphism: Achieved either via function overloading or operator overloading, e.g. you can use the `+` operator to add two ints, two floats or even concatenate two strings.
+- __Polymorphism__:
+   - Achieved either via function overloading or operator overloading, e.g. you can use the `+` operator to add two ints, two floats or even concatenate two strings.
+   - All members of the base class are part of the derived class. However, the derived class can only access members that are `public` or `protected` - `private` members of the base are __always__ inaccessible to the derived class.
+   - A derived class can inherit from a base class in the following ways: `public`, `protected`, or `private`
+
+   |Base Class Member Access Modifier  |       | Visibility to Derived Class |      |
+   |:----------------------------------|:------------ |:------------:|:-------------|
+   | _inheritance type_ -------------> | `public`     | `protected`  | `private`    |
+   |`public`                           | `public`     | `protected`  | `private`    |
+   |`protected`                        | `protected`  | `protected`  | `private`    |
+   |`private`                          | inaccessible | inaccessible | inaccessible |
+
+   - A __pure abstract class__ (_OOP factory_) is a means of implementing polymorphishm such that users obtain a _unique pointer_ to a lightweight or abstract base class, the implementation details are in the derived class that overrides its virtual member functions.
 
 ### Video #27: Virtual Functions in C++
 - Virtual functions allow us to override methods in sub-classes. A method marked as `virtual` in the parent class can be overridden in the child-class.
@@ -239,15 +251,16 @@ This tutorial series will cover the following topics:
 - Virtual functions come at the expense of creating a v-table, but in reality, the performance difference is negligible.
 
 ### Video #28: Interfaces in C++ (Pure Virtual Functions)
-- The concept of a "pure virtual function" in a base class allows us to define a base-class member function that does not have an implementation, thereby forcing sub-classes to implement that function.
+- `virtual void fcn() = 0;`. The `= 0;` is what makes it _pure_ virtual.
+- The concept of a _pure virtual function_ in a base class allows us to define a base-class member function that does not have an implementation, thereby forcing sub-classes to implement that function.
 - This is similar to an `abstractmethod` in python.
-- An "interface class" consists entirely of "pure virtual methods" and cannot actually be instantiated.
+- An _interface class_ (or _factory_) consists entirely of _pure virtual methods_ and cannot actually be instantiated.
 - A sub-class of an interface class can __only__ be instantiated if it implements __all__ of the pure virtual methods defined by the parent-class.
 
 ### Video #29 Visibility in C++
-- `private`: these member variables and function can (and should) only be accessed by the class itself
-- `protected`: these member variables and function can (and should) only be accessed by the class itself and any sub-class.
-- `public`: these member variables and function can (and should) only be accessed by any other class of function.
+- `private`: these member variables and functions can (and should) only be accessed by the class itself.
+- `protected`: these member variables and functions can (and should) only be accessed by the class itself and any sub-class.
+- `public`: these member variables and functions can (and should) only be accessed by any other class of function.
 
 ### Video #30: Arrays in C++
 - TODO
@@ -338,14 +351,14 @@ Entity* e2 = (Entity*)malloc(sizeof(Entity));
     bar(42);
    }  
    ```
-- Also note that an `explicit` constructor will prevent _copy-initialization_, e.g. `Foo foo = 7`. Only _direct_initialization_, `Foo foo{7}` is allowed for a constructor marked `explicit`.
+- Also note that an `explicit` constructor will prevent _copy-initialization_, e.g. `Foo foo = 7`. Only _direct-initialization_, `Foo foo{7}` is allowed for a constructor marked `explicit`.
 - See [cppquiz.org #131](https://cppquiz.org/quiz/giveup/131) for further explanation.
 - Probably won't find myself using this very often, but good to know it exists and what it does.
 
 ### Video #40: Operators and Operator Overloading in C++
 - Operators: `=`, `==`, `<<` (stream insertion), `&`, `&&`, etc.
 - `new`, `delete` and `()` are also operators.
-- "Operators _are_ functions!"
+- "Operators _are_ functions!" - Cherno
 
 ### Video #41: `this` keyword in C++
 - `this` is a pointer to the current object instance that the member-method belongs to.
