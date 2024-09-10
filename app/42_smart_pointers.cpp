@@ -9,6 +9,18 @@
 #include <iostream>
 #include <memory>
 
+void observe(std::weak_ptr<Player> player) {
+  if ( std::shared_ptr<Player> p = player.lock() ) {
+    std::cout << "observe() able to lock weak_ptr<>, name: " << 
+      p->get_name() << std::endl;
+  }
+  else {
+    std::cout << "observe() able to lock weak_ptr<>. The underlying Player " <<
+      "instance has expired." << std::endl;
+  }
+}
+
+
 int main() {
   // Stack-allocate a "scoped" Entity pointer whose deletion will be managed
   // internally by the ScopedPtr class. This effectively makes the pointer
@@ -49,11 +61,34 @@ int main() {
     // Create a shared pointer to a Player. This player will go out of scope
     // once the local scope is exited.
     std::shared_ptr<Player> player = std::make_shared<Player>("Shared");
+
+    // Assign the weak pointer to the shared pointer.
+    std::cout << "Assigning a weak_ptr to an existing shared_ptr." << std::endl;
+    weak_player = player;
+    // Use the Player instance via a weak_ptr
+    observe(weak_player);
   }
 
-  // At this point, the weak pointer should be expired
+  // At this point, the weak pointer should be expired.
+  std::cout << "shared_ptr has gone out of scope, weak_ptr should be " <<
+    "expired." << std::endl;
   std::string expired = weak_player.expired() ? "True" : "False";
   std::cout << "weak_player expired: " << expired << std::endl;
+  observe(weak_player);
+
+  // (9/10/24) Further experimentation with shared pointers.
+  Player player{"Carl"};
+
+  // Create a shared pointer to the player in the outer scope
+  {
+    std::shared_ptr<Player> shared_player = std::shared_ptr<Player>(&player);
+    std::cout << "Access via shared_ptr: " << shared_player->get_name() <<
+      std::endl;
+  }
+
+  // This line below will throw a "double free or corruption" segfault because
+  // the Player was previously deleted when the shared_ptr went out of scope.
+  // std::cout << "Access via instance: " << player.get_name() << std::endl;
 
   std::cin.get();
 }
