@@ -241,6 +241,9 @@ This tutorial series will cover the following topics:
    |`private`                          | inaccessible | inaccessible | inaccessible |
 
    - A __pure abstract class__ (_OOP factory_) is a means of implementing polymorphishm such that users obtain a _unique pointer_ to a lightweight or abstract base class, the implementation details are in the derived class that overrides its virtual member functions.
+- From the [C++ Style Guide](https://google.github.io/styleguide/cppguide.html):
+   - "Limit implementation inheritance. Prefer _interface inheritance_ (via pure virtual functions) or use _composition_ instead."
+   - _Interface Inheritance_: The use of inheritance from exclusively abstract classses, where _no values or code_ are inherited from the parent.
 
 ### Video #27: Virtual Functions in C++
 - Virtual functions allow us to override methods in sub-classes. A method marked as `virtual` in the parent class can be overridden in the child-class.
@@ -442,9 +445,9 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
 - One possible use case is for _Singleton_ classses, i.e. a class that should only have one instance in existance.
 
 ### Video #56: The `auto` Keyword in C++
-- `auto` allows C++ to become a _psuedo weakly-typed_ language.
+- _Type deduction_ (use of the `auto` keyowrd) allows C++ to become a _psuedo weakly-typed_ language.
 - When to use `auto`?
-   - For very long types that it's annoying to write out and you don't want to `using` to create an alias.
+   - For very long types that are annoying to write out and you don't want to `using` to create an alias.
    - For iterators in for loops:
       ```
       std::vector<std::string> strings;
@@ -460,11 +463,15 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
       }
       ```
 - If you need a reference, use `auto&`.
+- From the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html):
+   - "Use type deduction only to _make the code clearer or safer_, and do not use it merely to _avoid the inconvenience of writing an explicit type_."
+   - ✅: `auto foo = std::make_unique<Foo>();` - it's obvious that `foo` is of type `Foo`.
+   - ❌: `auto foo = myWdigetFactory();` - the type of `foo` is unclear.
 
 
 ## Data Structures in C++
 
-### Video #46: Dynamic Arrays in C++ (std::vector)
+### Video #46: Dynamic Arrays in C++ (`std::vector`)
 - Time to get accustomed with the standard template library (STL)!
 - `std::vector` is actually a dynamic array (list) - _dynamic_ in the sense that it can be resized, e.g. extended, appended to, etc.
 - When you exceed the allocated size of a particular `std::vector` instance, it creates a new array in memory, copies the contents of the original vector into the new vector and deletes the original vector. In practice, this re-allocation can occur quite often and can result in performance losses.
@@ -1152,8 +1159,8 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 ### Video #78: How to Store ANY Data in C++
 - New to C++17 is `std::any`. We can use it store _any_ type of data in a single variable (technically possible with a `void*`, but this is a C++17-safe way of doing it).
 - Remember, `std::variant` is effectively a type-safe `std::union`, but they differ in size. However, `std::any` behaves differently for "small" and "large" types. For small types, `std::any` stores its data as if it were a union, but for large types (< 32bytes on MSVC), `std::any` will perform a dynamic memory allocation to store the larger data type (unecesary heap alloccations are something we want to avoid).
-- __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __wont'__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
-- __Best Practice:__ "Use std::any where in the past you would have used `void*` or `shared_ptr<void>` (which solves the problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [StackOverflow](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
+- __Best Practice:__ Probably don't ue `std::any`. "If you need to store multiple data types in a single variable, use `std::variant` because it's type-safe and it __won't__ perform dynamic memory allocation. If you actually _need_ a variable that can store _any_ type of data, probably rethink you're program design."
+- __Best Practice:__ "Use `std::any` where in the past you would have used `void*` or `shared_ptr<void>` (which solves the problem of lifetime management that `void*` has). Which is to say, ideally, almost nowhere." - [StackOverflow](https://stackoverflow.com/questions/52715219/when-should-i-use-stdany) 
 - [Further discussion](https://devblogs.microsoft.com/cppblog/stdany-how-when-and-why/)
 
 
