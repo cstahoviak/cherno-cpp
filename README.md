@@ -3,8 +3,8 @@ A repository for working through [the Cherno's C++ YouTube series](https://www.y
 
 ## Overview
 Why write in C++? Because we care about things like:
-- Memory
-- Performace
+- Efficient Memory Management
+- Runtime Performance
 - Hardware Optimization
 
 If you don't care about these things, don't choose C++!
