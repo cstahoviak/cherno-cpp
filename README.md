@@ -268,12 +268,29 @@ This tutorial series will cover the following topics:
 ### Video #33: `Const` in C++
 - __NOTE__: _This is where I picked up after the interview. I'm taking my time getting through the content now._
 - `const` is a "promise" that something will not be changed (not actually strictly enforced).
-- `const int* ptr`: value at pointer location cannot be changed, i.e. cannot do `*ptr = 100;`, but the pointer can be re-assigned to a new address.
-- `int* const ptr`: The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.
-- `const int* const ptr`: The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.
-- `void MyClass::func() const`: Guarantees that this function will not modify any member variables of `MyClass`, i.e. this function is "read-only".
+- The following table is created from Cherno's explanation:
+
+   | Keyword Declaration          | Interpretation|
+   |:-----------------------------|:--------------|
+   | `const int* ptr`             | Value at pointer location cannot be changed, but the pointer can be re-assigned to a new address.                   |
+   | `int* const ptr`             | The pointer cannot be assigned to a new address, but the value at the pointer location can be changed.              |
+   | `const int* const ptr`       | The pointer cannot be re-assigned to a new address and the value at the pointer location cannot be changed.         |
+   | `void MyClass::func() const` | Guarantees that this function will not modify any member variables of `MyClass`, i.e. this function is "read-only". |
+
 - Rule of thumb: Mark any methods that are intended to be read-only as `const`, e.g. `void MyClass::func() const`.
 - The `mutable` keyword allows `const` methods to modify member variables.
+- The following table ([source: SO](https://stackoverflow.com/questions/1143262/what-is-the-difference-between-const-int-const-int-const-and-int-const)) summarizes the use of the `const` keyword. Remember to read the keyword delaration backwards (as driven by the [Clockwise/Spiral Rule](https://c-faq.com/decl/spiral.anderson.html)).
+
+   | Keyword Declaration | Interpretation                 |
+   | :-------------------|:-------------------------------| 
+   | `int*`              | _Pointer to an int_            |
+   | `int const *`       | _Pointer to a const int_       |
+   | `int * const`       | _Const pointer to an int_      |
+   | `int const * const` | _Const pointer to a const int_ |
+
+   Note that the first `const` can occur on either side of the type, so
+   - `int const * == const int*`
+   - `int const * const == const int * const`
 
 ### Video #34: The `Mutable` Keyword in C++
 - Two (very different) use cases: with `const` and with lambdas.
@@ -591,6 +608,14 @@ data structures, we probably want to support functionality like idexing and iter
 - A `std::unique_ptr` is a _scoped pointer_ that cannot be copied.
 - A `std::shared_ptr` stores a reference count and the object will only be deleted when that reference count goes to zero. Each time a new `shared_ptr` is made to an existing object, the reference count increases by one.
 - A `std::weak_ptr` does not increase the reference count. Having a `weak_ptr` to an object is basically a way of saying "I want to know if this object exists, but I don't want to be the _reason_ that it exists or continues to exist."
+- The rules for applying `const` to smart pointers and their underlying types looks similar to those same rules for [raw pointers](#video-33-const-in-c).
+
+   | Smart Pointer Declaration   | Raw Pointer Declaration | Analogous Declaration |
+   | :---------------------------|:------------------------|:----------------------| 
+   | `shared_ptr<T>`             | `T *`                   | -                     |
+   | `const shared_ptr<T>`       | `const * T`             | -                     |
+   | `shared_ptr<const T>`       | `T const *`             | `const T *`           |
+   | `const shared_ptr<const T>` | `T const * const`       | `const T * const`     |
 
 ### Video #54: Stack vs. Heap Memory in C++
 - The Stack has a much smaller pre-defined size (~2MB), whereas the Heap is much larger. __Both__ exist in RAM, however the Stack may be _hot_ in the _cache_ because it is being accessed more frequently.
@@ -1205,11 +1230,11 @@ Add a section that groups together videos about workflow and debugging.
 
 ### Video #49: Using Libraries in C++
 - The ethos: If you download my repo from github, that repo should contain everything you need for it to compile and run.
-- This video: Learning to link against binaries
-- TODO: Didn't finish this video.
+- This video: Learning to link against binaries.
+- 
 
 ### Video #50: Using Dynamic Libraries in C++
-- TODO:
+- Static linking happens at compile time.
 
 ### Video #51: Making and Working with Libraries in C++
 - TODO:
