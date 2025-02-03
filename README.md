@@ -242,8 +242,8 @@ This tutorial series will cover the following topics:
 
    - A __pure abstract class__ (_OOP factory_) is a means of implementing polymorphishm such that users obtain a _unique pointer_ to a lightweight or abstract base class, the implementation details are in the derived class that overrides its virtual member functions.
 - From the [C++ Style Guide](https://google.github.io/styleguide/cppguide.html):
-   - "Limit implementation inheritance. Prefer _interface inheritance_ (via pure virtual functions) or use _composition_ instead."
-   - _Interface Inheritance_: The use of inheritance from exclusively abstract classses, where _no values or code_ are inherited from the parent.
+   - "Limit implementation inheritance. Prefer __interface inheritance__ (via pure virtual functions) or use __composition__ instead."
+   - __Interface Inheritance__: The use of inheritance from exclusively abstract classses, where _no values or code_ are inherited from the parent.
 
 ### Video #27: Virtual Functions in C++
 - Virtual functions allow us to override methods in sub-classes. A method marked as `virtual` in the parent class can be overridden in the child-class.
@@ -1228,7 +1228,7 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 ### Video #90: `std::move` and the Move Assigment Operator in C++
 - The __move constructor__, `Type(Type&& other)` is invoked when constructing a new object and passing it as an r-value reference.
 - The __move assignment operator__ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
-   - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the __Rule of Fifths__. More on this later.
+   - __If we define a move constructor for our class, we _should_ also define the move assignment operator__. This is referred to as the __Rule of Fifths__. More on this later.
 - `std::move` is __really just a cast__ and is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
 - `std::move` and `const`:
    - A `const` object, by definition, __cannot be modified__. This includes transferring its resources to another object, as that would essentially be modifying it.
