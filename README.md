@@ -1223,13 +1223,22 @@ __Guideline #4:__ (Herb Sutter) "A base class destructor should be either `publi
 - So how do we _move_ an object rather than copying it?
    - We must implement a _move constructor_ for the class that we wish to support moving.
    - We need to use `std::move` to invoke that class's move constructor.
-   - See `app/move_semantics.cpp` and the `String` class in `types.h` for an implementation of a _move constroctor_ and use of `std::move`.
+   - See `app/move_semantics.cpp` and the `String` class in `types.h` for an implementation of a __move constroctor_ _and use of `std::move`.
 
 ### Video #90: `std::move` and the Move Assigment Operator in C++
-- The _move constructor_, `Type(Type&& other)` is invoked when constructing a new object and passing it as an r-value reference.
-- The _move assignment operator_ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
-   - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the _Rule of Fifths_. More on this later.
-- `std::move` is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
+- The __move constructor__, `Type(Type&& other)` is invoked when constructing a new object and passing it as an r-value reference.
+- The __move assignment operator__ is invoked when we want to _move_ an existing object (an x-value near the end of its lifetime?) into another existing object.
+   - If we define a _move constructor_ for our class, we _should_ also define the _move assignment operator_. This is referred to as the __Rule of Fifths__. More on this later.
+- `std::move` is __really just a cast__ and is used in place of `(Type&&)source` to cast an l-value to an r-value (actually an x-value) and deduces the moved-from type at compile-time rather than requiring the user to cast the l-value to an r-value manually, i.e. `(Type&&)`.
+- `std::move` and `const`:
+   - A `const` object, by definition, __cannot be modified__. This includes transferring its resources to another object, as that would essentially be modifying it.
+   - Attempting to `std::move` a `const` object will result in a __copy operation__ _unless_ the move contructor for that type is explicitly deleted, then it will result in a compilation error.
+
+   ```
+   const std::string str = "Hello"; 
+   std::string other = std::move(str); // This is a copy, not a move!
+   ```
+
 
 
 ## Workflow & Debugging
