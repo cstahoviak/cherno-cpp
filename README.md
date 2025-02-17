@@ -245,6 +245,30 @@ This tutorial series will cover the following topics:
    - "Limit implementation inheritance. Prefer __interface inheritance__ (via pure virtual functions) or use __composition__ instead."
    - __Interface Inheritance__: The use of inheritance from exclusively abstract classses, where _no values or code_ are inherited from the parent.
 
+- When dealing with __derived classes__, the way you consume them (__by-reference__ or __by-value__) has significant implications, especially concerning polymorphism and __object slicing__.
+   - __Consuming an object of a derived class by-value creates a copy of the object__. The copied object will be of the base-class type, and it will be stripped of any of its derived-specific data members or member functions leading to what's known as __object slicing__.
+   - __Consuming a derived-class object by-reference (or pointer) does not result in a copy__. The function operates on the original object, and its type is preserved. If the derived class overrides any virtual functions of the base class, the correct derived-class function will be called.
+
+   ```
+   class Base {
+     public:
+       virtual void print() const { std::cout << "Base" << std::endl; }
+   };
+
+   class Derived : public Base {
+     public:
+       void print() const { std::cout << "Derived" << std::endl; }
+   };
+
+   void print_by_ref(const Base& base) { base.print(); }
+
+   void print_by_value(Base base) { base.print(); }
+
+   Derived b;
+   print_by_ref(b);     // prints "Derived"
+   print_by_value(b);   // prints "Base"
+   ```
+
 ### Video #27: Virtual Functions in C++
 - Virtual functions allow us to override methods in sub-classes. A method marked as `virtual` in the parent class can be overridden in the child-class.
 - Virtual functions implement "dynamic dispatch" via a "v-table". The v-table contains a mapping of all the virtual functions in the base-class to their overridden functions in the child-class.
@@ -782,6 +806,8 @@ data structures, we probably want to support functionality like idexing and iter
 
 ### Video #53: Templates in C++
 - A template allows us to get the compiler to write code for us based on a set of rules.
+- A template is __not__ a class or a function. A template is a __pattern__ that the compiler uses to generate a _family_ of classes or functions.
+   - [Why can’t I separate the definition of my templates class from its declaration and put it inside a .cpp file?](https://isocpp.org/wiki/faq/templates#templates-defn-vs-decl)
 - In `template<typename T>` the keywords `typename` and `class` can _almost_ be used interchangeably. But `typename` is preferred.
 - At compile-time, a templated function only gets created (and linked) for the particular types that it's actually called within the source code.
 - If a templated function is _never_ called in your code, the the compiler never actually creates any versions of the function, and it's possible to have errors in a templated function that can go undetected.
