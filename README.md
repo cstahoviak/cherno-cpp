@@ -320,9 +320,9 @@ This tutorial series will cover the following topics:
    - `int const * const == const int * const`
 
 ### Video #34: The `Mutable` Keyword in C++
-- Two (very different) use cases: with `const` and with lambdas.
-- The `mutable` keyword allows `const` methods to modify member variables.
-- lambda (quick definition): a throw-away function that you can assign to a variable.
+- Two (_very different_) use cases: with `const` and with __lambdas__.
+   - The `mutable` keyword allows `const` methods to modify member variables.
+   - __lambda__ (quick definition): a throw-away function that you can assign to a variable.
 
 ### Video #35: Member Initializer Lists in C++
 - A way to initialize class member function via the contstructor.
@@ -362,11 +362,11 @@ an object of a class that consists of non-primitive type members, i.e. members o
 - _Smart Pointers_ (which we'll get into later) provide a means to allocate an object on the Heap but with the memory-mangement advantages that come with Stack allocation.
 
 ### Video #38: The `new` Keyword in C++
-- `new` finds a block of memory (via the _free list_) that is large enough to accommodate our needs, and returns a pointer to thart block of memory.
+- `new` finds a block of memory (via the __free list__) that is large enough to accommodate our needs, and returns a pointer to that block of memory.
 - `new` does two things:
    - Allocates the memory required to store the object.
    - Calls the constructor for that object.
-- `new` is actually an operator, in the same sense that the `+`, `==` or `<<` (stream insertion) are operators. That means that `new` can be _overloaded_.
+- `new` is actually an operator, in the same sense that the `+`, `==` or `<<` (stream insertion) are operators. That means that `new` can be __overloaded__.
 - So what does `new` do under the hood? It calls `malloc()`. The following two lines are _almost_ equivalent aside from the fact the `new` calls the `Entity` constructor, whereas the second line purely allocates memory and returns a pointer to that memory. This is just for instructional purposes, you don't want to be doing anything that looks like the second line.
 ```
 Entity* e1 = new Entity;
@@ -412,9 +412,10 @@ Entity* e2 = (Entity*)malloc(sizeof(Entity));
 
 ### Video #44: Copying and Copy Constructors in C++
 - Copying is expensive and should be avoided if unnecessary.
-- The _Copy Constructor_ is supplied by default by C++ and is implemented as a
-_shallow copy_. This will create problems for any objects that have heap-allocated member pointers because the pointer itself will be copied. This results in pointer stored by the copied object pointing to the same memory address as the original object. When that memory is freed by the original object, attempting to free that same memory by the copied object will cause hard-to-diagnose errors.
-- In order to implement a _deep copy_ of an object, we must rewrite the Copy Constructor ourselves: `<Type>(const <Type>& other){}`
+- The __Copy Constructor__ is supplied by default by C++ and is implemented as a
+__shallow copy__. This will create problems for any objects that have heap-allocated member pointers because the pointer itself will be copied.
+   - This results in pointer stored by the copied object pointing to the same memory address as the original object. When that memory is freed by the original object, attempting to free that same memory by the copied object will cause _hard-to-diagnose_ errors.
+- In order to implement a __deep copy__ of an object, we must rewrite the Copy Constructor ourselves: `<Type>(const <Type>& other){}`
 - __Best Practice__: Prefer passing objects by const reference (`const <type>&`) to prevent unnecessary copying.
 
 ### Video #45: The Arrow Operator in C++
@@ -504,7 +505,10 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
 - __Question:__ Should I be storing pointers to heap-allocated objects in my vectors (lists), or should I store the stack-allocated objects themselves?
    - __Answer:__ It depends. The primary consideration is that it is technically more optimal to store the objects themselves in the list because storing the objects themselves requires that the memory allocated for those objects is inline (contiguous). A vector of pointers can be optimal in the case when that vector may need to be resized frequently.
 - __Best Practice:__ Prefer passing dymanic arrays by `const` reference to avoid uncessary copying.
-- `std::array` allocates its memeory on the stack, whereas `std::array` allocates its memory on the heap.
+- The `sizeof(std::vector<T>)` is independent of the number of elements currently stored in the vector.
+   - It's usually a small, fixed size, often `24` or `32` bytes on 64-bit systems.
+   - This is because `std::vector` is __implemented as three pointers__: one to the beginning of the vector, one to the end, and one to the current capacity of the allocated storage.
+- `std::array` allocates its memory on the stack, whereas `std::vector` allocates its memory on the heap.
 
 ### Video #47: Optimizing the use of `std::vector` in C++
 - We can use `std::vector.reserve(n)` to allocate enough memory for `n` objects _without_ actually wasting time constructing those objects before we're ready to push them onto the vector.
@@ -537,10 +541,21 @@ _shallow copy_. This will create problems for any objects that have heap-allocat
    - Can apply STL algorithms like `std::sort` to `std::array`.
    - No additional performance cost associated with `std::array` since the `size` is stored as a template argument.
 
+- The following table is an overview of the differences between `std::vector` and `std::array`.
+
+| Feature         | `std::vector`                              | `std::array`                       |
+|:----------------|:-------------------------------------------|:-----------------------------------|
+| Allocation      | __Heap__ for elements, stack for container object | __Stack__ (usually), or static storage |
+| Size            | Dynamic, can change at __runtime__         | Fixed at __compile time__          |
+| Resizing        | Possible                                   | Not possible                       |
+| Memory Overhead | Higher, due to managing heap allocation    | Low, only stores elements          |
+| Access Speed    | Slightly slower to to possible indirection | Fast, direct access to elements    | 
+| Use Cases       | Variable-size data, flexibilty required    | Fixed-size data, performance-critical code |
+
 ### Video #64: Multidimensional Arrays (2D Arrays) in C++
-- n-dimensional arrays. When to use them. When _not_ to use them!
+- n-dimensional arrays (when to use them, and when __not__ to use them!)
 - An array is actually just a pointer to the beginning of the array. Extending that concept to a 2D array would mean that a 2D array is actually just an array of pointers, where each pointer is the starting location of a single array of the larger 2D array.
-- Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or "a pointer to a collection of integer pointers." Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
+- Allocating a 2D array might look something like `int** arr_2d = int*[50];`. We can read `int**` as `(int*)*` or _"a pointer to a collection of integer pointers"_. Each element of `arr_2d` will be an integer pointer, so we can do something like `arr_2d[idx] = nullptr;`
 - Deleting a multidimensional array isn't trivial either. Say we declare the following 5x10 2D array then attempt to delete it:
    ```
    int** arr_2d = new int*[5];
