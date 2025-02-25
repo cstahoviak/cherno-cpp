@@ -140,6 +140,9 @@ This tutorial series will cover the following topics:
 - The __linker__ "glues" the object files into an executable.
    - A linker error can happen when a symbol (e.g. a function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
    - This error is referred to as an _"unresolved external symbol"_.
+- There are a few key differences between a __compiled__ language like C++ and an __interpreted__ language like Python:
+   - C++ is a __statically typed__ language, i.e. variable types are checked/known at __compile time__. Python is __dynamically typed__, i.e. variable types are evaluated at __runtime__.
+   - The C++ compiler translates source code into bytecode prior to execution, whereas the Python interpreter performs this same translation on-the-fly at runtime, typically leading to slower execution speeds.
 
 ### Video #6 - How the C++ Compiler Works
 - The compilers job is simple: its job is to translate our code into either __constant data__ or __instructions__.
