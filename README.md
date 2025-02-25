@@ -130,7 +130,7 @@ This tutorial series will cover the following topics:
 - Low-level optimization via "compiler-intrinsics" and assembly.
 
 ### Video #5 - How C++ Works
-- What we want to know: How to we go from source code (.cpp files) to an executable binary?
+- What we want to know: How do we go from source code (.cpp files) to an executable binary?
 - Preprocessor statements (# statements, e.g. `#include`) happen before compilation.
    - `#include` statements _literally_ pre-pend the contents of another file into your file.
 - Every C++ application needs an __entry point__, typically this is `main()`.
@@ -139,7 +139,7 @@ This tutorial series will cover the following topics:
 - The Compiler creates an __object file__ (`.obj`) for _every_ cpp file (each cpp file is referred to as a __translation unit__).
 - The __linker__ "glues" the object files into an executable.
    - A linker error can happen when a symbol (e.g. a function name) that was "promised" to exist (e.g. via forward-declaration) cannot be resolved or found.
-   - This error is referred to as an "unresolved external symbol".
+   - This error is referred to as an _"unresolved external symbol"_.
 
 ### Video #6 - How the C++ Compiler Works
 - The compilers job is simple: its job is to translate our code into either __constant data__ or __instructions__.
